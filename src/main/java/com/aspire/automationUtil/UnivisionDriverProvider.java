@@ -95,24 +95,25 @@ public class UnivisionDriverProvider {
 			//capabilities.setCapability("udid", EnvirommentManager.getInstance().getProperty("udid"));
 		}
         }
-		//capabilities.setCapability("platformVersion",TargetPlatform.platformVersion);
+        if(!TargetPlatform.runOnAmazon){
 		capabilities.setCapability("platformVersion", TargetPlatform.platformVersion);
 		capabilities.setCapability("appiumVersion", EnvirommentManager.getInstance().getProperty("appiumVersion"));
 		capabilities.setCapability("platformName", TargetPlatform.platformName);
 		capabilities.setCapability("deviceName", TargetPlatform.deviceName);
 		capabilities.setCapability("deviceOrientation", "portrait");
 		capabilities.setCapability("browserName", "");
-		capabilities.setCapability("commandTimeout", "300");
+		capabilities.setCapability("commandTimeout", "600");
 		capabilities.setCapability("maxDuration", "10800");
 
 		// Set job name on Sauce Labs
 		capabilities.setCapability("name", System.getProperty("user.name") + " - Deportes(And) - " + date);
+        }
 		String userDir = System.getProperty("user.dir");
 
 		URL serverAddress;
 		String localApp = TargetPlatform.appFileName;
 
-		if (SessionHandler.getRunOnSauce()) {
+		if (!TargetPlatform.runOnAmazon &&  SessionHandler.getRunOnSauce()) {
 			String user = SessionHandler.getAuth().getUsername();
 			String key = SessionHandler.getAuth().getAccessKey();
 			capabilities.setCapability("app", "sauce-storage:" + localApp.trim());
@@ -125,7 +126,9 @@ public class UnivisionDriverProvider {
 
 		} else {
 			String appPath = Paths.get(TargetPlatform.fileDirectory, localApp).toAbsolutePath().toString();
+			if (!TargetPlatform.runOnAmazon ){
 			capabilities.setCapability("app", appPath);
+			}
 			serverAddress = new URL("http://127.0.0.1:4723/wd/hub");
 			try {
 				  if (getPlatform() == platform.ANDROID) {

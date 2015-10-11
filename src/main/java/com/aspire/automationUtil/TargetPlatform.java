@@ -6,5 +6,6 @@ public class TargetPlatform {
 	 public static String deviceName;
 	 public static String appFileName;
 	 public static String fileDirectory;
+	 public static boolean runOnAmazon;
 	 
 }

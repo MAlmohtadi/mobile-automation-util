@@ -54,9 +54,65 @@ public abstract class Helper {
 	/**
 	 * Wrap WebElement in MobileElement *
 	 */
+
+	 public void scrollTo(String elementSelector) {
+		    boolean found = false;
+		    int screenHeight = currentDriver().manage().window().getSize().getHeight();
+		    int screenWidth = currentDriver().manage().window().getSize().getWidth();
+		    int previousValue;
+
+		      while (!found) {
+		        currentDriver().swipe((int) (screenWidth * 0.5),(int) (screenHeight * 0.9), (int) (screenWidth * 0.5), 0,2000);
+
+		        try {
+		         if (find(elementSelector).isDisplayed()) {
+		          found = true;
+		          WebElement ele = find(elementSelector);
+
+		          while (ele.getLocation().getY() > screenHeight * 0.20) {
+		           previousValue = ele.getLocation().getY();
+		           currentDriver().swipe((int) (screenWidth * 0.5),
+		             (int) (screenHeight * 0.5),
+		             (int) (screenWidth * 0.5), (int) (screenHeight *  0.4), 2000);
+		           ele = find(elementSelector);
+		           if (previousValue == ele.getLocation().getY()) {
+		            break;
+		           }
+
+		          }
+
+		         }
+		        } catch (Exception e) {
+		        }
+		       }
+		   
+		    
+
+		 }
+	 public void SwipeRight() {
+
+		  int screenHeight = currentDriver().manage().window().getSize().getHeight();
+		  int screenWidth = currentDriver().manage().window().getSize().getWidth();
+		  currentDriver().swipe((int) (screenWidth * 0.1),(int) (screenHeight * 0.5), (int) (screenWidth * 0.99),(int) (screenHeight  *0.5) ,1000);  
+		 }
+		 
+		 public void SwipeLeft() {
+
+		  int screenHeight = currentDriver().manage().window().getSize().getHeight();
+		  int screenWidth = currentDriver().manage().window().getSize().getWidth();
+		  currentDriver().swipe((int) (screenWidth  * 0.8),(int) (screenHeight  * 0.5), 0,(int) (screenHeight * 0.5) ,500);  
+		 }
 	private  MobileElement w(WebElement element) {
 		return  (MobileElement) element;
 	}
+	 public  void sleepTime(int value) {
+		  try {
+		   Thread.currentThread();
+		   Thread.sleep(value);
+		  } catch (Exception e) {
+		   e.printStackTrace();
+		  }
+		 }
 	public AppiumDriver currentDriver()
 	{
 		return driverProvider.getCurrentDriver();

@@ -5,10 +5,18 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -18,11 +26,15 @@ public class EnvirommentManager {
 	public static String platformVersion="5.0";
 
 	private Hashtable<String, ArrayList<PropertyChangeListener>> listeners = null;
-
+	private static Class<?> initialClass;
 	private static Object lock = new Object();
 	private static EnvirommentManager instance = null;
 
 	private EnvirommentManager() {
+	}
+	public static void setInitialClass(Class<?> parInitialClass)
+	{
+		initialClass = parInitialClass;
 	}
 
 	public static EnvirommentManager getInstance() {
@@ -42,11 +54,45 @@ public class EnvirommentManager {
 
 	}
 
-	private void loadProperties() throws IOException {
 
+	private void loadProperties() throws IOException {	
 		List<String> files = new ArrayList<String>();
-		String path = System.getProperty("user.dir") + File.separator + "src"
-				+ File.separator + "configs";
+	String path = System.getProperty("user.dir") + File.separator + "src"+ File.separator + "test"+ File.separator + "resources"
+			+ File.separator + "configs";
+//	final String path = "sample/folder";
+	if(initialClass == null){
+		System.out.println("1");
+	}else if(initialClass.getProtectionDomain() == null){
+		System.out.println("2");
+	}else if(initialClass.getProtectionDomain().getCodeSource() == null){
+		System.out.println("3");
+	}else if(initialClass.getProtectionDomain().getCodeSource().getLocation() == null){
+		System.out.println("4");
+	}else if(initialClass.getProtectionDomain().getCodeSource().getLocation().getPath() == null){
+		System.out.println("5");
+	}
+	final File jarFile = new File(initialClass.getProtectionDomain().getCodeSource().getLocation().getPath());
+System.out.println("Jar path is:"+ jarFile);
+	if(jarFile.isFile()) {  // Run with JAR file
+		System.out.println("iam jar");
+	    final JarFile jar = new JarFile(jarFile);
+	    final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+	    
+	    while(entries.hasMoreElements()) {
+	    	
+	        final String name = entries.nextElement().getName();
+	        System.out.println("Since iam a jar then my count is giving one more, with name" +name );
+	        if (name.toLowerCase().endsWith(".properties") && name.toLowerCase().contains("configs")) { //filter according to the path
+	        	String currenetName = name.substring(name.lastIndexOf(File.separator)+1, name.length());
+	        	System.out.println("Yahooooo i reached you, this is me man, did you remember me:" +currenetName);
+	        	defaultProps.load(this.getClass().getClassLoader().getResourceAsStream(currenetName));
+	    		// create application properties with default
+	    		appProps = new Properties(defaultProps);
+	        }
+	    }
+	    jar.close();
+	} else { // Run with IDE
+		System.out.println("iam mosh jar");
 		File directory = new File(path);
 
 		// get all the files from a directory
@@ -71,10 +117,11 @@ public class EnvirommentManager {
 					appProps.load(in);
 					in.close();
 				} catch (Throwable th) {
-					// TODO: log something
 				}
 			}
 		}
+	}
+
 	}
 
 	public String getProperty(String key) {
