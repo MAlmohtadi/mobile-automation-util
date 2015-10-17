@@ -23,7 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 public class EnvirommentManager {
 	private Properties defaultProps = new Properties();
 	private Properties appProps = null;
-	public static String platformVersion="5.0";
+	public static String platformVersion = "5.0";
 
 	private Hashtable<String, ArrayList<PropertyChangeListener>> listeners = null;
 	private static Class<?> initialClass;
@@ -32,8 +32,8 @@ public class EnvirommentManager {
 
 	private EnvirommentManager() {
 	}
-	public static void setInitialClass(Class<?> parInitialClass)
-	{
+
+	public static void setInitialClass(Class<?> parInitialClass) {
 		initialClass = parInitialClass;
 	}
 
@@ -54,73 +54,72 @@ public class EnvirommentManager {
 
 	}
 
-
-	private void loadProperties() throws IOException {	
+	private void loadProperties() throws IOException {
 		List<String> files = new ArrayList<String>();
-	String path = System.getProperty("user.dir") + File.separator + "src"+ File.separator + "test"+ File.separator + "resources"
-			+ File.separator + "configs";
-//	final String path = "sample/folder";
-	if(initialClass == null){
-		System.out.println("1");
-	}else if(initialClass.getProtectionDomain() == null){
-		System.out.println("2");
-	}else if(initialClass.getProtectionDomain().getCodeSource() == null){
-		System.out.println("3");
-	}else if(initialClass.getProtectionDomain().getCodeSource().getLocation() == null){
-		System.out.println("4");
-	}else if(initialClass.getProtectionDomain().getCodeSource().getLocation().getPath() == null){
-		System.out.println("5");
-	}
-	final File jarFile = new File(initialClass.getProtectionDomain().getCodeSource().getLocation().getPath());
-System.out.println("Jar path is:"+ jarFile);
-	if(jarFile.isFile()) {  // Run with JAR file
-		System.out.println("iam jar");
-	    final JarFile jar = new JarFile(jarFile);
-	    final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-	    
-	    while(entries.hasMoreElements()) {
-	    	
-	        final String name = entries.nextElement().getName();
-	        System.out.println("Since iam a jar then my count is giving one more, with name" +name );
-	        if (name.toLowerCase().endsWith(".properties") && name.toLowerCase().contains("configs")) { //filter according to the path
-	        	String currenetName = name.substring(name.lastIndexOf(File.separator)+1, name.length());
-	        	System.out.println("Yahooooo i reached you, this is me man, did you remember me:" +currenetName);
-	        	defaultProps.load(this.getClass().getClassLoader().getResourceAsStream(currenetName));
-	    		// create application properties with default
-	    		appProps = new Properties(defaultProps);
-	        }
-	    }
-	    jar.close();
-	} else { // Run with IDE
-		System.out.println("iam mosh jar");
-		File directory = new File(path);
+		String path = System.getProperty("user.dir") + File.separator + "src"
+				+ File.separator + "test" + File.separator + "resources"
+				+ File.separator + "configs";
 
-		// get all the files from a directory
-		File[] fList = directory.listFiles();
-		for (File file : fList) {
-			if (file.isFile()
-					&& FilenameUtils.getExtension(file.getPath()).equals(
-							"properties")) {
-				files.add(file.getPath());
+		final File jarFile = new File(initialClass.getProtectionDomain()
+				.getCodeSource().getLocation().getPath());
+		System.out.println("Jar path is:" + jarFile);
+		if (jarFile.isFile()) { // Run with JAR file
+			System.out.println("iam jar");
+			final JarFile jar = new JarFile(jarFile);
+			final Enumeration<JarEntry> entries = jar.entries(); // gives ALL
+																	// entries
+																	// in jar
 
-				// create and load default properties
-				FileInputStream in = new FileInputStream(file.getAbsolutePath());
-				defaultProps.load(in);
-				in.close();
+			while (entries.hasMoreElements()) {
 
-				// create application properties with default
-				appProps = new Properties(defaultProps);
+				final String name = entries.nextElement().getName();
+				if (name.toLowerCase().endsWith(".properties")
+						&& name.toLowerCase().contains("configs")) { // filter
+																		// according
+																		// to
+																		// the
+																		// path
+					String currenetName = name
+							.substring(name.lastIndexOf(File.separator) + 1,
+									name.length());
+					defaultProps.load(this.getClass().getClassLoader()
+							.getResourceAsStream(name));
+					// create application properties with default
+					appProps = new Properties(defaultProps);
+				}
+			}
+			jar.close();
+		} else { // Run with IDE
+			System.out.println("iam not jar");
+			File directory = new File(path);
 
-				try {
-					// user/application properties
-					in = new FileInputStream(file.getAbsolutePath());
-					appProps.load(in);
+			// get all the files from a directory
+			File[] fList = directory.listFiles();
+			for (File file : fList) {
+				if (file.isFile()
+						&& FilenameUtils.getExtension(file.getPath()).equals(
+								"properties")) {
+					files.add(file.getPath());
+
+					// create and load default properties
+					FileInputStream in = new FileInputStream(
+							file.getAbsolutePath());
+					defaultProps.load(in);
 					in.close();
-				} catch (Throwable th) {
+
+					// create application properties with default
+					appProps = new Properties(defaultProps);
+
+					try {
+						// user/application properties
+						in = new FileInputStream(file.getAbsolutePath());
+						appProps.load(in);
+						in.close();
+					} catch (Throwable th) {
+					}
 				}
 			}
 		}
-	}
 
 	}
 
