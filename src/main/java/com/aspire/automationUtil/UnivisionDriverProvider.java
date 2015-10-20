@@ -9,8 +9,9 @@ import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
 
-import org.openqa.selenium.remote.DesiredCapabilities;
 
+
+import org.openqa.selenium.remote.DesiredCapabilities;
 import com.saucelabs.saucerest.SauceREST;
 
 import io.appium.java_client.AppiumDriver;
@@ -20,6 +21,7 @@ import io.appium.java_client.ios.IOSDriver;
 public class UnivisionDriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Date date = new Date();
+	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
 	public enum platform {
 	    ANDROID, IOS 
 	}
@@ -46,6 +48,7 @@ public class UnivisionDriverProvider {
 
 			try {
 				String sessionId = drivers.get(threadName).getSessionId().toString();
+				sessions.put(threadName, sessionId);
 				if (sessionId.isEmpty())
 				{
 					SetupDriver(threadName);
