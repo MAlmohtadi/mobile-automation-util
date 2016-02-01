@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-import org.stringtemplate.v4.compiler.STParser.list_return;
 
 import com.saucelabs.saucerest.SauceREST;
 
