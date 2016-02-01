@@ -1,4 +1,4 @@
-package com.aspire.automationUtil;
+package com.aspire.mobile.automationUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -76,7 +76,8 @@ public class EnvirommentManager {
 				if (name.toLowerCase().endsWith(".properties")
 						&& name.toLowerCase().contains("configs")) { // filter
 																		// according
-																		// to
+//					this.getClass().getClassLoader()
+//					.getResourceAsStream(name)										// to
 																		// the
 																		// path
 					String currenetName = name

@@ -1,4 +1,4 @@
-package com.aspire.automationUtil;
+package com.aspire.mobile.automationUtil;
 
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
@@ -11,8 +11,8 @@ import org.junit.Rule;
 
 
 public class SessionHandler implements SauceOnDemandSessionIdProvider {
-	UnivisionDriverProvider driverProvider;
-	public SessionHandler(UnivisionDriverProvider driverProvider){
+	DriverProvider driverProvider;
+	public SessionHandler(DriverProvider driverProvider){
 		this.driverProvider = driverProvider;
 	}
 	

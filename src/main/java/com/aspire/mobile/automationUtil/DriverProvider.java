@@ -1,4 +1,4 @@
-package com.aspire.automationUtil;
+package com.aspire.mobile.automationUtil;
 
 import static java.util.Arrays.asList;
 
@@ -23,7 +23,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 
-public class UnivisionDriverProvider {
+public class DriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();

@@ -1,4 +1,4 @@
-package com.aspire.automationUtil;
+package com.aspire.mobile.automationUtil;
 
 public class TargetPlatform {
 	 public static String platformName;
