@@ -1,4 +1,4 @@
-package com.aspire.automationUtil;
+package com.aspire.mobile.automationUtil;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
@@ -34,13 +34,13 @@ public abstract class Helper {
 
 	//private  WebDriverWait driverWait;
 	public  static String sharedData = "";
-	UnivisionDriverProvider driverProvider;
+	DriverProvider driverProvider;
 	int timeoutInSeconds;
 	/**
 	 * Initialize the webdriver. Must be called before using any helper methods.
 	 * *
 	 */
-	public Helper(UnivisionDriverProvider driverPorvider)
+	public Helper(DriverProvider driverPorvider)
 	{
 		this.driverProvider = driverPorvider;
 	//	driver =mainTest.driver;
