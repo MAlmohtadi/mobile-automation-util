@@ -71,17 +71,14 @@
 		</repository>
 	</repositories>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-library</artifactId>
-				<version>${org.hamcrest.hamcrest-library}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+
 	
 	<dependencies>
+	<dependency>
+	<groupId>log4j</groupId>
+	<artifactId>log4j</artifactId>
+	<version>1.2.17</version>
+</dependency>
 		<dependency>
 			<groupId>org.sikuli</groupId>
 			<artifactId>sikuli-api</artifactId>
@@ -301,6 +298,17 @@
 			<version>1.1.2</version>
 		</dependency>
 	</dependencies>
+	
+	
+		<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-library</artifactId>
+				<version>${org.hamcrest.hamcrest-library}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	
 	<pluginRepositories>
 		<pluginRepository>
@@ -578,25 +586,25 @@
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
-<!-- 				<configuration> -->
-<!-- 					<descriptorRefs> -->
-<!-- 						<descriptorRef>jar-with-dependencies</descriptorRef> -->
-<!-- 					</descriptorRefs> -->
-<!-- 				</configuration> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>make-assembly</id> -->
-<!-- 						this is used for inheritance merges -->
-<!-- 						<phase>package</phase> -->
-<!-- 						bind to the packaging phase -->
-<!-- 						<goals> -->
-<!-- 							<goal>single</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges -->
+						<phase>package</phase>
+						<!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 <!-- 			<plugin> -->
 <!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
 <!-- 				<version>2.5.4</version> -->
