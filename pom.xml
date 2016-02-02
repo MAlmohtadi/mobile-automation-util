@@ -19,7 +19,7 @@
 
 	<properties>
 		<org.seleniumhq.selenium.selenium-java.version>2.47.1</org.seleniumhq.selenium.selenium-java.version>
-		<org.jbehave.core.version>4.0.4</org.jbehave.core.version>
+		<org.jbehave.core.version>4.0.1</org.jbehave.core.version>
 		<org.jbehave.web.version>3.6-beta-2</org.jbehave.web.version>
 		<org.jbehave.site.version>3.1.1</org.jbehave.site.version>
 		<org.seleniumhq.selenium.fluent.fluent-selenium.version>1.14.5</org.seleniumhq.selenium.fluent.fluent-selenium.version>
@@ -82,11 +82,11 @@
 	</dependencyManagement>
 	
 	<dependencies>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.sikuli</groupId> -->
-<!-- 			<artifactId>sikuli-api</artifactId> -->
-<!-- 			<version>1.2.0</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.sikuli</groupId>
+			<artifactId>sikuli-api</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 		<dependency>
 			<!-- Must use 1.0.15 or better otherwise upload file will have cookie 
 				warnings https://github.com/saucelabs/saucerest-java/commit/99bce5b108354ad086ac31e06c1e3ab092000490 -->
@@ -114,6 +114,7 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.2.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-core</artifactId>
