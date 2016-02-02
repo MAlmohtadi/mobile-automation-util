@@ -71,19 +71,22 @@
 		</repository>
 	</repositories>
 
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-library</artifactId>
+				<version>${org.hamcrest.hamcrest-library}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	
 	<dependencies>
-	<dependency>
-	<groupId>log4j</groupId>
-	<artifactId>log4j</artifactId>
-	<version>1.2.17</version>
-</dependency>
-		<dependency>
-			<groupId>org.sikuli</groupId>
-			<artifactId>sikuli-api</artifactId>
-			<version>1.2.0</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.sikuli</groupId> -->
+<!-- 			<artifactId>sikuli-api</artifactId> -->
+<!-- 			<version>1.2.0</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<!-- Must use 1.0.15 or better otherwise upload file will have cookie 
 				warnings https://github.com/saucelabs/saucerest-java/commit/99bce5b108354ad086ac31e06c1e3ab092000490 -->
@@ -299,17 +302,6 @@
 		</dependency>
 	</dependencies>
 	
-	
-		<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-library</artifactId>
-				<version>${org.hamcrest.hamcrest-library}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>atlassian-public</id>
@@ -347,19 +339,6 @@
 		</extensions>
 		<pluginManagement>
 			<plugins>
-			<plugin>
-   <groupId>org.jbehave</groupId>
-   <artifactId>jbehave-maven-plugin</artifactId>
-   <version>${jbehave.version}</version>
-   <dependencies>
-      <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>log4j</artifactId>
-         <version>1.2.17</version>
-         <scope>compile</scope>
-      </dependency>
-   </dependencies>
-</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>

@@ -11,10 +11,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.api.ImageTarget;
-import org.sikuli.api.ScreenRegion;
-import org.sikuli.api.StaticImageScreenRegion;
-import org.sikuli.api.Target;
+//import org.sikuli.api.ImageTarget;
+//import org.sikuli.api.ScreenRegion;
+//import org.sikuli.api.StaticImageScreenRegion;
+//import org.sikuli.api.Target;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -336,96 +336,96 @@ public abstract class Helper {
 	}
 
 public void clickOnImage(String imageName) {
-		//project dir  File.seprator imgs imagePath
-	
-	 String workingDir = System.getProperty("user.dir");
-	 String path = File.separator +workingDir+ File.separator +"imgs"+File.separator+imageName;
-	
-	 
-		ScreenRegion reg = getRegion(path);
-		TouchAction t = new TouchAction(currentDriver()) ;
-		t.tap(reg.getCenter().getX() , reg.getCenter().getY());
-		t.perform();
+//		//project dir  File.seprator imgs imagePath
+//	
+//	 String workingDir = System.getProperty("user.dir");
+//	 String path = File.separator +workingDir+ File.separator +"imgs"+File.separator+imageName;
+//	
+//	 
+//		ScreenRegion reg = getRegion(path);
+//		TouchAction t = new TouchAction(currentDriver()) ;
+//		t.tap(reg.getCenter().getX() , reg.getCenter().getY());
+//		t.perform();
 
 	}
 
 public void checkByImage(String imageName) {
-	//project dir  File.seprator imgs imagePath
-
- String workingDir = System.getProperty("user.dir");
- String path = File.separator +workingDir+ File.separator +"imgs"+File.separator+imageName;
-
- 
-	ScreenRegion reg = getRegion(path);
-	TouchAction t = new TouchAction(currentDriver()) ;
-	t.tap(reg.getCenter().getX() , reg.getCenter().getY());
+//	//project dir  File.seprator imgs imagePath
+//
+// String workingDir = System.getProperty("user.dir");
+// String path = File.separator +workingDir+ File.separator +"imgs"+File.separator+imageName;
+//
+// 
+//	ScreenRegion reg = getRegion(path);
+//	TouchAction t = new TouchAction(currentDriver()) ;
+//	t.tap(reg.getCenter().getX() , reg.getCenter().getY());
 
 }
-public ScreenRegion getRegion(String targetFileLocation) {
-		ScreenRegion region;
-		//long p = 1000L; // Adjust to suit timing
-		//long lastTime = System.currentTimeMillis() - p;
-		//long thisTime = System.currentTimeMillis();
-		
-		int counter=5;
-		
-		boolean notDone = true;
-		
-		if (targetFileLocation == null) 
-		{
-			System.err.println(" no target file name");
-			try 
-				{
-					Thread.sleep(100);
-				} 
-			catch (Exception e) {
-								}
-		return null;
-		}
-		else if (new File(targetFileLocation).exists() && !new File(targetFileLocation).isDirectory()) 
-		{
-			do 
-				{
-					try {
-						//lastTime = thisTime;
-					//	object.wait(timeoutExpiredMs - System.currentTimeMillis());
-						
-						region = findRegion(targetFileLocation);
-						region.getCenter();
-						notDone = false;
-						return region;
-						} 
-					catch (Exception e) {
-						System.err.println(" no target image found in shot. retrying...");
-										}
-					try {
-						Thread.sleep(200);
-					} catch (Exception e) {
-					}
-				} while (/*(thisTime - lastTime) >= p &&*/(counter--)>0 && notDone);
-		
-		} 
-		else 
-		{
-			System.err.println(" file not exits: " + targetFileLocation);
-			try {
-				Thread.sleep(100);
-				} 
-			catch (Exception e) {
-				}
-			return null;
-		}
-		return null;
-	}
+//public ScreenRegion getRegion(String targetFileLocation) {
+//		ScreenRegion region;
+//		//long p = 1000L; // Adjust to suit timing
+//		//long lastTime = System.currentTimeMillis() - p;
+//		//long thisTime = System.currentTimeMillis();
+//		
+//		int counter=5;
+//		
+//		boolean notDone = true;
+//		
+//		if (targetFileLocation == null) 
+//		{
+//			System.err.println(" no target file name");
+//			try 
+//				{
+//					Thread.sleep(100);
+//				} 
+//			catch (Exception e) {
+//								}
+//		return null;
+//		}
+//		else if (new File(targetFileLocation).exists() && !new File(targetFileLocation).isDirectory()) 
+//		{
+//			do 
+//				{
+//					try {
+//						//lastTime = thisTime;
+//					//	object.wait(timeoutExpiredMs - System.currentTimeMillis());
+//						
+////						region = findRegion(targetFileLocation);
+//						region.getCenter();
+//						notDone = false;
+//						return region;
+//						} 
+//					catch (Exception e) {
+//						System.err.println(" no target image found in shot. retrying...");
+//										}
+//					try {
+//						Thread.sleep(200);
+//					} catch (Exception e) {
+//					}
+//				} while (/*(thisTime - lastTime) >= p &&*/(counter--)>0 && notDone);
+//		
+//		} 
+//		else 
+//		{
+//			System.err.println(" file not exits: " + targetFileLocation);
+//			try {
+//				Thread.sleep(100);
+//				} 
+//			catch (Exception e) {
+//				}
+//			return null;
+//		}
+//		return null;
+//	}
 	
-		public ScreenRegion findRegion(String targetFileLocation) 
-		{
-			Target target = new ImageTarget(new File(targetFileLocation));
-			target.setMinScore(0.9); //0.7 default
-		
-			ScreenRegion screenRegion = new StaticImageScreenRegion(takeShot()).find(target);
-			return screenRegion;
-		}
+//		public ScreenRegion findRegion(String targetFileLocation) 
+//		{
+//			Target target = new ImageTarget(new File(targetFileLocation));
+//			target.setMinScore(0.9); //0.7 default
+//		
+//			ScreenRegion screenRegion = new StaticImageScreenRegion(takeShot()).find(target);
+//			return screenRegion;
+//		}
 		public static BufferedImage resize(BufferedImage img, int newW, int newH) { 
 		    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
 		    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
