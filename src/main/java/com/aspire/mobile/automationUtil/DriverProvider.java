@@ -2,6 +2,11 @@ package com.aspire.mobile.automationUtil;
 
 import static java.util.Arrays.asList;
 
+
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -11,15 +16,12 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-//import org.stringtemplate.v4.compiler.STParser.list_return;
-import com.saucelabs.saucerest.SauceREST;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
+
 
 public class DriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
