@@ -1,7 +1,6 @@
 package com.aspire.web.automationUtil;
 
 import org.jbehave.web.selenium.PropertyWebDriverProvider;
-import org.jbehave.web.selenium.PropertyWebDriverProvider.Browser;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
