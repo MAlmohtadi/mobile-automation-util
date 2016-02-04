@@ -1,4 +1,4 @@
-package aspire.common;
+package com.aspire.web.automationUtil;
 
 import java.util.concurrent.TimeUnit;
 
