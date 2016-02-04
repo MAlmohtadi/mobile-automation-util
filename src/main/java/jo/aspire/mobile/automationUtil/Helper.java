@@ -1,4 +1,4 @@
-package com.aspire.mobile.automationUtil;
+package jo.aspire.mobile.automationUtil;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;

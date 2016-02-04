@@ -1,4 +1,4 @@
-package com.aspire.web.automationUtil;
+package jo.aspire.web.automationUtil;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -19,6 +19,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+import jo.aspire.helper.EnvirommentManager;
 public class SendEmailWithAttachment {
 	 
   

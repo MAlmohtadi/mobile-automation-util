@@ -1,4 +1,4 @@
-package com.aspire.mobile.automationUtil;
+package jo.aspire.mobile.automationUtil;
 
 import static java.util.Arrays.asList;
 import io.appium.java_client.AppiumDriver;
@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
+
+import jo.aspire.helper.EnvirommentManager;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;
