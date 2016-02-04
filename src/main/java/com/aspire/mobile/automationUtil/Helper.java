@@ -4,30 +4,28 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.api.ImageTarget;
-import org.sikuli.api.ScreenRegion;
-import org.sikuli.api.StaticImageScreenRegion;
-import org.sikuli.api.Target;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.sikuli.api.ImageTarget;
+import org.sikuli.api.ScreenRegion;
+import org.sikuli.api.StaticImageScreenRegion;
+import org.sikuli.api.Target;
 
 public abstract class Helper {
 
