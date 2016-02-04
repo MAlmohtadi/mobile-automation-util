@@ -84,7 +84,7 @@ public class HttpRequestHandler {
 		return instance;
 	}
 
-	public void createNewRequest(Enums.Method method, String responseUniqueID) {
+	public void createNewRequest(MethodEnum.Method method, String responseUniqueID) {
 		requestBuilder = RequestBuilder.create(method.name());
 		requestURI = new URIBuilder();
 		localContext = new BasicHttpContext();
