@@ -1,12 +1,11 @@
-package jo.aspire.mobile.automationUtil;
+package com.aspire.mobile.automationUtil;
 
-import jo.aspire.helper.EnvirommentManager;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Rule;
 
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.junit.SauceOnDemandTestWatcher;
-import org.apache.commons.logging.LogFactory;
-import org.junit.Rule;
 
 
 

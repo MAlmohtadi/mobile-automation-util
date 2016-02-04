@@ -3,8 +3,6 @@ package jo.aspire.web.automationUtil;
 import java.util.Map;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.Response;
