@@ -87,7 +87,7 @@ public class JsonReader {
 	 * @return
 	 */
 	public static String GenerateJson(String Query) {
-		Connect2DB conn = new Connect2DB();
+		DBhelper conn = new DBhelper();
 		return conn.GetDBData(EnvirommentManager.getInstance().getProperty(Query));
 	}
 }

@@ -92,7 +92,7 @@ public class XMLReader {
 	 * @return
 	 */
 	public static String GenerateXML(String Query) {
-		Connect2DB conn = new Connect2DB();
+		DBhelper conn = new DBhelper();
 		return conn.GetDBData(EnvirommentManager.getInstance().getProperty(Query));
 	}
 }

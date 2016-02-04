@@ -11,7 +11,7 @@ import java.util.Map;
 
 import jo.aspire.helper.EnvirommentManager;
 
-public class Connect2DB {
+public class DBhelper {
 
 	private String driver, url, SQLQuery;	
 	
@@ -40,11 +40,11 @@ public class Connect2DB {
 	}
 
 
-	public Connect2DB() {
+	public DBhelper() {
 		url = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_CONNETION_STRING);
 		driver = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_DRIVER);
 	}
-	public Connect2DB(String contentType) {
+	public DBhelper(String contentType) {
 		url = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_CONNETION_STRING);
 		driver = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_DRIVER);
 		SQLQuery = EnvirommentManager.getInstance().getProperty(contentType);
