@@ -11,7 +11,7 @@ import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 
 
-public class Helper {
+public class DateHelper {
 	public static String DAY_MONTH_YEAR = "dd/MM/yyyy";
 	public static String MONTH_DAY_YEAR = "MM/dd/yyyy";
 	public static String YEAR_MONTH_DAY = "yyyy/MM/dd";
