@@ -20,7 +20,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import jo.aspire.helper.EnvirommentManager;
+import jo.aspire.generic.EnvirommentManager;
 public class SendEmailWithAttachment {
 	 
   

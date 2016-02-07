@@ -1,6 +1,6 @@
 package jo.aspire.mobile.automationUtil;
 
-import jo.aspire.helper.EnvirommentManager;
+import jo.aspire.generic.EnvirommentManager;
 
 import org.apache.commons.logging.LogFactory;
 import org.junit.Rule;

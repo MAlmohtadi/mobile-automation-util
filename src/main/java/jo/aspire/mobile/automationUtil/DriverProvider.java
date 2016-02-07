@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
-import jo.aspire.helper.EnvirommentManager;
+import jo.aspire.generic.EnvirommentManager;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;

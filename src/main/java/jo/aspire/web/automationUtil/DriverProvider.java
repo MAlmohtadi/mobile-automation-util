@@ -5,7 +5,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 
-import jo.aspire.helper.EnvirommentManager;
+import jo.aspire.generic.EnvirommentManager;
 
 import org.jbehave.web.selenium.PropertyWebDriverProvider;
 import org.openqa.selenium.WebDriver;

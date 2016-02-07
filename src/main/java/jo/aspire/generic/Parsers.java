@@ -1,4 +1,4 @@
-package jo.aspire.helper;
+package jo.aspire.generic;
 import java.io.IOException;
 import java.io.StringReader;
 

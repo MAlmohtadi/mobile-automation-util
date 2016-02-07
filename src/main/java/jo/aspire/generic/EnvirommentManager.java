@@ -1,4 +1,4 @@
-package jo.aspire.helper;
+package jo.aspire.generic;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
