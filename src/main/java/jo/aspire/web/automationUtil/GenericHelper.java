@@ -21,9 +21,32 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import jo.aspire.generic.EnvirommentManager;
-public class SendEmailWithAttachment {
-	 
-  
+
+import org.apache.commons.lang3.RandomStringUtils;
+
+public class GenericHelper {
+
+	
+	
+	
+	
+	public String generateUsername(int size) {
+
+		return new String(RandomStringUtils.randomAlphabetic(6));
+	}
+
+	public String generatePassword(int sizeAlphabetic,int sizeNumeric) {
+
+		return new String(RandomStringUtils.randomAlphabetic(sizeAlphabetic) + RandomStringUtils.randomNumeric(sizeNumeric));
+
+	}
+
+	public String generateEmail(int size, String type) {
+		return new String(RandomStringUtils.randomAlphabetic(size)+"@"+type+".com");
+
+	}
+	
+	
     public static void sendEmailWithAttachments() throws IOException{   
     	
         String to = EnvirommentManager.getInstance().getProperty("email_to");
@@ -118,4 +141,6 @@ public class SendEmailWithAttachment {
         }
         return choice;
     }
+	
+	
 }

@@ -174,22 +174,5 @@ public class DateHelper {
 		return now;
 	}
 	
-	
-	
-	
-	public String generateUsername(int size) {
 
-		return new String(RandomStringUtils.randomAlphabetic(6));
-	}
-
-	public String generatePassword(int sizeAlphabetic,int sizeNumeric) {
-
-		return new String(RandomStringUtils.randomAlphabetic(sizeAlphabetic) + RandomStringUtils.randomNumeric(sizeNumeric));
-
-	}
-
-	public String generateEmail(int size, String type) {
-		return new String(RandomStringUtils.randomAlphabetic(size)+"@"+type+".com");
-
-	}
 }
