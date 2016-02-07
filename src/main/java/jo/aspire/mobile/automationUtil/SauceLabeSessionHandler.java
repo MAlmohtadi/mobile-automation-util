@@ -11,9 +11,9 @@ import com.saucelabs.junit.SauceOnDemandTestWatcher;
 
 
 
-public class SessionHandler implements SauceOnDemandSessionIdProvider {
+public class SauceLabeSessionHandler implements SauceOnDemandSessionIdProvider {
 	DriverProvider driverProvider;
-	public SessionHandler(DriverProvider driverProvider){
+	public SauceLabeSessionHandler(DriverProvider driverProvider){
 		this.driverProvider = driverProvider;
 	}
 	

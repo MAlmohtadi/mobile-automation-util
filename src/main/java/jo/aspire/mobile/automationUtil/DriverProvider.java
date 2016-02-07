@@ -126,7 +126,7 @@ public class DriverProvider {
 			capabilities = DesiredCapabilities.android();
 		} else {
 			capabilities = DesiredCapabilities.iphone();
-			if (!SessionHandler.getRunOnSauce()) {
+			if (!SauceLabeSessionHandler.getRunOnSauce()) {
 			}
 		}
 		if (!TargetPlatform.runOnAmazon) {
@@ -164,9 +164,9 @@ public class DriverProvider {
 		URL serverAddress;
 		String localApp = TargetPlatform.appFileName;
 
-		if (!TargetPlatform.runOnAmazon && SessionHandler.getRunOnSauce()) {
-			String user = SessionHandler.getAuth().getUsername();
-			String key = SessionHandler.getAuth().getAccessKey();
+		if (!TargetPlatform.runOnAmazon && SauceLabeSessionHandler.getRunOnSauce()) {
+			String user = SauceLabeSessionHandler.getAuth().getUsername();
+			String key = SauceLabeSessionHandler.getAuth().getAccessKey();
 			capabilities.setCapability("app",
 					"sauce-storage:" + localApp.trim());
 			serverAddress = new URL("http://" + user + ":" + key

@@ -43,7 +43,7 @@ public abstract class Helper {
 		this.driverProvider = driverPorvider;
 	//	driver =mainTest.driver;
 		 timeoutInSeconds = 60;
-		if (SessionHandler.getRunOnSauce()) {
+		if (SauceLabeSessionHandler.getRunOnSauce()) {
 			timeoutInSeconds = 120;
 		}
 		//driverWait = new WebDriverWait(driver, timeoutInSeconds);
