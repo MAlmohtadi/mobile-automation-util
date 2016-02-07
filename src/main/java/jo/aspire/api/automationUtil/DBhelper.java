@@ -15,14 +15,14 @@ public class DBhelper {
 
 	private String driver, url, SQLQuery;	
 	
-	public String GetRandomid(String field){
+	public String GetRandomid(String field, String FIEDLS_TOKEN){
 		String result = "";
 		
 		try {
 			Class.forName(driver);
 			Connection conn = DriverManager.getConnection(url);
 			Statement statement = conn.createStatement();
-			String sqlQuery = SQLQuery.replace(Constants.FIEDLS_TOKEN, field);
+			String sqlQuery = SQLQuery.replace(FIEDLS_TOKEN, field);
 			ResultSet rs = statement.executeQuery(sqlQuery);
 			while (rs.next()) {					
 				result =  rs.getString(field).trim(); 				
@@ -40,13 +40,13 @@ public class DBhelper {
 	}
 
 
-	public DBhelper() {
-		url = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_CONNETION_STRING);
-		driver = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_DRIVER);
+	public DBhelper(String CONFIG_FILE_CONNETION_STRING,String CONFIG_FILE_DRIVER) {
+		url = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_CONNETION_STRING);
+		driver = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_DRIVER);
 	}
-	public DBhelper(String contentType) {
-		url = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_CONNETION_STRING);
-		driver = EnvirommentManager.getInstance().getProperty(Constants.CONFIG_FILE_DRIVER);
+	public DBhelper(String contentType,String CONFIG_FILE_CONNETION_STRING,String CONFIG_FILE_DRIVER) {
+		url = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_CONNETION_STRING);
+		driver = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_DRIVER);
 		SQLQuery = EnvirommentManager.getInstance().getProperty(contentType);
 	}
 	private boolean dbConnect(String Query) {

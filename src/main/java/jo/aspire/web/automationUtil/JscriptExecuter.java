@@ -137,8 +137,6 @@ public class JscriptExecuter extends FluentWebDriverPage {
 			}
 
 		} catch (Exception e) {
-
-			Logger.log(e.getMessage());
 			throw (e);
 		}
 
@@ -166,7 +164,6 @@ public class JscriptExecuter extends FluentWebDriverPage {
 			Trigger(executor, strSelector, element);
 			executionResult = true;
 		} catch (Exception ex) {
-			Logger.log(ex.getMessage());
 			throw (ex);
 		}
 
@@ -196,7 +193,6 @@ public class JscriptExecuter extends FluentWebDriverPage {
 				StateHelper.setStepState(stateHelperName, executionResult);
 			}
 		} catch (Exception e) {
-			Logger.log(e.getMessage());
 			throw (e);
 		}
 
