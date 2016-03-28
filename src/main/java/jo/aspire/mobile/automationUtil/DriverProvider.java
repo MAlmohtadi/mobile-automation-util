@@ -18,8 +18,6 @@ import jo.aspire.generic.EnvirommentManager;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-
-
 public class DriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
@@ -48,20 +46,20 @@ public class DriverProvider {
 	public AppiumDriver getCurrentDriver() {
 		String threadName = Thread.currentThread().getName();
 		if (PortsList.size() == 0) {
-			  if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators").contains("true")) {
-				  String Ports = EnvirommentManager.getInstance().getProperty("Ports");
-				  PortsList.addAll(asList(Ports.split(",")));
-			  }else{
-				  PortsList.add("4723");  
-			  }
+			if (EnvirommentManager.getInstance()
+					.getProperty("UseLocaleEmulators").contains("true")) {
+				String Ports = EnvirommentManager.getInstance().getProperty(
+						"Ports");
+				PortsList.addAll(asList(Ports.split(",")));
+			} else {
+				PortsList.add("4723");
+			}
 		}
 
-			
-			  if (udid.size() == 0) {
-				  String udids = EnvirommentManager.getInstance().getProperty("udid");
-				  udid.addAll(asList(udids.split(",")));
-			  }
-		
+		if (udid.size() == 0) {
+			String udids = EnvirommentManager.getInstance().getProperty("udid");
+			udid.addAll(asList(udids.split(",")));
+		}
 
 		if (!drivers.containsKey(threadName)) {
 			try {
@@ -98,29 +96,29 @@ public class DriverProvider {
 	}
 
 	@SuppressWarnings("null")
-	public synchronized void SetupDriver(String threadName) throws IOException {
+	public void SetupDriver(String threadName) throws IOException {
 		serverInfo currentServer = new serverInfo();
 		if (servers.get(threadName) != null) {
-			currentServer = servers.get(threadName) ;
+			currentServer = servers.get(threadName);
 		} else {
 
 			serverInfo server = new serverInfo();
-//			synchronized (udid) {
+			synchronized (udid) {
 				server.deviceUUID = udid.get(0);
 				udid.add(udid.get(0));
 				udid.remove(0);
 
-//			}
-//			synchronized (PortsList) {
+			}
+			synchronized (PortsList) {
 				server.serverPort = Integer.parseInt(PortsList.get(0).trim());
 				PortsList.add(PortsList.get(0));
 				PortsList.remove(0);
-//			}
+		}
 			servers.put(threadName, server);
 			currentServer = server;
-//			servers.
+			// servers.
 		}
-		AppiumDriver driver = null;
+		AppiumDriver driver=null;
 		// Setup capabilities
 
 		DesiredCapabilities capabilities;
@@ -143,11 +141,10 @@ public class DriverProvider {
 			capabilities.setCapability("browserName", "");
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
-//			capabilities.setCapability("nativeInstrumentsLib", true);
+			// capabilities.setCapability("nativeInstrumentsLib", true);
 			// capabilities.setCapability("autoAcceptAlerts",
 			// "$.delay(10000); $.acceptAlert();");
-//			capabilities.setCapability("waitForAppScript", "$.delay(3000);");
-
+			// capabilities.setCapability("waitForAppScript", "$.delay(3000);");
 			capabilities.setCapability("fullReset", "true");
 			// capabilities.setCapability("noReset", "true");
 			// capabilities.setCapability("appActivity",
@@ -166,18 +163,20 @@ public class DriverProvider {
 		URL serverAddress;
 		String localApp = TargetPlatform.appFileName;
 
-		if (!TargetPlatform.runOnAmazon && SauceLabeSessionHandler.getRunOnSauce()) {
+		if (!TargetPlatform.runOnAmazon
+				&& SauceLabeSessionHandler.getRunOnSauce()) {
 			String user = SauceLabeSessionHandler.getAuth().getUsername();
 			String key = SauceLabeSessionHandler.getAuth().getAccessKey();
 			capabilities.setCapability("app",
 					"sauce-storage:" + localApp.trim());
 			serverAddress = new URL("http://" + user + ":" + key
 					+ "@ondemand.saucelabs.com:80/wd/hub");
-			if (getPlatform() == platform.ANDROID) {
-				driver = new AndroidDriver(serverAddress, capabilities);
-			} else {
-				driver = new IOSDriver(serverAddress, capabilities);
-			}
+			
+				if (getPlatform() == platform.ANDROID) {
+					driver = AndroidDriver(serverAddress, capabilities);
+				} else {
+					driver = IOSDriver(serverAddress, capabilities);
+				}
 
 		} else {
 			String appPath = Paths.get(TargetPlatform.fileDirectory, localApp)
@@ -186,20 +185,25 @@ public class DriverProvider {
 				capabilities.setCapability("app", appPath);
 			}
 
-		
-				System.out.println(currentServer.serverPort + ":" + currentServer.deviceUUID);
-				serverAddress = new URL("http://127.0.0.1:" + currentServer.serverPort
-						+ "/wd/hub".toString());
+			System.out.println(currentServer.serverPort + ":"
+					+ currentServer.deviceUUID);
+			serverAddress = new URL("http://127.0.0.1:"
+					+ currentServer.serverPort + "/wd/hub".toString());
+
 			
 
 				try {
 					if (getPlatform() == platform.ANDROID) {
-						 if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators").contains("true")) {
-						capabilities.setCapability("udid", currentServer.deviceUUID);
-						 }
-						driver = new AndroidDriver(serverAddress, capabilities);
+						if (EnvirommentManager.getInstance()
+								.getProperty("UseLocaleEmulators")
+								.contains("true")) {
+							capabilities.setCapability("udid",
+									currentServer.deviceUUID);
+						}
+
+						driver = AndroidDriver(serverAddress, capabilities);
 					} else {
-						driver = new IOSDriver(serverAddress, capabilities);
+						driver = IOSDriver(serverAddress, capabilities);
 
 					}
 
@@ -207,6 +211,7 @@ public class DriverProvider {
 					e.printStackTrace();
 				}
 			
+
 		}
 
 		if (getPlatform() == platform.IOS) {
@@ -238,11 +243,18 @@ public class DriverProvider {
 		// Helpers.init(driver, serverAddress);
 	}
 
+	public synchronized AppiumDriver AndroidDriver(URL serverAddress,DesiredCapabilities capabilities) {
+		return new AndroidDriver(serverAddress, capabilities);
+	}
+
+	public synchronized AppiumDriver IOSDriver(URL serverAddress,DesiredCapabilities capabilities) {
+		return new IOSDriver(serverAddress, capabilities);
+	}
 	public void closeDrivers() {
 		for (AppiumDriver driver : drivers.values()) {
 			if (driver != null) {
 				driver.quit();
-//				driver = null;
+				// driver = null;
 			}
 		}
 	}
@@ -255,7 +267,7 @@ public class DriverProvider {
 		if (driver != null) {
 
 			driver.resetApp();
-//			driver = null;
+			// driver = null;
 			// drivers.put(ThreadName, driver);
 		}
 
