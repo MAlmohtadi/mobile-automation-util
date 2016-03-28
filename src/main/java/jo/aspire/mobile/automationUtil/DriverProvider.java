@@ -98,25 +98,27 @@ public class DriverProvider {
 	}
 
 	@SuppressWarnings("null")
-	public void SetupDriver(String threadName) throws IOException {
+	public synchronized void SetupDriver(String threadName) throws IOException {
 		serverInfo currentServer = new serverInfo();
 		if (servers.get(threadName) != null) {
 			currentServer = servers.get(threadName) ;
 		} else {
 
 			serverInfo server = new serverInfo();
-			synchronized (udid) {
+//			synchronized (udid) {
 				server.deviceUUID = udid.get(0);
+				udid.add(udid.get(0));
 				udid.remove(0);
 
-			}
-			synchronized (PortsList) {
+//			}
+//			synchronized (PortsList) {
 				server.serverPort = Integer.parseInt(PortsList.get(0).trim());
+				PortsList.add(PortsList.get(0));
 				PortsList.remove(0);
-			}
+//			}
 			servers.put(threadName, server);
 			currentServer = server;
-			// servers.ad
+//			servers.
 		}
 		AppiumDriver driver = null;
 		// Setup capabilities
@@ -141,12 +143,12 @@ public class DriverProvider {
 			capabilities.setCapability("browserName", "");
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
-			capabilities.setCapability("nativeInstrumentsLib", true);
+//			capabilities.setCapability("nativeInstrumentsLib", true);
 			// capabilities.setCapability("autoAcceptAlerts",
 			// "$.delay(10000); $.acceptAlert();");
-			capabilities.setCapability("waitForAppScript", "$.delay(3000);");
+//			capabilities.setCapability("waitForAppScript", "$.delay(3000);");
 
-			// capabilities.setCapability("fullReset", "true");
+			capabilities.setCapability("fullReset", "true");
 			// capabilities.setCapability("noReset", "true");
 			// capabilities.setCapability("appActivity",
 			// "com.univision.SplashActivity");
@@ -229,7 +231,7 @@ public class DriverProvider {
 			}
 		}
 
-		driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
 		drivers.put(threadName, driver);
 		System.out.println("Driver thread name:-----" + threadName
 				+ "---- and session id---" + driver.getSessionId().toString());
@@ -240,7 +242,7 @@ public class DriverProvider {
 		for (AppiumDriver driver : drivers.values()) {
 			if (driver != null) {
 				driver.quit();
-				driver = null;
+//				driver = null;
 			}
 		}
 	}
@@ -252,8 +254,8 @@ public class DriverProvider {
 		AppiumDriver driver = drivers.get(ThreadName);
 		if (driver != null) {
 
-			driver.quit();
-			driver = null;
+			driver.resetApp();
+//			driver = null;
 			// drivers.put(ThreadName, driver);
 		}
 
