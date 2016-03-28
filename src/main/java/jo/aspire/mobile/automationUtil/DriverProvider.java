@@ -106,13 +106,23 @@ public class DriverProvider {
 
 			serverInfo server = new serverInfo();
 			synchronized (udid) {
-				server.deviceUUID = udid.get(0);
-				udid.remove(0);
+				try {
+					server.deviceUUID = udid.get(0);
+					udid.remove(0);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			}
 			synchronized (PortsList) {
-				server.serverPort = Integer.parseInt(PortsList.get(0).trim());
-				PortsList.remove(0);
+				try {
+					server.serverPort = Integer.parseInt(PortsList.get(0).trim());
+					PortsList.remove(0);
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			servers.put(threadName, server);
 			currentServer = server;
