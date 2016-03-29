@@ -106,14 +106,14 @@ public class DriverProvider {
 
 			serverInfo server = new serverInfo();
 			synchronized (udid) {
-				 if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators").contains("true")) {
+				 if (EnvirommentManager.getInstance().getProperty("UseSauceLabs").contains("true")) {
 				server.deviceUUID = udid.get(0);
 				udid.remove(0);
 				 }
 
 			}
 			synchronized (PortsList) {
-				 if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators").contains("true")) {
+				 if (EnvirommentManager.getInstance().getProperty("UseSauceLabs").contains("true")) {
 				server.serverPort = Integer.parseInt(PortsList.get(0).trim());
 				PortsList.remove(0);
 				 }
