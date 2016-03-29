@@ -8,6 +8,7 @@ import java.util.HashMap;
 import jo.aspire.generic.EnvirommentManager;
 
 import org.jbehave.web.selenium.PropertyWebDriverProvider;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -128,6 +129,9 @@ public class DriverProvider extends PropertyWebDriverProvider{
 					System.getProperty("user.dir") + File.separator + "Temp");
 			options.setExperimentalOption("prefs", chromePrefs);
 			DesiredCapabilities cap = DesiredCapabilities.chrome();
+			if(PlatformInformation.isProxy){
+				addProxyCapabilities(cap, PlatformInformation.proxyHost, PlatformInformation.proxyPort);
+			}
 			cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 			cap.setCapability(ChromeOptions.CAPABILITY, options);
 			options.addArguments("test-type");
@@ -163,7 +167,13 @@ public class DriverProvider extends PropertyWebDriverProvider{
 					.setPreference(
 							"browser.helperApps.neverAsk.saveToDisk",
 							"application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/comma-separated-values, text/csv, application/csv, application/excel, application/vnd.msexcel, text/anytext , application/x-xpinstall,application/x-zip,application/x-zip-compressed,application/octet-stream,application/zip,application/pdf,application/msword,text/plain,application/octet,text/html, application/x-csv, text/x-csv , application/msexcel,binary/octet-stream , text/html ,application/xhtml+xml,application/xml,application/json");
-
+		if(PlatformInformation.isProxy){
+			firefoxProfile.setPreference("network.proxy.type", 1);
+			firefoxProfile.setPreference("network.proxy.http", PlatformInformation.proxyHost);
+			firefoxProfile.setPreference("network.proxy.http_port", PlatformInformation.proxyPort );
+			firefoxProfile.setPreference("network.proxy.ssl",  PlatformInformation.proxyHost);
+			firefoxProfile.setPreference("network.proxy.ssl_port",  PlatformInformation.proxyPort );
+		}
 			return new FixedFirefoxDriver(firefoxProfile);
 		}
 
@@ -184,6 +194,13 @@ public class DriverProvider extends PropertyWebDriverProvider{
 
 		protected SafariDriver createSafariDriver() {
 			return new SafariDriver();
+		}
+		private DesiredCapabilities addProxyCapabilities(DesiredCapabilities capabilities,String zapProxyHost, int zapProxyPort) {
+			Proxy proxy = new Proxy();
+			proxy.setHttpProxy(zapProxyHost + ":" + zapProxyPort);
+			proxy.setSslProxy(zapProxyHost + ":" + zapProxyPort);
+			capabilities.setCapability("proxy", proxy);
+			return capabilities;
 		}
 
 }
