@@ -7,6 +7,8 @@ import java.util.HashMap;
 
 import jo.aspire.generic.EnvirommentManager;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jbehave.web.selenium.PropertyWebDriverProvider;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
@@ -158,6 +160,13 @@ public class DriverProvider extends PropertyWebDriverProvider{
 						System.getProperty("user.dir")
 								+ "/webdrivers/phantom/linux/phantomjs");
 			}
+			String[] phantomArgs = new  String[] {
+				    "--webdriver-loglevel=NONE"
+				};
+			capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, phantomArgs);
+			Logger.getLogger(PhantomJSDriverService.class.getName()).setLevel(
+				      Level.OFF);
+			Logger.getLogger(PhantomJSDriverService.class.getName()).setLevel(Level.OFF);
 			capabilities.setCapability("JavascriptEnabled", true);
 			capabilities.setCapability("cssSelectorsEnabled", true);
 			capabilities.setCapability("applicationCacheEnabled", false);
