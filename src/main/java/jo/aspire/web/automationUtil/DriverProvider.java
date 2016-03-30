@@ -145,7 +145,7 @@ public class DriverProvider extends PropertyWebDriverProvider{
 				capabilities.setCapability(
 						PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 						System.getProperty("user.dir")
-								+ "/webdrivers/phantom/mac/phantomjs.exe");
+								+ "/webdrivers/phantom/mac/phantomjs");
 			} else if (OSValidator.isWindows()) {
 
 				capabilities.setCapability(
@@ -156,7 +156,7 @@ public class DriverProvider extends PropertyWebDriverProvider{
 				capabilities.setCapability(
 						PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 						System.getProperty("user.dir")
-								+ "/webdrivers/phantom/linux/phantomjs.exe");
+								+ "/webdrivers/phantom/linux/phantomjs");
 			}
 			capabilities.setCapability("JavascriptEnabled", true);
 			capabilities.setCapability("cssSelectorsEnabled", true);
