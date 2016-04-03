@@ -62,8 +62,13 @@ public class DriverProvider {
 	public synchronized void Udids() {
 		if (udid == null) {
 			udid = new ArrayList<String>();
+
 			String udids = EnvirommentManager.getInstance().getProperty("udid");
-			udid.addAll(asList(udids.split(",")));
+			if (udids.contains(",")) {
+				udid.addAll(asList(udids.split(",")));
+			}else{
+				udid.add(udids);
+			}
 		}
 	}
 
@@ -71,22 +76,26 @@ public class DriverProvider {
 		String threadName = Thread.currentThread().getName();
 		Ports();
 		Udids();
-		if (!drivers.containsKey(threadName)) {
+
+		if (!drivers.containsKey(threadName)
+				|| (drivers.get(threadName) == null)) {
 			try {
 				SetupDriver(threadName);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		String sessionId = null;
+		try {
+			sessionId = drivers.get(threadName).getSessionId().toString();
+			if (sessionId.isEmpty()) {
 
-		String sessionId = drivers.get(threadName).getSessionId().toString();
-		if (sessionId.isEmpty()) {
-			try {
 				SetupDriver(threadName);
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
 		sessions.put(threadName, sessionId);
 		return drivers.get(threadName);
 	}
@@ -99,16 +108,19 @@ public class DriverProvider {
 		} else {
 
 			serverInfo server = new serverInfo();
-			synchronized (udid) {
-				server.deviceUUID = udid.get(0);
+			if (!EnvirommentManager.getInstance().getProperty("UseSauceLabs")
+					.contains("true")) {
+				synchronized (udid) {
+					server.deviceUUID = udid.get(0);
+					udid.remove(0);
 
-				udid.remove(0);
+				}
 
-			}
-			synchronized (PortsList) {
-				server.serverPort = Integer.parseInt(PortsList.get(0).trim());
-
-				PortsList.remove(0);
+				synchronized (PortsList) {
+					server.serverPort = Integer.parseInt(PortsList.get(0)
+							.trim());
+					PortsList.remove(0);
+				}
 			}
 			servers.put(threadName, server);
 			currentServer = server;
@@ -137,12 +149,13 @@ public class DriverProvider {
 			capabilities.setCapability("browserName", "");
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
-			// capabilities.setCapability("nativeInstrumentsLib", true);
+			capabilities.setCapability("autoDismissAlerts", true);
+			 capabilities.setCapability("nativeInstrumentsLib", true);
 			// capabilities.setCapability("autoAcceptAlerts",
 			// "$.delay(10000); $.acceptAlert();");
 			// capabilities.setCapability("waitForAppScript", "$.delay(3000);");
 
-			capabilities.setCapability("fullReset", "true");
+			 capabilities.setCapability("fullReset", "true");
 			// capabilities.setCapability("noReset", "true");
 			// capabilities.setCapability("appActivity",
 			// "com.univision.SplashActivity");
@@ -228,9 +241,9 @@ public class DriverProvider {
 		}
 		if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators")
 				.contains("true")) {
-			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
 		} else {
-			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
 		}
 		drivers.put(threadName, driver);
 		System.out.println("Driver thread name:-----" + threadName
