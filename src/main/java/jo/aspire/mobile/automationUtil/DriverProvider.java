@@ -66,9 +66,10 @@ public class DriverProvider {
 			String udids = EnvirommentManager.getInstance().getProperty("udid");
 			if (udids.contains(",")) {
 				udid.addAll(asList(udids.split(",")));
-			}else{
+			} else {
 				udid.add(udids);
 			}
+
 		}
 	}
 
@@ -85,18 +86,25 @@ public class DriverProvider {
 				e.printStackTrace();
 			}
 		}
-		String sessionId = null;
+
 		try {
-			sessionId = drivers.get(threadName).getSessionId().toString();
+			String sessionId = drivers.get(threadName).getSessionId()
+					.toString();
 			if (sessionId.isEmpty()) {
 
 				SetupDriver(threadName);
 			}
+			sessions.put(threadName, sessionId);
 		} catch (Exception e) {
-			e.printStackTrace();
+			try {
+				SetupDriver(threadName);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			String sessionId = drivers.get(threadName).getSessionId()
+					.toString();
+			sessions.put(threadName, sessionId);
 		}
-
-		sessions.put(threadName, sessionId);
 		return drivers.get(threadName);
 	}
 
@@ -150,12 +158,12 @@ public class DriverProvider {
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("autoDismissAlerts", true);
-			 capabilities.setCapability("nativeInstrumentsLib", true);
+			capabilities.setCapability("nativeInstrumentsLib", true);
 			// capabilities.setCapability("autoAcceptAlerts",
 			// "$.delay(10000); $.acceptAlert();");
 			// capabilities.setCapability("waitForAppScript", "$.delay(3000);");
 
-			 capabilities.setCapability("fullReset", "true");
+			capabilities.setCapability("fullReset", "true");
 			// capabilities.setCapability("noReset", "true");
 			// capabilities.setCapability("appActivity",
 			// "com.univision.SplashActivity");
@@ -272,19 +280,36 @@ public class DriverProvider {
 
 	public void closeCurrentDriver() throws IOException {
 		// get the thread name
-		String ThreadName = Thread.currentThread().getName();
-		// get the driver name
-		AppiumDriver driver = drivers.get(ThreadName);
-		if (driver != null) {
+		String ThreadName = "Thread";
+		synchronized (ThreadName) {
+			ThreadName = Thread.currentThread().getName();
+			// get the driver name
+			AppiumDriver driver = drivers.get(ThreadName);
+			if (driver != null) {
+				System.out.println(driver.getRemoteAddress().getPort() + ":"
+						+ driver.getCapabilities().getCapability("udid"));
+				if (EnvirommentManager.getInstance().getProperty("KillDriver")
+						.contains("true")) {
+					if (!EnvirommentManager.getInstance()
+							.getProperty("UseSauceLabs").contains("true")) {
+						synchronized (udid) {
+							udid.add(driver.getCapabilities().getCapability(
+									"udid")
+									+ "");
+						}
 
-			driver.resetApp();
-			// PortsList.add(driver.getRemoteAddress().getPort() + "");
-			// udid.add(driver.getCapabilities().getCapability("udid") + "");
-			System.out.println(driver.getRemoteAddress().getPort() + ":"
-					+ driver.getCapabilities().getCapability("udid"));
-			// driver = null;
-			// drivers.put(ThreadName, driver);
-			// drivers.replace(ThreadName, drivers.get(ThreadName), null);
+						synchronized (PortsList) {
+							PortsList.add(driver.getRemoteAddress().getPort()
+									+ "");
+						}
+					}
+
+					driver.quit();
+					drivers.put(ThreadName, driver);
+				} else {
+					driver.resetApp();
+				}
+			}
 		}
 
 	}
