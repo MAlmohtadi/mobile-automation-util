@@ -288,7 +288,7 @@ public class DriverProvider {
 			if (driver != null) {
 				System.out.println(driver.getRemoteAddress().getPort() + ":"
 						+ driver.getCapabilities().getCapability("udid"));
-				if (EnvirommentManager.getInstance().getProperty("KillDriver")
+				if (EnvirommentManager.getInstance().getProperty("closeDriver")
 						.contains("true")) {
 					if (!EnvirommentManager.getInstance()
 							.getProperty("UseSauceLabs").contains("true")) {
