@@ -64,11 +64,12 @@ public class DriverProvider {
 	public synchronized void Udids() {
 		if (udid == null) {
 			udid = new ArrayList<String>();
+
 			Process p;
 			try {
-				p = Runtime
-						.getRuntime()
-						.exec("/Users/aspire/Library/Android/sdk/platform-tools/adb devices");
+				p = Runtime.getRuntime()
+						.exec(EnvirommentManager.getInstance().getProperty(
+								"adbPath"));
 
 				BufferedReader br = new BufferedReader(new InputStreamReader(
 						p.getInputStream()));
@@ -306,10 +307,9 @@ public class DriverProvider {
 			AppiumDriver driver = drivers.get(ThreadName);
 			if (driver != null) {
 				// driver.resetApp();
-
 				System.out.println(driver.getRemoteAddress().getPort() + ":"
 						+ driver.getCapabilities().getCapability("udid"));
-	
+
 				if (EnvirommentManager.getInstance().getProperty("closeDriver")
 						.contains("true")) {
 					if (!EnvirommentManager.getInstance()
