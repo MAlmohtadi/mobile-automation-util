@@ -68,7 +68,7 @@ public class DriverProvider {
 			try {
 				p = Runtime
 						.getRuntime()
-						.exec("/Users/univision/Library/Android/sdk/platform-tools/adb devices");
+						.exec("/Users/aspire/Library/Android/sdk/platform-tools/adb devices");
 
 				BufferedReader br = new BufferedReader(new InputStreamReader(
 						p.getInputStream()));
