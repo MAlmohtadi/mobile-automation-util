@@ -2,6 +2,7 @@ package jo.aspire.web.automationUtil;
 
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -98,13 +99,29 @@ public class DriverProvider extends PropertyWebDriverProvider{
 				return createSafariDriver();
 			} else if (browser.equals("android")) {
 				return createAndroidDriver();
+			}else if (browser.equals("remote")) {
+				return createRemoteDriver();
 			}else{
 			return createFirefoxDriver();
 			}
 		 
 	    }
 
-	 
+	 protected RemoteWebDriver createRemoteDriver()
+	 {
+		 DesiredCapabilities cap =null;
+		 if(PlatformInformation.remoteBrowserName.equals("chrome")){
+			 cap = DesiredCapabilities.chrome();
+		 }else {
+			 cap = DesiredCapabilities.firefox();
+		 }
+		 try {
+			return new RemoteWebDriver(new URL(PlatformInformation.remoteUrl),cap);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	 }
 
 		protected ChromeDriver createChromeDriver() {
 			if (OSValidator.isMac()) {
@@ -138,6 +155,7 @@ public class DriverProvider extends PropertyWebDriverProvider{
 			cap.setCapability(ChromeOptions.CAPABILITY, options);
 			options.addArguments("test-type");
 			   options.addArguments("--disable-extensions");
+			   
 			return new FixedChromeDriver(cap);
 		}
 

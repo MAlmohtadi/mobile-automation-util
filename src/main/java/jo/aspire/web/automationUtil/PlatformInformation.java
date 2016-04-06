@@ -10,6 +10,8 @@ public class PlatformInformation {
 		public static boolean isProxy;
 		public static int proxyPort;
 		public static String proxyHost;
+		public static String remoteBrowserName;
+		public static String remoteUrl;
 		
 		
 		
