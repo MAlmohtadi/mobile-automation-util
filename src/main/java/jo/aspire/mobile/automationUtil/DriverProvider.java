@@ -5,7 +5,9 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -62,8 +64,32 @@ public class DriverProvider {
 	public synchronized void Udids() {
 		if (udid == null) {
 			udid = new ArrayList<String>();
-			String udids = EnvirommentManager.getInstance().getProperty("udid");
-			udid.addAll(asList(udids.split(",")));
+
+			Process p;
+			try {
+				p = Runtime.getRuntime()
+						.exec(EnvirommentManager.getInstance().getProperty(
+								"adbPath"));
+
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						p.getInputStream()));
+				String s;
+				while ((s = br.readLine()).startsWith("*")) {
+					System.out.println(s);
+				}
+				System.out.println(s);
+				while ((s = br.readLine()) != null) {
+					if (s.trim().isEmpty() || s.startsWith("*")) {
+						break;
+					}
+					System.out.println(s);
+					String[] tmp = s.split("\t");
+					udid.add(tmp[0]);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -71,7 +97,9 @@ public class DriverProvider {
 		String threadName = Thread.currentThread().getName();
 		Ports();
 		Udids();
-		if (!drivers.containsKey(threadName)) {
+
+		if (!drivers.containsKey(threadName)
+				|| (drivers.get(threadName) == null)) {
 			try {
 				SetupDriver(threadName);
 			} catch (IOException e) {
@@ -79,15 +107,24 @@ public class DriverProvider {
 			}
 		}
 
-		String sessionId = drivers.get(threadName).getSessionId().toString();
-		if (sessionId.isEmpty()) {
+		try {
+			String sessionId = drivers.get(threadName).getSessionId()
+					.toString();
+			if (sessionId.isEmpty()) {
+
+				SetupDriver(threadName);
+			}
+			sessions.put(threadName, sessionId);
+		} catch (Exception e) {
 			try {
 				SetupDriver(threadName);
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
+			String sessionId = drivers.get(threadName).getSessionId()
+					.toString();
+			sessions.put(threadName, sessionId);
 		}
-		sessions.put(threadName, sessionId);
 		return drivers.get(threadName);
 	}
 
@@ -99,16 +136,19 @@ public class DriverProvider {
 		} else {
 
 			serverInfo server = new serverInfo();
-			synchronized (udid) {
-				server.deviceUUID = udid.get(0);
+			if (!EnvirommentManager.getInstance().getProperty("UseSauceLabs")
+					.contains("true")) {
+				synchronized (udid) {
+					server.deviceUUID = udid.get(0);
+					udid.remove(0);
 
-				udid.remove(0);
+				}
 
-			}
-			synchronized (PortsList) {
-				server.serverPort = Integer.parseInt(PortsList.get(0).trim());
-
-				PortsList.remove(0);
+				synchronized (PortsList) {
+					server.serverPort = Integer.parseInt(PortsList.get(0)
+							.trim());
+					PortsList.remove(0);
+				}
 			}
 			servers.put(threadName, server);
 			currentServer = server;
@@ -137,7 +177,8 @@ public class DriverProvider {
 			capabilities.setCapability("browserName", "");
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
-			// capabilities.setCapability("nativeInstrumentsLib", true);
+			capabilities.setCapability("autoDismissAlerts", true);
+			capabilities.setCapability("nativeInstrumentsLib", true);
 			// capabilities.setCapability("autoAcceptAlerts",
 			// "$.delay(10000); $.acceptAlert();");
 			// capabilities.setCapability("waitForAppScript", "$.delay(3000);");
@@ -228,9 +269,9 @@ public class DriverProvider {
 		}
 		if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators")
 				.contains("true")) {
-			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
 		} else {
-			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
 		}
 		drivers.put(threadName, driver);
 		System.out.println("Driver thread name:-----" + threadName
@@ -259,19 +300,37 @@ public class DriverProvider {
 
 	public void closeCurrentDriver() throws IOException {
 		// get the thread name
-		String ThreadName = Thread.currentThread().getName();
-		// get the driver name
-		AppiumDriver driver = drivers.get(ThreadName);
-		if (driver != null) {
+		String ThreadName = "Thread";
+		synchronized (ThreadName) {
+			ThreadName = Thread.currentThread().getName();
+			// get the driver name
+			AppiumDriver driver = drivers.get(ThreadName);
+			if (driver != null) {
+				// driver.resetApp();
+				System.out.println(driver.getRemoteAddress().getPort() + ":"
+						+ driver.getCapabilities().getCapability("udid"));
 
-			driver.resetApp();
-			// PortsList.add(driver.getRemoteAddress().getPort() + "");
-			// udid.add(driver.getCapabilities().getCapability("udid") + "");
-			System.out.println(driver.getRemoteAddress().getPort() + ":"
-					+ driver.getCapabilities().getCapability("udid"));
-			// driver = null;
-			// drivers.put(ThreadName, driver);
-			// drivers.replace(ThreadName, drivers.get(ThreadName), null);
+				if (EnvirommentManager.getInstance().getProperty("closeDriver")
+						.contains("true")) {
+					if (!EnvirommentManager.getInstance()
+							.getProperty("UseSauceLabs").contains("true")) {
+						synchronized (udid) {
+							udid.add(driver.getCapabilities().getCapability(
+									"udid")
+									+ "");
+						}
+
+						synchronized (PortsList) {
+							PortsList.add(driver.getRemoteAddress().getPort()
+									+ "");
+						}
+					}
+					driver.quit();
+					drivers.put(ThreadName, driver);
+				} else {
+					driver.resetApp();
+				}
+			}
 		}
 
 	}
