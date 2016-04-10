@@ -9,54 +9,55 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.formula.functions.Columns;
+
 import jo.aspire.generic.EnvirommentManager;
 
 public class DBhelper {
 
-	private String driver, url, SQLQuery;	
+	/**
+	   * @param MySQL url = jdbc:mysql://hostname/ databaseName
+	   * @param ORACLE url = jdbc:oracle:thin:@hostname:port Number:databaseName	  
+	   */
 	
-	public String GetRandomid(String field, String FIEDLS_TOKEN){
-		String result = "";
-		
-		try {
-			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url);
-			Statement statement = conn.createStatement();
-			String sqlQuery = SQLQuery.replace(FIEDLS_TOKEN, field);
-			ResultSet rs = statement.executeQuery(sqlQuery);
-			while (rs.next()) {					
-				result =  rs.getString(field).trim(); 				
-			}
-			conn.close();
-		
-			return result;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		
+	private String driver, url, SQLQuery , DBUserName , DBPassWord;	
+	
+	
+	  
+	public DBhelper(String ConfigFileConnectionString,String ConfigFileDriver) {
+		url = EnvirommentManager.getInstance().getProperty(ConfigFileConnectionString);
+		driver = EnvirommentManager.getInstance().getProperty(ConfigFileDriver);
 	}
-
-
-	public DBhelper(String CONFIG_FILE_CONNETION_STRING,String CONFIG_FILE_DRIVER) {
-		url = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_CONNETION_STRING);
-		driver = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_DRIVER);
-	}
-	public DBhelper(String contentType,String CONFIG_FILE_CONNETION_STRING,String CONFIG_FILE_DRIVER) {
-		url = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_CONNETION_STRING);
-		driver = EnvirommentManager.getInstance().getProperty(CONFIG_FILE_DRIVER);
+	public DBhelper(String contentType,String ConfigFileConnectionString,String ConfigFileDriver) {
+		url = EnvirommentManager.getInstance().getProperty(ConfigFileConnectionString);
+		driver = EnvirommentManager.getInstance().getProperty(ConfigFileDriver);
 		SQLQuery = EnvirommentManager.getInstance().getProperty(contentType);
 	}
-	private boolean dbConnect(String Query) {
+	public DBhelper(String query,String connString,String drvr , String UserName , String Password) {
+		url = connString;
+		driver = drvr;
+		SQLQuery = query;
+		DBUserName = UserName; 
+		DBPassWord = Password;
+	}
+	
+	 /**
+	   * This is the main method which makes use to Verify if the Data Base connected .
+	   * @param ConfigFileConnectionString
+	   * @param ConfigFileDriver
+	   * @param DataBase UserName
+	   * @param DataBase Password
+	   * @param Query
+	   * @return boolean.
+	   */
+	private boolean VerifyDBConnect(String Query) {
 		boolean returnedValue = false;
 		try {
 
 			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url);
+			Connection conn = DriverManager.getConnection(url , DBUserName , DBPassWord);
 			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery("Select Headline , Status , Body from Worldnow.dbo.story where storyno = 24746783");
+			ResultSet rs = statement.executeQuery(Query);
 
 			if (rs.next()) {
 				returnedValue = true;
@@ -72,71 +73,65 @@ public class DBhelper {
 	} 
 
 	/**
-	 * Checks if the query returns data from DB
-	 * 
-	 * @param Key
-	 * @return
-	 */
-	public boolean CheckDataInDB(String Key) {
-		return dbConnect(EnvirommentManager.getInstance().getProperty(Key));
-	}
-	/**
-	 * Get a random ID from DB
-	 * 
-	 * @param Key
-	 * @return
-	 */
-	public Map<String, String>  GetDateFromQuery(String fields,List<String>  QueriesTable) {
-		Map<String, String>  result = new HashMap<String, String>();
-		result = GetDBData("SELECT  TOP 1 " + fields + " FROM Worldnow.dbo.story where status like 'L' and affiliateno = 6 ORDER BY NEWID()", QueriesTable); 
-		return result;
-	}
-	
-	
-	public List<String>  GetListDate(String Query) {
-		List<String>  result = new ArrayList <String>();
-		result = GetListData(Query); 
-		return result;
-	}
-	
-	public String ExtractStoryID(List<String>  data){	
-		return data.get(0).toString();
-	}
-	/**
-	 * Returns data form DB in a Json format
-	 * 
-	 * @param Query
-	 * @return Json
-	 */
-	public Map<String, String> GetDBData(String Query,List<String> Columns ) {
-		Map<String, String>  Result = new HashMap<String, String>();
+	   * This method which makes use to store sql query result in two dimensional array (table) .
+	   * @param ConfigFileConnectionString
+	   * @param ConfigFileDriver
+	   * @param DataBase UserName
+	   * @param DataBase Password
+	   * @param Query
+	   * @return list.
+	   */
+	public List<String[]> GetDBData(String Query ) {
+		
+		List<String[]> table = new ArrayList<>();
+		 
 		try {
 			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url);
+			Connection conn = DriverManager.getConnection(url ,DBUserName , DBPassWord);
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(Query);
+			int columnCount = rs.getMetaData().getColumnCount();
+			String[] row = new String[columnCount];	
 			while (rs.next()) {	
-				for (int i = 0; i < Columns.size(); i++)
-				Result.put(Columns.get(i), rs.getString(Columns.get(i)).trim()); 				
-			}
+				for (int i = 0; i < columnCount; i++){
+				//Result.put(Columns.get(i), rs.getString(Columns.get(i)).trim());
+
+			        row[i] =  rs.getObject(i+1).toString();
+			        }
+					table.add( row );
+			    }
+			    
+			
 			conn.close();
 		
-			return Result;
+			return table;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
+	
+	
+	/**
+	   * This method which makes use to store sql query result in list (one column).
+	   * @param ConfigFileConnectionString
+	   * @param ConfigFileDriver
+	   * @param DataBase UserName
+	   * @param DataBase Password
+	   * @param Query
+	   * @return list.
+	   */
 	public List<String> GetListData(String Query) {
 		List<String>  Result = new ArrayList<String>();
 		try {
 			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url);
+			Connection conn = DriverManager.getConnection(url , DBUserName , DBPassWord);
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(Query);
+			int columnCount = rs.getMetaData().getColumnCount();
 			while (rs.next()) {	
-				//for (int i = 0; i < Columns.size(); i++)
-				//Result.put(Columns.get(i), rs.getString(Columns.get(i)).trim()); 				
+				for (int i = 0; i <columnCount; i++)
+				Result.add( rs.getString(i + 1) ); 				
 			}
 			conn.close();
 		
@@ -146,36 +141,21 @@ public class DBhelper {
 			return null;
 		}
 	}
-	public String GetDBData(String Query) {
-		try {
-			String Json = "{";
-			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url);
-			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery(Query);
-
-			while (rs.next()) {
-				for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-					Json += "\""
-							+ EnvirommentManager.getInstance().getProperty(
-									rs.getMetaData().getColumnName(i)).trim()
-							+ "\":\"" + rs.getString(i).trim() + "\",";
-				}
-				Json = Json.substring(0, Json.length() - 1) + ",";
-			}
-			conn.close();
-			Json = Json.substring(0, Json.length() - 1) + "}";
-			return Json;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	/**
+	   * This method which makes use to store sql query result in String(one Value) .
+	   * @param ConfigFileConnectionString
+	   * @param ConfigFileDriver
+	   * @param DataBase UserName
+	   * @param DataBase Password
+	   * @param Query
+	   * @return list.
+	   */
 	public String GetDBValue(String Query) {
 		try {
 			String Json = "";
-			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url);
+			Class.forName(driver).newInstance();
+			Connection conn = DriverManager.getConnection(url , DBUserName , DBPassWord);
+			
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(Query);
 
