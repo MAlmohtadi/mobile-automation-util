@@ -27,6 +27,8 @@ import org.sikuli.api.ScreenRegion;
 import org.sikuli.api.StaticImageScreenRegion;
 import org.sikuli.api.Target;
 
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+
 public abstract class Helper {
 
 
@@ -60,6 +62,45 @@ public abstract class Helper {
 		    int previousValue;
 
 		      while (!found) {
+		        currentDriver().swipe((int) (screenWidth * 0.5),(int) (screenHeight * 0.9), (int) (screenWidth * 0.5), 0,2000);
+
+		        try {
+		         if (find(elementSelector).isDisplayed()) {
+		          found = true;
+		          WebElement ele = find(elementSelector);
+
+		          while (ele.getLocation().getY() > screenHeight * 0.20) {
+		           previousValue = ele.getLocation().getY();
+		           currentDriver().swipe((int) (screenWidth * 0.5),
+		             (int) (screenHeight * 0.5),
+		             (int) (screenWidth * 0.5), (int) (screenHeight *  0.4), 2000);
+		           ele = find(elementSelector);
+		           if (previousValue == ele.getLocation().getY()) {
+		            break;
+		           }
+
+		          }
+
+		         }
+		        } catch (Exception e) {
+		        }
+		       }
+		   
+		    
+
+		 }
+	 public void scrollToWithCount(String elementSelector, int count) {
+		    boolean found = false;
+		    int screenHeight = currentDriver().manage().window().getSize().getHeight();
+		    int screenWidth = currentDriver().manage().window().getSize().getWidth();
+		    int previousValue;
+		    int timesEntered=0;
+		      while (!found) {
+		    	  timesEntered++;
+		    	  if(timesEntered-1 == count){
+		    		  throw new ElementNotFoundException(elementSelector, "", "");
+		    	  }
+		    	  
 		        currentDriver().swipe((int) (screenWidth * 0.5),(int) (screenHeight * 0.9), (int) (screenWidth * 0.5), 0,2000);
 
 		        try {
