@@ -15,6 +15,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.CookieSpecs;
@@ -30,6 +31,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
@@ -54,6 +57,8 @@ public class HttpRequestHandler {
 	private RequestBuilder requestBuilder;
 	private HttpContext localContext;
 	private URIBuilder requestURI;
+	private HttpHost proxy = null;
+	
 
 	public Map<String, CloseableHttpResponse> myResponses = new HashMap<String, CloseableHttpResponse>();
 
@@ -115,6 +120,18 @@ public class HttpRequestHandler {
 
 	public void setRequestHeader(Header header) {
 		requestBuilder.setHeader(header);
+	}
+	
+	public void setProxy(String proxyAddress, int proxyPort)
+	{
+		if (proxyAddress == null)
+		{
+			proxy = null;
+		}
+		else
+		{
+			proxy = new HttpHost(proxyAddress, proxyPort, HttpHost.DEFAULT_SCHEME_NAME);
+		}
 	}
 
 	/**
@@ -219,7 +236,17 @@ public class HttpRequestHandler {
 	public CloseableHttpResponse execute(String responseUniqueID)
 			throws URISyntaxException, ClientProtocolException, IOException {
 
-		CloseableHttpClient httpclient = httpclientBuilder.build();
+		CloseableHttpClient httpclient;
+		if (proxy != null)
+		{
+			DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+			httpclient = httpclientBuilder.setRoutePlanner(routePlanner).build();
+			
+		}
+		else
+		{
+			httpclient = httpclientBuilder.build();
+		}
 
 		HttpUriRequest requestHead = requestBuilder.setUri(requestURI.build()).setConfig(localConfig).build();
 
