@@ -65,15 +65,31 @@ public class DriverProvider {
 		if (udid == null) {
 			udid = new ArrayList<String>();
 
-			
-			String udids = EnvirommentManager.getInstance().getProperty("udid");
-			if (udids.contains(",")) {
-				udid.addAll(asList(udids.split(",")));
-			} else {
-				udid.add(udids);
-			}
+			Process p;
+			try {
+				p = Runtime.getRuntime()
+						.exec(EnvirommentManager.getInstance().getProperty(
+								"adbPath"));
 
-			
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						p.getInputStream()));
+				String s;
+				while ((s = br.readLine()).startsWith("*")) {
+					System.out.println(s);
+				}
+				System.out.println(s);
+				while ((s = br.readLine()) != null) {
+					if (s.trim().isEmpty() || s.startsWith("*")) {
+						break;
+					}
+					System.out.println(s);
+					String[] tmp = s.split("\t");
+					udid.add(tmp[0]);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
