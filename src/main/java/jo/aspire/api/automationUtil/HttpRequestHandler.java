@@ -26,18 +26,16 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -55,14 +53,15 @@ public class HttpRequestHandler {
 	private RequestConfig localConfig;
 	private static HttpClientBuilder httpclientBuilder;
 	private RequestBuilder requestBuilder;
-	private HttpContext localContext;
+	private HttpClientContext localContext;
 	private URIBuilder requestURI;
 	private HttpHost proxy = null;
-	
+	private static BasicCookieStore sessionCookieStore;
+	private static BasicCookieStore requestCookieStore;
+	private static HttpRequestHandler instance = null;
 
 	public Map<String, CloseableHttpResponse> myResponses = new HashMap<String, CloseableHttpResponse>();
 
-	private static HttpRequestHandler instance = null;
 	private HttpRequestHandler() {
 		// Prevent direct instantiation.
 	}
@@ -85,6 +84,8 @@ public class HttpRequestHandler {
 			httpclientBuilder.setDefaultRequestConfig(globalConfig);
 
 			instance = new HttpRequestHandler();
+			requestCookieStore = new BasicCookieStore();
+			sessionCookieStore = new BasicCookieStore();
 		}
 		return instance;
 	}
@@ -92,7 +93,7 @@ public class HttpRequestHandler {
 	public void createNewRequest(MethodEnum.Method method, String responseUniqueID) {
 		requestBuilder = RequestBuilder.create(method.name());
 		requestURI = new URIBuilder();
-		localContext = new BasicHttpContext();
+		localContext = HttpClientContext.create();
 		localConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
 
 		myResponses.put(responseUniqueID, null);
@@ -142,19 +143,27 @@ public class HttpRequestHandler {
 		requestBuilder.setHeader(name, value);
 	}
 
-	public void setRequestCookies(String name, String value, String domain, String path) {
+	public void setRequestCookie(String name, String value, String domain, String path) {
 		BasicClientCookie cookie = new BasicClientCookie(name, value);
 		cookie.setDomain(domain);
 		cookie.setPath(path);
 
-		this.setRequestCookies(cookie);
+		this.setRequestCookie(cookie);
 	}
 
-	public void setRequestCookies(BasicClientCookie cookie) {
-		BasicCookieStore requestCookieStore = new BasicCookieStore();
-
-		requestCookieStore.addCookie(cookie);
-		localContext.setAttribute(HttpClientContext.COOKIE_STORE, requestCookieStore);
+	public void setRequestCookie(Cookie cookie) {
+		requestCookieStore = new BasicCookieStore();
+		requestCookieStore.addCookie(cookie);;
+	}
+	
+	public void setRequestCookies(Cookie[] cookies) {
+		requestCookieStore = new BasicCookieStore();
+		requestCookieStore.addCookies(cookies);
+	}
+	
+	public List<Cookie> getRequestCookies()
+	{
+		return requestCookieStore.getCookies();
 	}
 
 	public void setRequestBasicAuth(String user, String password) {
@@ -183,19 +192,35 @@ public class HttpRequestHandler {
 		httpclientBuilder.setDefaultHeaders(defaultHeaders);
 	}
 
-	public void setSessionCookies(String name, String value, String domain, String path) {
+	public void setSessionCookie(String name, String value, String domain, String path) {
 		BasicClientCookie cookie = new BasicClientCookie(name, value);
 		cookie.setDomain(domain);
 		cookie.setPath(path);
 
-		this.setSessionCookies(cookie);
+		this.setSessionCookie(cookie);
 	}
 
-	public void setSessionCookies(BasicClientCookie cookie) {
-		BasicCookieStore connCookieStore = new BasicCookieStore();
-
-		connCookieStore.addCookie(cookie);
-		httpclientBuilder.setDefaultCookieStore(connCookieStore);
+	public void setSessionCookie(Cookie cookie) {
+		sessionCookieStore.addCookie(cookie);
+	}
+	
+	public void setSessionCookies(Cookie[] cookies) {
+		sessionCookieStore.addCookies(cookies);
+	}
+	
+	public List<Cookie> getSessionCookies()
+	{
+		return sessionCookieStore.getCookies();
+	}
+	
+	public void removeSessionCookie(Cookie cookie)
+	{
+		sessionCookieStore.getCookies().remove(cookie);
+	}
+	
+	public void clearSessionCookies()
+	{
+		sessionCookieStore.getCookies().clear();
 	}
 
 	public void setSessionBasicAuth(String user, String password) {
@@ -237,24 +262,56 @@ public class HttpRequestHandler {
 			throws URISyntaxException, ClientProtocolException, IOException {
 
 		CloseableHttpClient httpclient;
+		
 		if (proxy != null)
 		{
 			DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
-			httpclient = httpclientBuilder.setRoutePlanner(routePlanner).build();
+			httpclient = httpclientBuilder.setDefaultCookieStore(requestCookieStore).setRoutePlanner(routePlanner).build();
 			
 		}
 		else
 		{
-			httpclient = httpclientBuilder.build();
+			httpclient = httpclientBuilder.setDefaultCookieStore(requestCookieStore).build();
 		}
 
 		HttpUriRequest requestHead = requestBuilder.setUri(requestURI.build()).setConfig(localConfig).build();
 
+		
+		
 		CloseableHttpResponse response = httpclient.execute(requestHead, localContext);
 
 		myResponses.remove(responseUniqueID);
 		myResponses.put(responseUniqueID, response);
+				
+		return response;
+	}
+	
+	
+	public CloseableHttpResponse executeSessionRequest(String responseUniqueID)
+			throws URISyntaxException, ClientProtocolException, IOException {
+
+		CloseableHttpClient httpclient;
+		
+		if (proxy != null)
+		{
+			DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+			httpclient = httpclientBuilder.setDefaultCookieStore(sessionCookieStore).setRoutePlanner(routePlanner).build();
+			
+		}
+		else
+		{
+			httpclient = httpclientBuilder.setDefaultCookieStore(sessionCookieStore).build();
+		}
+
+		HttpUriRequest requestHead = requestBuilder.setUri(requestURI.build()).setConfig(localConfig).build();
+		
+		CloseableHttpResponse response = httpclient.execute(requestHead, localContext);
+
+		myResponses.remove(responseUniqueID);
+		myResponses.put(responseUniqueID, response);
+
 		
 		return response;
+
 	}
 }
