@@ -12,6 +12,7 @@ public class PlatformInformation {
 		public static String proxyHost;
 		public static String remoteBrowserName;
 		public static String remoteUrl;
+		public static boolean isMobile;
 		
 		
 		
