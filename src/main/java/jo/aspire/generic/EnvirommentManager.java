@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -24,7 +25,7 @@ public class EnvirommentManager {
 	private static Class<?> initialClass;
 	private static Object lock = new Object();
 	private static EnvirommentManager instance = null;
-
+	private String PropertiesLocalisaztion = "";
 	private EnvirommentManager() {
 	}
 
@@ -48,12 +49,40 @@ public class EnvirommentManager {
 		return (instance);
 
 	}
+	
+	private void LoadMainConfig(String path){		
+		Properties prop = new Properties();
+		InputStream MainProperty = null;		
+		try {
+			
+			MainProperty = new FileInputStream(new File(path + File.separator
+					+ "MainConfig.properties"));
+
+			// load a properties file
+			prop.load(MainProperty);
+
+			// get the property value and print it out
+			PropertiesLocalisaztion =prop.getProperty("local");		
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (MainProperty != null) {
+				try {
+					MainProperty.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+			
+	}
 
 	private void loadProperties() throws IOException {
 		List<String> files = new ArrayList<String>();
 		String path = System.getProperty("user.dir") + File.separator + "src"
 				+ File.separator + "test" + File.separator + "resources"
 				+ File.separator + "configs";
+		LoadMainConfig(path);
 
 		final File jarFile = new File(initialClass.getProtectionDomain()
 				.getCodeSource().getLocation().getPath());
@@ -68,8 +97,8 @@ public class EnvirommentManager {
 			while (entries.hasMoreElements()) {
 
 				final String name = entries.nextElement().getName();
-				if (name.toLowerCase().endsWith(".properties")
-						&& name.toLowerCase().contains("configs")) { // filter
+				if (name.toLowerCase().endsWith((PropertiesLocalisaztion != "" ? ".":"") + PropertiesLocalisaztion+".properties")
+						&& name.toLowerCase().contains((PropertiesLocalisaztion != "" ? ".":"") +PropertiesLocalisaztion+".configs")) { // filter
 																		// according
 //					this.getClass().getClassLoader()
 //					.getResourceAsStream(name)										// to
@@ -93,8 +122,8 @@ public class EnvirommentManager {
 			File[] fList = directory.listFiles();
 			for (File file : fList) {
 				if (file.isFile()
-						&& FilenameUtils.getExtension(file.getPath()).equals(
-								"properties")) {
+						&& FilenameUtils.getName(file.getPath()).endsWith(
+								(!PropertiesLocalisaztion.equals("") ?  ".": "") +PropertiesLocalisaztion+".properties")) {
 					files.add(file.getPath());
 
 					// create and load default properties
