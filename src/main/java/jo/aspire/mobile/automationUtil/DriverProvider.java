@@ -161,13 +161,12 @@ public class DriverProvider {
 			capabilities.setCapability("browserName", "");
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
-			capabilities.setCapability("autoDismissAlerts", true);
+//			capabilities.setCapability("autoDismissAlerts", true);
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			// capabilities.setCapability("autoAcceptAlerts",
 			// "$.delay(10000); $.acceptAlert();");
-			// capabilities.setCapability("waitForAppScript", "$.delay(3000);");
-
-			capabilities.setCapability("fullReset", "true");
+			 capabilities.setCapability("waitForAppScript", "$.delay(3000);");
+//			capabilities.setCapability("fullReset", "true");
 			// capabilities.setCapability("noReset", "true");
 			// capabilities.setCapability("appActivity",
 			// "com.univision.SplashActivity");
@@ -251,12 +250,12 @@ public class DriverProvider {
 				}
 			}
 		}
-		if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators")
-				.contains("true")) {
-			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
-		} else {
+//		if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators")
+//				.contains("true")) {
+//			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
+//		} else {
 			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
-		}
+//		}
 		drivers.put(threadName, driver);
 		System.out.println("Driver thread name:-----" + threadName
 				+ "---- and session id---" + driver.getSessionId().toString());
