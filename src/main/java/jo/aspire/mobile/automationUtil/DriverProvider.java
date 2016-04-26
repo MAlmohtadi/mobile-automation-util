@@ -255,16 +255,16 @@ public serverInfo getCurrentServerInfo(String threadName)
 //		}
 		drivers.put(threadName, driver);
 		System.out.println("Driver thread name:-----" + threadName
-				+ "---- and session id---" + driver.getSessionId().toString());
+				+ "---- and session id---" + driver.getSessionId().toString() + ", UUID:"+currentServer.deviceUUID );
 		// Helpers.init(driver, serverAddress);
 	}
 
-	public synchronized AppiumDriver AndroidDriver(URL serverAddress,
+	public  AppiumDriver AndroidDriver(URL serverAddress,
 			DesiredCapabilities capabilities) {
 		return new AndroidDriver(serverAddress, capabilities);
 	}
 
-	public synchronized AppiumDriver IOSDriver(URL serverAddress,
+	public  AppiumDriver IOSDriver(URL serverAddress,
 			DesiredCapabilities capabilities) {
 		return new IOSDriver(serverAddress, capabilities);
 	}
@@ -280,13 +280,13 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 	public void closeCurrentDriver() throws IOException {
 		// get the thread name
+		try{
 		 String ThreadName = Thread.currentThread().getName();
 			// get the driver name
 			AppiumDriver driver = drivers.get(ThreadName);
 			if (driver != null) {
 				// driver.resetApp();
-				System.out.println(driver.getRemoteAddress().getPort() + ":"
-						+ driver.getCapabilities().getCapability("udid"));
+				
 
 				if (EnvirommentManager.getInstance().getProperty("closeDriver")
 						.contains("true")) {
@@ -303,11 +303,19 @@ public serverInfo getCurrentServerInfo(String threadName)
 //									+ "");
 //						}
 //					}
+					try{
 					driver.quit();
-					driver=null;
+					System.out.println("closing: "+driver.getRemoteAddress().getPort() + ":"
+							+ driver.getCapabilities().getCapability("udid"));
+					
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 					drivers.put(ThreadName, driver);
 				}else{
 					driver.resetApp();
+					System.out.println("reset: "+driver.getRemoteAddress().getPort() + ":"
+							+ driver.getCapabilities().getCapability("udid"));
 //					try {
 //						Thread.currentThread().sleep(5000);
 //					} catch (InterruptedException e) {
@@ -316,7 +324,9 @@ public serverInfo getCurrentServerInfo(String threadName)
 //					}
 				}
 			}
-		
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 
 	}
 }
