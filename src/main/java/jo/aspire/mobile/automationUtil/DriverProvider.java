@@ -259,12 +259,12 @@ public serverInfo getCurrentServerInfo(String threadName)
 		// Helpers.init(driver, serverAddress);
 	}
 
-	public synchronized AppiumDriver AndroidDriver(URL serverAddress,
+	public  AppiumDriver AndroidDriver(URL serverAddress,
 			DesiredCapabilities capabilities) {
 		return new AndroidDriver(serverAddress, capabilities);
 	}
 
-	public synchronized AppiumDriver IOSDriver(URL serverAddress,
+	public  AppiumDriver IOSDriver(URL serverAddress,
 			DesiredCapabilities capabilities) {
 		return new IOSDriver(serverAddress, capabilities);
 	}
