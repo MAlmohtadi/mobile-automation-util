@@ -308,12 +308,12 @@ public serverInfo getCurrentServerInfo(String threadName)
 					drivers.put(ThreadName, driver);
 				}else{
 					driver.resetApp();
-					try {
-						Thread.currentThread().sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						Thread.currentThread().sleep(5000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 			}
 		
