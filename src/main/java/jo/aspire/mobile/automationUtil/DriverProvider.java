@@ -126,12 +126,15 @@ public serverInfo getCurrentServerInfo(String threadName)
 		serverInfo server = new serverInfo();
 		if (!EnvirommentManager.getInstance().getProperty("UseSauceLabs")
 				.contains("true")) {
+			synchronized (udid) {
 				server.deviceUUID = udid.get(0);
 				udid.remove(0);
-
-				server.serverPort = Integer.parseInt(appiumPortsList.get(0).trim());
+			}
+			synchronized (appiumPortsList) {
+				server.serverPort = Integer.parseInt(appiumPortsList.get(0)
+						.trim());
 				appiumPortsList.remove(0);
-
+			}
 		}
 		servers.put(threadName, server);
 		currentServer = server;
@@ -197,6 +200,14 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 			System.out.println(currentServer.serverPort + ":"
 					+ currentServer.deviceUUID);
+			try {
+			Thread.currentThread();
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 			if(!TargetPlatform.runOnAmazon){
 			serverAddress = new URL("http://127.0.0.1:"
 					+ currentServer.serverPort + "/wd/hub");
