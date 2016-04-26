@@ -75,15 +75,14 @@ public class DriverProvider {
 	}
 
 	public static  void initializeUdids() {
-		if (udid == null) {
-			udid = new ArrayList<String>();
+	
 			String udids = EnvirommentManager.getInstance().getProperty("udid");
 			if (udids.contains(",")) {
 				udid.addAll(asList(udids.split(",")));
 			} else {
 				udid.add(udids);
 			}
-		}
+
 	}
 
 	public AppiumDriver getCurrentDriver() {
