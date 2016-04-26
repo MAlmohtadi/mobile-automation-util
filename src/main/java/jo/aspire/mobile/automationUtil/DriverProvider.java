@@ -142,6 +142,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 	}
 	return currentServer;
 }
+	@SuppressWarnings("static-access")
 	public void SetupDriver(String threadName) throws IOException {
 		serverInfo currentServer =getCurrentServerInfo(threadName);
 		AppiumDriver driver = null;
@@ -201,8 +202,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			System.out.println(currentServer.serverPort + ":"
 					+ currentServer.deviceUUID);
 			try {
-			Thread.currentThread();
-			Thread.sleep(5000);
+			Thread.currentThread().sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
