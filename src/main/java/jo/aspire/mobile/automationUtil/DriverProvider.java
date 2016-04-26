@@ -307,7 +307,15 @@ public serverInfo getCurrentServerInfo(String threadName)
 					driver.quit();
 					driver=null;
 					drivers.put(ThreadName, driver);
-				} 
+				}else{
+					driver.resetApp();
+					try {
+						Thread.currentThread().sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		
 
