@@ -142,7 +142,6 @@ public serverInfo getCurrentServerInfo(String threadName)
 	}
 	return currentServer;
 }
-	@SuppressWarnings("static-access")
 	public void SetupDriver(String threadName) throws IOException {
 		serverInfo currentServer =getCurrentServerInfo(threadName);
 		AppiumDriver driver = null;
@@ -201,13 +200,6 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 			System.out.println(currentServer.serverPort + ":"
 					+ currentServer.deviceUUID);
-			try {
-			Thread.currentThread().sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			
 			if(!TargetPlatform.runOnAmazon){
 			serverAddress = new URL("http://127.0.0.1:"
 					+ currentServer.serverPort + "/wd/hub");
