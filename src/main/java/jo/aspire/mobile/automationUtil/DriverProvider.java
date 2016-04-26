@@ -25,8 +25,8 @@ public class DriverProvider {
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
-	public static ArrayList<String> appiumPortsList = null;
-	public static ArrayList<String> udid = null;
+	public static ArrayList<String> appiumPortsList = new ArrayList<>();
+	public static ArrayList<String> udid = new ArrayList<>();
 	public enum platform {
 		ANDROID, IOS
 	}
