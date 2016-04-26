@@ -169,7 +169,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(3000);");
-			capabilities.setCapability("fullReset", "true");
+			//capabilities.setCapability("fullReset", "true");
 			// Set job name on Sauce Labs
 			capabilities.setCapability("name", System.getProperty("user.name")
 					+ " - " + jobName + "(And) - " + date);
