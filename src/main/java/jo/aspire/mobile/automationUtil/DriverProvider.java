@@ -60,7 +60,7 @@ public class DriverProvider {
 //				appiumPortsList.add("4723");
 //			}
 //		}
-		Integer initialPort = 4723;
+		Integer initialPort = 4733;
 		int threads=0;
 		try{
 		threads= Integer.parseInt(EnvirommentManager.getInstance()
@@ -70,7 +70,7 @@ public class DriverProvider {
 		}
 		for (int i =0; i< threads; i++){
 			appiumPortsList.add(initialPort.toString());
-			initialPort += 11;
+			initialPort +=10;
 		}
 	}
 
