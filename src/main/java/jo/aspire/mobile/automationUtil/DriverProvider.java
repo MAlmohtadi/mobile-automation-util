@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import jo.aspire.generic.EnvirommentManager;
 
+import org.apache.xalan.xsltc.compiler.sym;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -142,7 +143,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 	}
 	return currentServer;
 }
-	public void SetupDriver(String threadName) throws IOException {
+	public synchronized void SetupDriver(String threadName) throws IOException {
 		serverInfo currentServer =getCurrentServerInfo(threadName);
 		AppiumDriver driver = null;
 		// Setup capabilities
@@ -278,6 +279,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	public void closeCurrentDriver() throws IOException {
 		// get the thread name
 		try{
@@ -304,24 +306,42 @@ public serverInfo getCurrentServerInfo(String threadName)
 //						}
 //					}
 					try{
+						try {
+							Thread.currentThread().sleep(5000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					driver.quit();
 					System.out.println("closing: "+driver.getRemoteAddress().getPort() + ":"
 							+ driver.getCapabilities().getCapability("udid"));
+					try {
+						Thread.currentThread().sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					}catch(Exception ex){
 						ex.printStackTrace();
 					}
 					drivers.put(ThreadName, driver);
 				}else{
+					try {
+						Thread.currentThread().sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					driver.resetApp();
 					System.out.println("reset: "+driver.getRemoteAddress().getPort() + ":"
 							+ driver.getCapabilities().getCapability("udid"));
-//					try {
-//						Thread.currentThread().sleep(5000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+					try {
+						Thread.currentThread().sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}catch(Exception ex){
