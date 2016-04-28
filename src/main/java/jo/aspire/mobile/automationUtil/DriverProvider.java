@@ -124,11 +124,14 @@ public serverInfo getCurrentServerInfo(String threadName)
 		currentServer = servers.get(threadName);
 	} else {
 		serverInfo server = new serverInfo();
+		
 		if (!EnvirommentManager.getInstance().getProperty("UseSauceLabs")
 				.contains("true")) {
-			synchronized (udid) {
-				server.deviceUUID = udid.get(0);
-				udid.remove(0);
+			if(getPlatform() == platform.ANDROID){
+				synchronized (udid) {
+					server.deviceUUID = udid.get(0);
+					udid.remove(0);
+				}
 			}
 			synchronized (appiumPortsList) {
 				server.serverPort = Integer.parseInt(appiumPortsList.get(0)

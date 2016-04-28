@@ -2,7 +2,11 @@ package jo.aspire.mobile.automationUtil;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.NetworkConnectionSetting;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
+
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -545,6 +549,26 @@ public ScreenRegion getRegion(String targetFileLocation) {
 			}catch (Exception e) {}
 			
 		}
+		public void AndroidWiFiEnabled(boolean Status){
+			
+			NetworkConnectionSetting networkConnection = new NetworkConnectionSetting(false,true,false);			
+				networkConnection.setWifi(Status); // Change WIFI Status
+				((AndroidDriver)currentDriver()).setNetworkConnection(networkConnection);								
+		}
+
+		public void iOSWiFiswitch() {
+
+		Dimension IOSdimension = currentDriver().manage().window().getSize();
+		int width = IOSdimension.getWidth();
+		int height = IOSdimension.getHeight();
+		currentDriver().swipe((int) (width * 0.5), (int) (height), (int) (width * 0.5), 0, 500);
+		sleepTime(2000);
+		currentDriver().findElementByAccessibilityId("Wi-Fi").click();
+		currentDriver().swipe((int) (width * 0.5), (int) (0), (int) (width * 0.5), height, 500);
+
+	}
+
+
 
 
 }
