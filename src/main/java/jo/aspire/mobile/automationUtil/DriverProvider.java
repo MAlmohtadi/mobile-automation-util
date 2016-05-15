@@ -237,7 +237,9 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 			while (autoAcceptAlerts) {
 				try {
+					Thread.sleep(2000);
 					alert.accept();
+					Thread.sleep(3000);
 					AcceptAlertsCounter++;
 					if (AcceptAlertsCounter == 2) {
 						autoAcceptAlerts = false;
