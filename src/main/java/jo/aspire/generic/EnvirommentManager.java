@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -160,7 +161,11 @@ public class EnvirommentManager {
 		return (val);
 
 	}
-
+	
+	public boolean getBoolean(String string) {
+		return Boolean.parseBoolean(getProperty(string));
+	}
+	
 	/**
 	 * Sets Application/User String properties; default property values cannot
 	 * be set.
