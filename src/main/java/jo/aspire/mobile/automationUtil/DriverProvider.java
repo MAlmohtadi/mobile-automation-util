@@ -24,6 +24,7 @@ public class DriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();
+	public static String autoAcceptAlerts = "false";
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
 	public static ArrayList<String> appiumPortsList = new ArrayList<>();
 	public static ArrayList<String> udid = new ArrayList<>();
@@ -172,7 +173,17 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(3000);");
-			capabilities.setCapability("autoAcceptAlerts", true);
+			
+			try {
+				autoAcceptAlerts = EnvirommentManager.getInstance().getProperty("autoAcceptAlerts");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if (autoAcceptAlerts.equals("true")) {
+				capabilities.setCapability("autoAcceptAlerts", true);
+			}
 			//capabilities.setCapability("noReset", true);
 			// Set job name on Sauce Labs
 			capabilities.setCapability("name", System.getProperty("user.name")
@@ -230,29 +241,29 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 		}
 
-//		if (getPlatform() == platform.IOS) {
-//			Alert alert = driver.switchTo().alert();
-//			boolean autoAcceptAlerts = true;
-//			int AcceptAlertsCounter = 0;
-//			int tryCounter = 0;
-//
-//			while (autoAcceptAlerts) {
-//				try {
-//					Thread.sleep(2000);
-//					alert.accept();
-//					Thread.sleep(3000);
-//					AcceptAlertsCounter++;
-//					if (AcceptAlertsCounter == 2) {
-//						autoAcceptAlerts = false;
-//					}
-//				} catch (Exception e) {
-//					tryCounter++;
-//					if (tryCounter == 10) {
-//						autoAcceptAlerts = false;
-//					}
-//				}
-//			}
-//		}
+		if (getPlatform() == platform.IOS && autoAcceptAlerts.equals("false")) {
+			Alert alert = driver.switchTo().alert();
+			boolean autoAcceptAlerts = true;
+			int AcceptAlertsCounter = 0;
+			int tryCounter = 0;
+
+			while (autoAcceptAlerts) {
+				try {
+					Thread.sleep(2000);
+					alert.accept();
+					Thread.sleep(3000);
+					AcceptAlertsCounter++;
+					if (AcceptAlertsCounter == 2) {
+						autoAcceptAlerts = false;
+					}
+				} catch (Exception e) {
+					tryCounter++;
+					if (tryCounter == 10) {
+						autoAcceptAlerts = false;
+					}
+				}
+			}
+		}
 		
 		
 		
