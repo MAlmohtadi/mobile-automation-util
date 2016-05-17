@@ -172,6 +172,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(3000);");
+			capabilities.setCapability("autoAcceptAlerts", true);
 			//capabilities.setCapability("noReset", true);
 			// Set job name on Sauce Labs
 			capabilities.setCapability("name", System.getProperty("user.name")
@@ -229,29 +230,33 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 		}
 
-		if (getPlatform() == platform.IOS) {
-			Alert alert = driver.switchTo().alert();
-			boolean autoAcceptAlerts = true;
-			int AcceptAlertsCounter = 0;
-			int tryCounter = 0;
-
-			while (autoAcceptAlerts) {
-				try {
-					Thread.sleep(2000);
-					alert.accept();
-					Thread.sleep(3000);
-					AcceptAlertsCounter++;
-					if (AcceptAlertsCounter == 2) {
-						autoAcceptAlerts = false;
-					}
-				} catch (Exception e) {
-					tryCounter++;
-					if (tryCounter == 10) {
-						autoAcceptAlerts = false;
-					}
-				}
-			}
-		}
+//		if (getPlatform() == platform.IOS) {
+//			Alert alert = driver.switchTo().alert();
+//			boolean autoAcceptAlerts = true;
+//			int AcceptAlertsCounter = 0;
+//			int tryCounter = 0;
+//
+//			while (autoAcceptAlerts) {
+//				try {
+//					Thread.sleep(2000);
+//					alert.accept();
+//					Thread.sleep(3000);
+//					AcceptAlertsCounter++;
+//					if (AcceptAlertsCounter == 2) {
+//						autoAcceptAlerts = false;
+//					}
+//				} catch (Exception e) {
+//					tryCounter++;
+//					if (tryCounter == 10) {
+//						autoAcceptAlerts = false;
+//					}
+//				}
+//			}
+//		}
+		
+		
+		
+		
 //		if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators")
 //				.contains("true")) {
 //			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
