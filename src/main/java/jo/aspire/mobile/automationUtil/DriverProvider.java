@@ -184,7 +184,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			if (autoAcceptAlerts.equals("true")) {
 				capabilities.setCapability("autoAcceptAlerts", true);
 			}
-			//capabilities.setCapability("noReset", true);
+			capabilities.setCapability("noReset", true);
 			// Set job name on Sauce Labs
 			capabilities.setCapability("name", System.getProperty("user.name")
 					+ " - " + jobName + "(And) - " + date);
