@@ -171,9 +171,8 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("browserName", "");
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
-			//capabilities.setCapability("nativeInstrumentsLib", true);
-			//capabilities.setCapability("waitForAppScript", "$.delay(3000);");
-			capabilities.setCapability("waitForAppScript", true);
+			capabilities.setCapability("nativeInstrumentsLib", true);
+			capabilities.setCapability("waitForAppScript", "$.delay(8000);");
 			capabilities.setCapability("notificationsAuthorized", true);
 			
 			
