@@ -172,9 +172,9 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
-			capabilities.setCapability("waitForAppScript", "$.delay(10000); $.acceptAlert(); true;");
-			capabilities.setCapability("notificationsAuthorized", true);
-			capabilities.setCapability("locationServicesAuthorized", false);
+			capabilities.setCapability("waitForAppScript", "true;");
+			//capabilities.setCapability("notificationsAuthorized", true);
+			//capabilities.setCapability("locationServicesAuthorized", false);
 			
 			
 			try {
@@ -252,9 +252,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 			while (autoAcceptAlerts) {
 				try {
-					Thread.sleep(2000);
 					alert.accept();
-					Thread.sleep(3000);
 					AcceptAlertsCounter++;
 					if (AcceptAlertsCounter == 2) {
 						autoAcceptAlerts = false;
@@ -265,6 +263,16 @@ public serverInfo getCurrentServerInfo(String threadName)
 						autoAcceptAlerts = false;
 					}
 				}
+			}
+		}else{
+			Alert alert = driver.switchTo().alert();
+			alert.accept();
+			try {
+				Thread.sleep(5000);
+				alert.accept();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
