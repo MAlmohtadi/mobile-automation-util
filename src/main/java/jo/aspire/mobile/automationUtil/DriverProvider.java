@@ -174,7 +174,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			//capabilities.setCapability("waitForAppScript", "$.delay(8000);");
 			capabilities.setCapability("notificationsAuthorized", true);
-			capabilities.setCapability("locationServicesAuthorized", true);
+			capabilities.setCapability("locationServicesAuthorized", false);
 			
 			
 			try {
