@@ -38,6 +38,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -244,7 +245,7 @@ public class HttpRequestHandler {
 		this.setRequestBody(new UrlEncodedFormEntity(nvps));
 	}
 
-	public void setRequestBody(JsonObject entity) throws UnsupportedEncodingException {
+	public void setRequestBody(JsonElement entity) throws UnsupportedEncodingException {
 		String jsonEntity = new Gson().toJson(entity);
 		this.setRequestBody(jsonEntity);
 	}
