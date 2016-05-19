@@ -19,6 +19,8 @@ import jo.aspire.generic.EnvirommentManager;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class DriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
@@ -172,11 +174,9 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
-//			capabilities.setCapability("waitForAppScript", "true;");
-//			capabilities.setCapability("notificationsAuthorized", true);
-//			capabilities.setCapability("locationServicesAuthorized", false);
-			
-			
+			capabilities.setCapability("waitForAppScript", "$.delay(5000); true");
+
+						
 			try {
 				autoAcceptAlerts = EnvirommentManager.getInstance().getProperty("autoAcceptAlerts");
 			} catch (Exception e) {
@@ -185,7 +185,9 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			
 			if (autoAcceptAlerts.equals("true")) {
-				capabilities.setCapability("autoAcceptAlerts", true);
+			//	capabilities.setCapability("autoAcceptAlerts", true);
+				capabilities.setCapability("notificationsAuthorized", true);
+				capabilities.setCapability("locationServicesAuthorized", false);
 			}
 			capabilities.setCapability("noReset", true);
 			// Set job name on Sauce Labs
@@ -235,6 +237,15 @@ public serverInfo getCurrentServerInfo(String threadName)
 					driver = AndroidDriver(serverAddress, capabilities);
 				} else {
 					driver = IOSDriver(serverAddress, capabilities);
+
+			         System.out.println("wait to dismiss any system location dialogs");
+			            WebDriverWait wait = new WebDriverWait(driver, 10);
+			            try {
+			                wait.until(ExpectedConditions.alertIsPresent());
+			                driver.switchTo().alert().accept();
+			            } catch (Exception e) {
+			                System.err.println("no alert visible after 10 sec.");
+			            }
 
 				}
 
