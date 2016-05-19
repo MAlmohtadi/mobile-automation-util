@@ -244,29 +244,29 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 		}
 
-				
-		if (getPlatform() == platform.IOS) {
-			Alert alert = driver.switchTo().alert();
-			boolean autoAcceptAlerts = true;
-			int AcceptAlertsCounter = 0;
-			int tryCounter = 0;
-
-			while (autoAcceptAlerts) {
-				try {
-					Thread.sleep(2000);
-					alert.accept();
-					AcceptAlertsCounter++;
-					if (AcceptAlertsCounter == 1) {
-						autoAcceptAlerts = false;
-					}
-				} catch (Exception e) {
-					tryCounter++;
-					if (tryCounter == 5) {
-						autoAcceptAlerts = false;
-					}
-				}
-			}
-		}
+//				
+//		if (getPlatform() == platform.IOS) {
+//			Alert alert = driver.switchTo().alert();
+//			boolean autoAcceptAlerts = true;
+//			int AcceptAlertsCounter = 0;
+//			int tryCounter = 0;
+//
+//			while (autoAcceptAlerts) {
+//				try {
+//					Thread.sleep(2000);
+//					alert.accept();
+//					AcceptAlertsCounter++;
+//					if (AcceptAlertsCounter == 1) {
+//						autoAcceptAlerts = false;
+//					}
+//				} catch (Exception e) {
+//					tryCounter++;
+//					if (tryCounter == 5) {
+//						autoAcceptAlerts = false;
+//					}
+//				}
+//			}
+//		}
 		
 		
 		
