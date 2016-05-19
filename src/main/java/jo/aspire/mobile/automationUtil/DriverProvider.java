@@ -172,7 +172,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("deviceName", TargetPlatform.deviceName);
 			capabilities.setCapability("deviceOrientation", "portrait");
 			capabilities.setCapability("browserName", "");
-			capabilities.setCapability("commandTimeout", "2000");
+			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(1000);$.acceptAlert()");
