@@ -175,8 +175,8 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("commandTimeout", "900");
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
-			//capabilities.setCapability("waitForAppScript", "$.delay(8000)");
-
+			capabilities.setCapability("waitForAppScript", "$.delay(3000);$.acceptAlert()");
+			capabilities.setCapability("noReset", true);
 						
 			try {
 				autoAcceptAlerts = EnvirommentManager.getInstance().getProperty("autoAcceptAlerts");
@@ -186,11 +186,11 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			
 			if (autoAcceptAlerts.equals("true")) {
-				capabilities.setCapability("autoAcceptAlerts", true);
+			//	capabilities.setCapability("autoAcceptAlerts", true);
 //				capabilities.setCapability("notificationsAuthorized", true);
 //				capabilities.setCapability("locationServicesAuthorized", false);
 			}
-			//capabilities.setCapability("noReset", true);
+			
 			// Set job name on Sauce Labs
 			capabilities.setCapability("name", System.getProperty("user.name")
 					+ " - " + jobName + "(And) - " + date);
@@ -245,7 +245,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 		}
 
 				
-		if (getPlatform() == platform.IOS && autoAcceptAlerts.equals("false")) {
+		if (getPlatform() == platform.IOS) {
 			Alert alert = driver.switchTo().alert();
 			boolean autoAcceptAlerts = true;
 			int AcceptAlertsCounter = 0;
@@ -255,14 +255,13 @@ public serverInfo getCurrentServerInfo(String threadName)
 				try {
 					Thread.sleep(2000);
 					alert.accept();
-					Thread.sleep(3000);
 					AcceptAlertsCounter++;
-					if (AcceptAlertsCounter == 2) {
+					if (AcceptAlertsCounter == 1) {
 						autoAcceptAlerts = false;
 					}
 				} catch (Exception e) {
 					tryCounter++;
-					if (tryCounter == 10) {
+					if (tryCounter == 5) {
 						autoAcceptAlerts = false;
 					}
 				}
