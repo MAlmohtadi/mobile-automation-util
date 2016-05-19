@@ -238,13 +238,23 @@ public serverInfo getCurrentServerInfo(String threadName)
 				} else {
 					driver = IOSDriver(serverAddress, capabilities);
 
+					System.out.println("sleep(8000)");
+					Thread.sleep(8000);
+					
+					for(String winHandle : driver.getWindowHandles()){
+//						if (winHandle.contains("WEBVIEW"))
+//							driver.switchTo().window(winHandle);
+						System.out.println(winHandle);
+						}
+					
+					
 			         System.out.println("wait to dismiss any system location dialogs");
 			            WebDriverWait wait = new WebDriverWait(driver, 10);
 			            try {
 			                wait.until(ExpectedConditions.alertIsPresent());
 			                driver.switchTo().alert().accept();
 			            } catch (Exception e) {
-			                System.err.println("no alert visible after 10 sec.");
+			            	System.out.println("no alert visible after 10 sec.");
 			            }
 
 				}
