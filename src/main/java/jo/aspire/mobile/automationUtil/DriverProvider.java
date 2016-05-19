@@ -185,9 +185,9 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			
 			if (autoAcceptAlerts.equals("true")) {
-			//	capabilities.setCapability("autoAcceptAlerts", true);
-				capabilities.setCapability("notificationsAuthorized", true);
-				capabilities.setCapability("locationServicesAuthorized", false);
+				capabilities.setCapability("autoAcceptAlerts", true);
+//				capabilities.setCapability("notificationsAuthorized", true);
+//				capabilities.setCapability("locationServicesAuthorized", false);
 			}
 			capabilities.setCapability("noReset", true);
 			// Set job name on Sauce Labs
@@ -238,7 +238,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 				} else {
 					driver = IOSDriver(serverAddress, capabilities);
 
-					System.out.println("sleep(8000)");
+					System.out.println("+++++++++++++++++++++++++++++++ sleep +++++++++++++++++++++++++++++++");
 					Thread.sleep(8000);
 					
 					for(String winHandle : driver.getWindowHandles()){
