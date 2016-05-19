@@ -23,10 +23,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class DriverProvider {
+	@SuppressWarnings("rawtypes")
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();
-	public static String autoAcceptAlerts = "false";
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
 	public static ArrayList<String> appiumPortsList = new ArrayList<>();
 	public static ArrayList<String> udid = new ArrayList<>();
@@ -172,24 +172,16 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("deviceName", TargetPlatform.deviceName);
 			capabilities.setCapability("deviceOrientation", "portrait");
 			capabilities.setCapability("browserName", "");
-			capabilities.setCapability("commandTimeout", "900");
+			capabilities.setCapability("commandTimeout", "2000");
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
-			capabilities.setCapability("waitForAppScript", "$.delay(3000);$.acceptAlert()");
+			capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
 			capabilities.setCapability("noReset", true);
 						
-			try {
-				autoAcceptAlerts = EnvirommentManager.getInstance().getProperty("autoAcceptAlerts");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			if (autoAcceptAlerts.equals("true")) {
 			//	capabilities.setCapability("autoAcceptAlerts", true);
-//				capabilities.setCapability("notificationsAuthorized", true);
-//				capabilities.setCapability("locationServicesAuthorized", false);
-			}
+			//  capabilities.setCapability("notificationsAuthorized", true);
+			//	capabilities.setCapability("locationServicesAuthorized", false);
+
 			
 			// Set job name on Sauce Labs
 			capabilities.setCapability("name", System.getProperty("user.name")
@@ -238,45 +230,12 @@ public serverInfo getCurrentServerInfo(String threadName)
 				} else {
 
 					driver = IOSDriver(serverAddress, capabilities);
-					driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
+				//	driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
 
 				}
 
 		}
 
-//				
-//		if (getPlatform() == platform.IOS) {
-//			Alert alert = driver.switchTo().alert();
-//			boolean autoAcceptAlerts = true;
-//			int AcceptAlertsCounter = 0;
-//			int tryCounter = 0;
-//
-//			while (autoAcceptAlerts) {
-//				try {
-//					Thread.sleep(2000);
-//					alert.accept();
-//					AcceptAlertsCounter++;
-//					if (AcceptAlertsCounter == 1) {
-//						autoAcceptAlerts = false;
-//					}
-//				} catch (Exception e) {
-//					tryCounter++;
-//					if (tryCounter == 5) {
-//						autoAcceptAlerts = false;
-//					}
-//				}
-//			}
-//		}
-		
-		
-		
-		
-//		if (EnvirommentManager.getInstance().getProperty("UseLocaleEmulators")
-//				.contains("true")) {
-//			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
-//		} else {
-//			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
-//		}
 		drivers.put(threadName, driver);
 		System.out.println("Driver thread name:-----" + threadName
 				+ "---- and session id---" + driver.getSessionId().toString() + ", UUID:"+currentServer.deviceUUID );
@@ -318,19 +277,6 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 				if (EnvirommentManager.getInstance().getProperty("closeDriver")
 						.contains("true")) {
-//					if (!EnvirommentManager.getInstance()
-//							.getProperty("UseSauceLabs").contains("true")) {
-//						synchronized (udid) {
-//							udid.add(driver.getCapabilities().getCapability(
-//									"udid")
-//									+ "");
-//						}
-//
-//						synchronized (appiumPortsList) {
-//							appiumPortsList.add(driver.getRemoteAddress().getPort()
-//									+ "");
-//						}
-//					}
 					try{
 					driver.quit();
 					System.out.println("closing: "+driver.getRemoteAddress().getPort() + ":"
@@ -344,12 +290,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 					driver.resetApp();
 					System.out.println("reset: "+driver.getRemoteAddress().getPort() + ":"
 							+ driver.getCapabilities().getCapability("udid"));
-//					try {
-//						Thread.currentThread().sleep(5000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+
 				}
 			}
 		}catch(Exception ex){
