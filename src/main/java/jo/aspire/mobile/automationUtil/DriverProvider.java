@@ -173,8 +173,8 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("browserName", "");
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
-			capabilities.setCapability("nativeInstrumentsLib", true);
-			capabilities.setCapability("waitForAppScript", "$.delay(5000); true");
+			//capabilities.setCapability("nativeInstrumentsLib", true);
+			//capabilities.setCapability("waitForAppScript", "$.delay(5000); true");
 
 						
 			try {
@@ -236,18 +236,10 @@ public serverInfo getCurrentServerInfo(String threadName)
 					}
 					driver = AndroidDriver(serverAddress, capabilities);
 				} else {
+					Thread.sleep(4000);
 					driver = IOSDriver(serverAddress, capabilities);
+					Thread.sleep(4000);
 
-					System.out.println("+++++++++++++++++++++++++++++++ sleep +++++++++++++++++++++++++++++++");
-					Thread.sleep(8000);
-					
-					for(String winHandle : driver.getWindowHandles()){
-//						if (winHandle.contains("WEBVIEW"))
-//							driver.switchTo().window(winHandle);
-						System.out.println(winHandle);
-						}
-					
-					
 			         System.out.println("wait to dismiss any system location dialogs");
 			            WebDriverWait wait = new WebDriverWait(driver, 10);
 			            try {
