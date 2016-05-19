@@ -171,10 +171,10 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("deviceName", TargetPlatform.deviceName);
 			capabilities.setCapability("deviceOrientation", "portrait");
 			capabilities.setCapability("browserName", "");
-			capabilities.setCapability("commandTimeout", "600");
+			capabilities.setCapability("commandTimeout", "900");
 			capabilities.setCapability("maxDuration", "10800");
 			//capabilities.setCapability("nativeInstrumentsLib", true);
-			//capabilities.setCapability("waitForAppScript", "$.delay(5000); true");
+			capabilities.setCapability("waitForAppScript", "$.delay(8000)");
 
 						
 			try {
@@ -227,7 +227,6 @@ public serverInfo getCurrentServerInfo(String threadName)
 				serverAddress = new URL("http://127.0.0.1:4723" + "/wd/hub");
 			}
 
-			try {
 				if (getPlatform() == platform.ANDROID) {
 					if (!TargetPlatform.runOnAmazon
 							&& !SauceLabeSessionHandler.getRunOnSauce()) {
@@ -236,50 +235,36 @@ public serverInfo getCurrentServerInfo(String threadName)
 					}
 					driver = AndroidDriver(serverAddress, capabilities);
 				} else {
-					Thread.sleep(4000);
+
 					driver = IOSDriver(serverAddress, capabilities);
-					Thread.sleep(4000);
-
-			         System.out.println("wait to dismiss any system location dialogs");
-			            WebDriverWait wait = new WebDriverWait(driver, 10);
-			            try {
-			                wait.until(ExpectedConditions.alertIsPresent());
-			                driver.switchTo().alert().accept();
-			            } catch (Exception e) {
-			            	System.out.println("no alert visible after 10 sec.");
-			            }
 
 				}
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
 		}
 
-		if (getPlatform() == platform.IOS && autoAcceptAlerts.equals("false")) {
-			Alert alert = driver.switchTo().alert();
-			boolean autoAcceptAlerts = true;
-			int AcceptAlertsCounter = 0;
-			int tryCounter = 0;
-
-			while (autoAcceptAlerts) {
-				try {
-					Thread.sleep(2000);
-					alert.accept();
-					Thread.sleep(3000);
-					AcceptAlertsCounter++;
-					if (AcceptAlertsCounter == 2) {
-						autoAcceptAlerts = false;
-					}
-				} catch (Exception e) {
-					tryCounter++;
-					if (tryCounter == 10) {
-						autoAcceptAlerts = false;
-					}
-				}
-			}
-		}
+//		if (getPlatform() == platform.IOS && autoAcceptAlerts.equals("false")) {
+//			Alert alert = driver.switchTo().alert();
+//			boolean autoAcceptAlerts = true;
+//			int AcceptAlertsCounter = 0;
+//			int tryCounter = 0;
+//
+//			while (autoAcceptAlerts) {
+//				try {
+//					Thread.sleep(2000);
+//					alert.accept();
+//					Thread.sleep(3000);
+//					AcceptAlertsCounter++;
+//					if (AcceptAlertsCounter == 2) {
+//						autoAcceptAlerts = false;
+//					}
+//				} catch (Exception e) {
+//					tryCounter++;
+//					if (tryCounter == 10) {
+//						autoAcceptAlerts = false;
+//					}
+//				}
+//			}
+//		}
 		
 		
 		
@@ -288,7 +273,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 //				.contains("true")) {
 //			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
 //		} else {
-			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
+//			driver.manage().timeouts().implicitlyWait(180, TimeUnit.SECONDS);
 //		}
 		drivers.put(threadName, driver);
 		System.out.println("Driver thread name:-----" + threadName
