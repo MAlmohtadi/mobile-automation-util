@@ -190,7 +190,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 //				capabilities.setCapability("notificationsAuthorized", true);
 //				capabilities.setCapability("locationServicesAuthorized", false);
 			}
-			capabilities.setCapability("noReset", true);
+			//capabilities.setCapability("noReset", true);
 			// Set job name on Sauce Labs
 			capabilities.setCapability("name", System.getProperty("user.name")
 					+ " - " + jobName + "(And) - " + date);
