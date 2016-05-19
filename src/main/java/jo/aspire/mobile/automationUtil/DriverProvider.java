@@ -171,10 +171,10 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("deviceName", TargetPlatform.deviceName);
 			capabilities.setCapability("deviceOrientation", "portrait");
 			capabilities.setCapability("browserName", "");
-			capabilities.setCapability("commandTimeout", "900");
+			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
 			//capabilities.setCapability("nativeInstrumentsLib", true);
-			capabilities.setCapability("waitForAppScript", "$.delay(8000)");
+			//capabilities.setCapability("waitForAppScript", "$.delay(8000)");
 
 						
 			try {
@@ -185,7 +185,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			
 			if (autoAcceptAlerts.equals("true")) {
-				capabilities.setCapability("autoAcceptAlerts", true);
+				//capabilities.setCapability("autoAcceptAlerts", true);
 //				capabilities.setCapability("notificationsAuthorized", true);
 //				capabilities.setCapability("locationServicesAuthorized", false);
 			}
@@ -242,6 +242,16 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 		}
 
+        System.out.println("   wait to dismiss any system location dialogs");
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        try {
+            wait.until(ExpectedConditions.alertIsPresent());
+            driver.switchTo().alert().accept();
+        } catch (Exception e) {
+        	System.out.println("   no alert visible after 10 sec.");
+        }
+		
+		
 //		if (getPlatform() == platform.IOS && autoAcceptAlerts.equals("false")) {
 //			Alert alert = driver.switchTo().alert();
 //			boolean autoAcceptAlerts = true;
