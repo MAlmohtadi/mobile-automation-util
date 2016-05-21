@@ -52,17 +52,6 @@ public class DriverProvider {
 		initializeUdids();
 	}
 	public static void initializePorts() {
-//		if (appiumPortsList == null) {
-//			appiumPortsList = new ArrayList<String>();
-//			if (EnvirommentManager.getInstance()
-//					.getProperty("UseLocaleEmulators").contains("true")) {
-//				String Ports = EnvirommentManager.getInstance().getProperty(
-//						"Ports");
-//				appiumPortsList.addAll(asList(Ports.split(",")));
-//			} else {
-//				appiumPortsList.add("4723");
-//			}
-//		}
 		Integer initialPort = 4733;
 		int threads=0;
 		try{
@@ -175,7 +164,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("commandTimeout", "600");
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
-			capabilities.setCapability("waitForAppScript", "$.delay(1000);$.acceptAlert()");
+			capabilities.setCapability("waitForAppScript", "$.delay(3000);$.acceptAlert()");
 			capabilities.setCapability("noReset", true);
 						
 			//	capabilities.setCapability("autoAcceptAlerts", true);
@@ -211,8 +200,8 @@ public serverInfo getCurrentServerInfo(String threadName)
 				capabilities.setCapability("app", appPath);
 			}
 
-			System.out.println(currentServer.serverPort + ":"
-					+ currentServer.deviceUUID);
+			// System.out.println(currentServer.serverPort + ":"+ currentServer.deviceUUID);
+			
 			if(!TargetPlatform.runOnAmazon){
 			serverAddress = new URL("http://127.0.0.1:"
 					+ currentServer.serverPort + "/wd/hub");
