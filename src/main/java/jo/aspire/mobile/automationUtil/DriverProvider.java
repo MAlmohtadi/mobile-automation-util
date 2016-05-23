@@ -27,6 +27,7 @@ public class DriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();
+	public static String ResetApp = "true";
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
 	public static ArrayList<String> appiumPortsList = new ArrayList<>();
 	public static ArrayList<String> udid = new ArrayList<>();
@@ -165,7 +166,22 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(3000);$.acceptAlert()");
-			capabilities.setCapability("noReset", true);
+			
+			try {
+				ResetApp = EnvirommentManager.getInstance().getProperty("ResetApp");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if (ResetApp.equals("true")){
+				capabilities.setCapability("fullReset",true);
+				capabilities.setCapability("noReset", false);
+			}else{
+				capabilities.setCapability("fullReset",false);
+				capabilities.setCapability("noReset", true);	
+			}
+            
 						
 			//	capabilities.setCapability("autoAcceptAlerts", true);
 			//  capabilities.setCapability("notificationsAuthorized", true);
