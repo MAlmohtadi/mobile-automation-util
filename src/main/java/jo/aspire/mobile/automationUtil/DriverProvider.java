@@ -193,10 +193,6 @@ public serverInfo getCurrentServerInfo(String threadName)
 					analytics = false;
 				}
 			
-			System.out.println("+++++++++ Analytics Check +++++++++");
-			System.out.println(analytics);
-			System.out.println(SauceLabeSessionHandler.getRunOnSauce());
-			
 			if(analytics && SauceLabeSessionHandler.getRunOnSauce()){
 				String tunnelID = null;
 				
@@ -207,6 +203,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 				else{
 					
 					sauceConnectTunnelsId.put(Thread.currentThread().getName(),sauceTunnelsIdList.get(0));
+					tunnelID = sauceTunnelsIdList.get(0);
 					sauceTunnelsIdList.remove(0);
 				}
 				
