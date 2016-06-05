@@ -188,13 +188,16 @@ public serverInfo getCurrentServerInfo(String threadName)
 			boolean analytics;
 			try{
 				analytics = Boolean.parseBoolean(EnvirommentManager.getInstance()
-						.getProperty("threads"));
+						.getProperty("analytics"));
 				}catch(Exception ex){
 					analytics = false;
 				}
 			
-			if(analytics && EnvirommentManager.getInstance().getProperty("UseSauceLabs")
-					.contains("true")){
+			System.out.println("+++++++++ Analytics Check +++++++++");
+			System.out.println(analytics);
+			System.out.println(SauceLabeSessionHandler.getRunOnSauce());
+			
+			if(analytics && SauceLabeSessionHandler.getRunOnSauce()){
 				String tunnelID = null;
 				
 				if(sauceConnectTunnelsId.get(Thread.currentThread().getName()) != null)
