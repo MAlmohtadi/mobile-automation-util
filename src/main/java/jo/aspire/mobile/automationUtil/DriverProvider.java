@@ -29,6 +29,8 @@ public class DriverProvider {
 	private Date date = new Date();
 	public static String ResetApp = "true";
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
+	public static Hashtable<String, String> sauceConnectTunnelsId = new Hashtable<String, String>();
+	public static ArrayList<String> sauceTunnelsIdList = new ArrayList<>();
 	public static ArrayList<String> appiumPortsList = new ArrayList<>();
 	public static ArrayList<String> udid = new ArrayList<>();
 	public enum platform {
@@ -77,6 +79,22 @@ public class DriverProvider {
 			}
 
 	}
+	
+	
+	public static void initializeSauceConnectTunnelsId() {
+		int threads=0;
+		try{
+		threads= Integer.parseInt(EnvirommentManager.getInstance()
+				.getProperty("threads"));
+		}catch(Exception ex){
+			threads =1;
+		}
+		for (int i =0; i< threads; i++){
+			sauceTunnelsIdList.add(("my-tun" + (1 + i)).toString());
+		}
+	}
+	
+	
 	@SuppressWarnings("rawtypes")
 	public AppiumDriver getCurrentDriver() {
 		String threadName = Thread.currentThread().getName();
@@ -142,8 +160,8 @@ public serverInfo getCurrentServerInfo(String threadName)
 	public void SetupDriver(String threadName) throws IOException {
 		serverInfo currentServer =getCurrentServerInfo(threadName);
 		AppiumDriver driver = null;
-		// Setup capabilities
 
+	
 		DesiredCapabilities capabilities;
 		if (getPlatform() == platform.ANDROID) {
 			capabilities = DesiredCapabilities.android();
@@ -166,7 +184,33 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
-			capabilities.setCapability("tunnelIdentifier", "my-tun1");
+			
+			boolean analytics;
+			try{
+				analytics = Boolean.parseBoolean(EnvirommentManager.getInstance()
+						.getProperty("threads"));
+				}catch(Exception ex){
+					analytics = false;
+				}
+			
+			if(analytics && SauceLabeSessionHandler.getRunOnSauce()){
+				String tunnelID = null;
+				
+				if(sauceConnectTunnelsId.get(Thread.currentThread().getName()) != null)
+				{
+					tunnelID = sauceConnectTunnelsId.get(Thread.currentThread().getName());
+				}
+				else{
+					
+					sauceConnectTunnelsId.put(Thread.currentThread().getName(),sauceTunnelsIdList.get(0));
+					sauceTunnelsIdList.remove(0);
+				}
+				
+				capabilities.setCapability("tunnelIdentifier", tunnelID);
+			}
+			
+			
+			
 			
 			
 			try {
