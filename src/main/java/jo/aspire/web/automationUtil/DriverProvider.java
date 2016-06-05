@@ -158,6 +158,7 @@ public class DriverProvider extends PropertyWebDriverProvider {
 		if (PlatformInformation.isProxy) {
 			addProxyCapabilities(cap, PlatformInformation.proxyHost, PlatformInformation.proxyPort);
 		}
+		options.addArguments("user-data-dir="+System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
 		cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		cap.setCapability(ChromeOptions.CAPABILITY, options);
 		options.addArguments("test-type");
@@ -193,8 +194,8 @@ public class DriverProvider extends PropertyWebDriverProvider {
 	}
 
 	protected FirefoxDriver createFirefoxDriver() {
-
-		FirefoxProfile firefoxProfile = new FirefoxProfile();
+		File file = new File(System.getProperty("user.dir") + File.separator + "SeleniumFirefoxDriveProfile");
+		FirefoxProfile firefoxProfile = new FirefoxProfile(file);
 
 		String path = System.getProperty("user.dir") + File.separator + "Temp";
 		firefoxProfile.setPreference("browser.download.folderList", 2);
