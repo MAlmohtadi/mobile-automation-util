@@ -166,6 +166,8 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
+			capabilities.setCapability("tunnelIdentifier", "my-tun1");
+			
 			
 			try {
 				ResetApp = EnvirommentManager.getInstance().getProperty("ResetApp");
