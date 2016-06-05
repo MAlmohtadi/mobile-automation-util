@@ -193,7 +193,8 @@ public serverInfo getCurrentServerInfo(String threadName)
 					analytics = false;
 				}
 			
-			if(analytics && SauceLabeSessionHandler.getRunOnSauce()){
+			if(analytics && EnvirommentManager.getInstance().getProperty("UseSauceLabs")
+					.contains("true")){
 				String tunnelID = null;
 				
 				if(sauceConnectTunnelsId.get(Thread.currentThread().getName()) != null)
@@ -207,6 +208,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 				}
 				
 				capabilities.setCapability("tunnelIdentifier", tunnelID);
+				System.out.println("tunnelIdentifier: " + tunnelID);
 			}
 			
 			
