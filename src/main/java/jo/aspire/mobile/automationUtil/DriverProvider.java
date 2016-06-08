@@ -214,6 +214,11 @@ public serverInfo getCurrentServerInfo(String threadName)
 				}
 				else{
 					
+					if(sauceTunnelsIdList.isEmpty()){
+						initializeSauceConnectTunnelsId();
+						
+					}
+					
 					sauceConnectTunnelsId.put(Thread.currentThread().getName(),sauceTunnelsIdList.get(0));
 					tunnelID = sauceTunnelsIdList.get(0);
 					sauceTunnelsIdList.remove(0);
