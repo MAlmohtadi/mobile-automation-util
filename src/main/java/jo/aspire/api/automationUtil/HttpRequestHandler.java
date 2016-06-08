@@ -39,7 +39,6 @@ import org.apache.http.message.BasicHeader;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 /**
  * handler to handle get,post,put, and delete methods all httpclient

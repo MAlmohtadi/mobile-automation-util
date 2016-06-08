@@ -28,6 +28,8 @@ public class DriverProvider {
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();
 	public static String ResetApp = "true";
+	public static String deviceType ;
+	
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
 	public static Hashtable<String, String> sauceConnectTunnelsId = new Hashtable<String, String>();
 	public static ArrayList<String> sauceTunnelsIdList = new ArrayList<>();
@@ -184,6 +186,16 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
+			
+			if (getPlatform() == platform.ANDROID) {
+				try {
+					deviceType = EnvirommentManager.getInstance().getProperty("deviceType");
+				} catch (Exception e) {
+					deviceType = "phone";
+				}
+				
+				capabilities.setCapability("deviceType",deviceType);
+			}
 			
 			boolean analytics;
 			try{
