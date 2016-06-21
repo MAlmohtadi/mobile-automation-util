@@ -9,7 +9,6 @@
 	<description>Core classes for automation</description>
 	<name>automationUtil</name>
 	<url>http://aspire.jo</url>
-
 	<dependencies>
 
 		<dependency>
@@ -97,7 +96,6 @@
 		<dependency>
 			<groupId>org.sikuli</groupId>
 			<artifactId>sikuli-api</artifactId>
-			<version>1.0.2</version>
 		</dependency>
 
 		<dependency>
@@ -115,6 +113,7 @@
 
 		</dependency>
 
+            
 		<dependency>
 			<groupId>io.appium</groupId>
 			<artifactId>java-client</artifactId>
@@ -230,7 +229,26 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		
+
+<repository>
+                        <id>JavaCV Maven</id>
+                        <url>http://maven2.javacv.googlecode.com/git/</url>
+                </repository>
+                <repository>
+                        <id>JavaCPP Maven</id>
+                        <url>http://maven2.javacpp.googlecode.com/git/</url>
+                </repository>
 	</repositories>
 
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.sikuli</groupId>
+				<artifactId>sikuli-api</artifactId>
+				<version>1.2.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
