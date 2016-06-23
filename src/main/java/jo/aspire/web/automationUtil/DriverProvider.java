@@ -16,6 +16,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -194,9 +195,8 @@ public class DriverProvider extends PropertyWebDriverProvider {
 	}
 
 	protected FirefoxDriver createFirefoxDriver() {
-		File file = new File(System.getProperty("user.dir") + File.separator + "SeleniumFirefoxDriveProfile");
-		FirefoxProfile firefoxProfile = new FirefoxProfile(file);
-
+		ProfilesIni profile = new ProfilesIni();
+		FirefoxProfile firefoxProfile = profile.getProfile("default");
 		String path = System.getProperty("user.dir") + File.separator + "Temp";
 		firefoxProfile.setPreference("browser.download.folderList", 2);
 		firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);
