@@ -46,7 +46,7 @@ public class FixedChromeDriver extends ChromeDriver {
 		}
 	}
 
-	public void DeleteProfileData() {
+	public static void DeleteProfileData() {
 		try {
 
 			File file = new File(System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
