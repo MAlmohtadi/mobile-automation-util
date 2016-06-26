@@ -1,5 +1,6 @@
 package jo.aspire.web.automationUtil;
 
+import java.io.File;
 import java.util.Map;
 
 import org.openqa.selenium.Capabilities;
@@ -10,36 +11,56 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
 public class FixedChromeDriver extends ChromeDriver {
-	 private final int retryCount = 2;
+	private final int retryCount = 2;
 
-	    public FixedChromeDriver() {
-	    }
-	    public FixedChromeDriver(ChromeOptions options) {
-	    	super(options);
-	      }
-	    public FixedChromeDriver(Capabilities desiredCapabilities) {
-	        super(desiredCapabilities);
-	    }
+	public FixedChromeDriver() {
+	}
 
-	    public FixedChromeDriver(ChromeDriverService service, Capabilities desiredCapabilities) {
-	        super(service, desiredCapabilities);
-	    }
+	public FixedChromeDriver(ChromeOptions options) {
+		super(options);
+	}
 
-	    @Override
-	    protected Response execute(String driverCommand, Map<String, ?> parameters) {
-	        int retryAttempt = 0;
+	public FixedChromeDriver(Capabilities desiredCapabilities) {
+		super(desiredCapabilities);
+	}
 
-	        while (true) {
-	            try {
+	public FixedChromeDriver(ChromeDriverService service, Capabilities desiredCapabilities) {
+		super(service, desiredCapabilities);
+	}
 
-	                return super.execute(driverCommand, parameters);
+	@Override
+	protected Response execute(String driverCommand, Map<String, ?> parameters) {
+		int retryAttempt = 0;
 
-	            } catch (UnreachableBrowserException e) {
-	                retryAttempt++;
-	                if (retryAttempt > retryCount) {
-	                    throw e;
-	                }
-	            }
-	        }
-	    }
+		while (true) {
+			try {
+
+				return super.execute(driverCommand, parameters);
+
+			} catch (UnreachableBrowserException e) {
+				retryAttempt++;
+				if (retryAttempt > retryCount) {
+					throw e;
+				}
+			}
+		}
+	}
+
+	public void DeleteProfileData() {
+		try {
+
+			File file = new File(System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
+
+			if (file.delete()) {
+				System.out.println(file.getName() + " is deleted!");
+			} else {
+				System.out.println("Delete operation is failed.");
+			}
+
+		} catch (Exception e) {
+
+			System.out.println("Delete operation not found.");
+
+		}
+	}
 }
