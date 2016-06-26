@@ -229,14 +229,14 @@
 			</snapshots>
 		</repository>
 
-<repository>
-                        <id>JavaCV Maven</id>
-                        <url>http://maven2.javacv.googlecode.com/git/</url>
-                </repository>
-                <repository>
-                        <id>JavaCPP Maven</id>
-                        <url>http://maven2.javacpp.googlecode.com/git/</url>
-                </repository>
+<!-- <repository> -->
+<!--                         <id>JavaCV Maven</id> -->
+<!--                         <url>http://maven2.javacv.googlecode.com/git/</url> -->
+<!--                 </repository> -->
+<!--                 <repository> -->
+<!--                         <id>JavaCPP Maven</id> -->
+<!--                         <url>http://maven2.javacpp.googlecode.com/git/</url> -->
+<!--                 </repository> -->
 
 		<repository>
 			<id>JavaCV Maven</id>
