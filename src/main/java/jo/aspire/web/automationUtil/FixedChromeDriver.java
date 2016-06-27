@@ -46,21 +46,4 @@ public class FixedChromeDriver extends ChromeDriver {
 		}
 	}
 
-	public static void DeleteProfileData() {
-		try {
-
-			File file = new File(System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
-
-			if (file.delete()) {
-				System.out.println(file.getName() + " is deleted!");
-			} else {
-				System.out.println("Delete operation is failed.");
-			}
-
-		} catch (Exception e) {
-
-			System.out.println("Delete operation not found.");
-
-		}
-	}
 }

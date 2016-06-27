@@ -5,18 +5,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import jo.aspire.generic.EnvirommentManager;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.jbehave.web.selenium.PropertyWebDriverProvider;
+import org.jbehave.web.selenium.DelegatingWebDriverProvider;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -27,8 +24,9 @@ import org.openqa.selenium.safari.SafariDriver;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
+import jo.aspire.generic.EnvirommentManager;
 
-public class DriverProvider extends PropertyWebDriverProvider {
+public class DriverProvider extends DelegatingWebDriverProvider {
 	private RemoteWebDriver driver;
 	private static String browser;
 
@@ -83,8 +81,8 @@ public class DriverProvider extends PropertyWebDriverProvider {
 		} else {
 			if (browser.equals("Phantom")) {
 				return createPhantomDrive();
-			} else if (browser.equals("htmlUnit")) {
-				return createHtmlUnitDriver();
+		//	} else if (browser.equals("htmlUnit")) {
+		//		return createHtmlUnitDriver();
 			} else if (browser.equals("chrome")) {
 				return createChromeDriver();
 			} else if (browser.equals("ie32")) {
@@ -93,7 +91,6 @@ public class DriverProvider extends PropertyWebDriverProvider {
 				return createInternetExplorerDriver64();
 			} else if (browser.equals("safari")) {
 				return createSafariDriver();
-
 			} else if (browser.equals("remote")) {
 				return createRemoteDriver();
 			} else {
@@ -159,7 +156,7 @@ public class DriverProvider extends PropertyWebDriverProvider {
 		if (PlatformInformation.isProxy) {
 			addProxyCapabilities(cap, PlatformInformation.proxyHost, PlatformInformation.proxyPort);
 		}
-		options.addArguments("user-data-dir="+System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
+		//options.addArguments("user-data-dir="+System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
 		cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		cap.setCapability(ChromeOptions.CAPABILITY, options);
 		options.addArguments("test-type");
@@ -195,8 +192,8 @@ public class DriverProvider extends PropertyWebDriverProvider {
 	}
 
 	protected FirefoxDriver createFirefoxDriver() {
-		ProfilesIni profile = new ProfilesIni();
-		FirefoxProfile firefoxProfile = profile.getProfile("default");
+		FirefoxProfile firefoxProfile = new FirefoxProfile();
+	//FirefoxProfile firefoxProfile = profile.getProfile("default");
 		String path = System.getProperty("user.dir") + File.separator + "Temp";
 		firefoxProfile.setPreference("browser.download.folderList", 2);
 		firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);

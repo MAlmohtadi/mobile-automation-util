@@ -449,7 +449,7 @@ public abstract class Helper {
 
 	public ScreenRegion findRegion(String targetFileLocation) {
 		Target target = new ImageTarget(new File(targetFileLocation));
-		target.setMinScore(0.9); // 0.7 default
+		target.setMinScore(0.5); // 0.7 default
 
 		ScreenRegion screenRegion = new StaticImageScreenRegion(takeShot()).find(target);
 		return screenRegion;
