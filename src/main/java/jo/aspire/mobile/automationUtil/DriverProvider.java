@@ -357,10 +357,11 @@ public serverInfo getCurrentServerInfo(String threadName)
 					}
 					drivers.put(ThreadName, driver);
 				}else{
-//					driver.resetApp();
-//					System.out.println("reset: "+driver.getRemoteAddress().getPort() + ":"
-//							+ driver.getCapabilities().getCapability("udid"));
-//
+					driver.closeApp();
+				//	driver.resetApp();
+					System.out.println("reset: "+driver.getRemoteAddress().getPort() + ":"
+							+ driver.getCapabilities().getCapability("udid"));
+
 				}
 			}
 		}catch(Exception ex){
