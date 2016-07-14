@@ -357,8 +357,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 					}
 					drivers.put(ThreadName, driver);
 				}else{
-					driver.closeApp();
-				//	driver.resetApp();
+					driver.resetApp();
 					System.out.println("reset: "+driver.getRemoteAddress().getPort() + ":"
 							+ driver.getCapabilities().getCapability("udid"));
 
