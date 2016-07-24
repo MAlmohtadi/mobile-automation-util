@@ -27,7 +27,7 @@ public class DriverProvider {
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();
-	public static String ResetApp = "true";
+	public static String ResetApp = "null";
 	public static String deviceType ;
 	
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
@@ -235,14 +235,12 @@ public serverInfo getCurrentServerInfo(String threadName)
 			try {
 				ResetApp = EnvirommentManager.getInstance().getProperty("ResetApp");
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			
 			if (ResetApp.equals("true")){
 				capabilities.setCapability("fullReset",true);
 				capabilities.setCapability("noReset", false);
-			}else{
+			}else if (ResetApp.equals("false")){
 				capabilities.setCapability("fullReset",false);
 				capabilities.setCapability("noReset", true);	
 			}
