@@ -92,12 +92,23 @@
 			<version>4.0</version>
 		</dependency>
 
-<dependency>
-    <groupId>org.sikuli</groupId>
-    <artifactId>sikuli-api</artifactId>
-    <version>1.2.0</version>
-</dependency>
+		<dependency>
+			<groupId>org.sikuli</groupId>
+			<artifactId>sikuli-api</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv</artifactId>
+			<version>0.10</version>
+		</dependency>
 
+
+		<dependency>
+			<groupId>org.sikuli</groupId>
+			<artifactId>sikuli-core</artifactId>
+			<version>1.2.2</version>
+		</dependency>
 		<dependency>
 			<!-- Must use 1.0.15 or better otherwise upload file will have cookie 
 				warnings https://github.com/saucelabs/saucerest-java/commit/99bce5b108354ad086ac31e06c1e3ab092000490 -->
@@ -230,14 +241,14 @@
 			</snapshots>
 		</repository>
 
-<!-- <repository> -->
-<!--                         <id>JavaCV Maven</id> -->
-<!--                         <url>http://maven2.javacv.googlecode.com/git/</url> -->
-<!--                 </repository> -->
-<!--                 <repository> -->
-<!--                         <id>JavaCPP Maven</id> -->
-<!--                         <url>http://maven2.javacpp.googlecode.com/git/</url> -->
-<!--                 </repository> -->
+		<!-- <repository> -->
+		<!-- <id>JavaCV Maven</id> -->
+		<!-- <url>http://maven2.javacv.googlecode.com/git/</url> -->
+		<!-- </repository> -->
+		<!-- <repository> -->
+		<!-- <id>JavaCPP Maven</id> -->
+		<!-- <url>http://maven2.javacpp.googlecode.com/git/</url> -->
+		<!-- </repository> -->
 
 		<repository>
 			<id>JavaCV Maven</id>
@@ -247,6 +258,55 @@
 			<id>JavaCPP Maven</id>
 			<url>http://maven2.javacpp.googlecode.com/git/</url>
 		</repository>
+
+
+		<repository>
+			<id>com.sikulix</id>
+			<name>com.sikulix</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 	</repositories>
+	<profiles>
+		<profile>
+			<id>windows_profile</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.bytedeco.javacpp-presets</groupId>
+					<artifactId>opencv</artifactId>
+					<version>2.4.10-0.10</version>
+					<!-- For Windows 64bit -->
+					<classifier>windows-x86_64</classifier>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>osx_profile</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<dependencies>
+				<!-- For MacOSX 64bit -->
+				<dependency>
+					<groupId>org.bytedeco.javacpp-presets</groupId>
+					<artifactId>opencv</artifactId>
+					<version>2.4.10-0.10</version>
+					<classifier>macosx-x86_64</classifier>
+				</dependency>
+			</dependencies>
+
+		</profile>
+	</profiles>
 
 </project>
