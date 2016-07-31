@@ -271,10 +271,10 @@ public abstract class Helper {
 	}
 
 	public By for_find(String value) {
-		return By.xpath("//*[@content-desc=\"" + value + "\" or @type=\"" + value + "\" or @class=\"" + value
-				+ "\" or @package=\"" + value + "\" or @resource-id=\"" + value + "\" or @text=\"" + value
-				+ "\"] | //*[contains(translate(@content-desc,\"" + value + "\",\"" + value + "\"), \"" + value
-				+ "\") or contains(translate(@text,\"" + value + "\",\"" + value + "\"), \"" + value
+		return By.xpath("//*[@content-desc=\"" + value + "\" or @type=\"" + value + "\" or @name=\"" + value
+				+ "\" or @class=\"" + value + "\" or @package=\"" + value + "\" or @resource-id=\"" + value
+				+ "\" or @text=\"" + value + "\"] | //*[contains(translate(@content-desc,\"" + value + "\",\"" + value
+				+ "\"), \"" + value + "\") or contains(translate(@text,\"" + value + "\",\"" + value + "\"), \"" + value
 				+ "\") or @resource-id=\"" + value + "\"]");
 	}
 
