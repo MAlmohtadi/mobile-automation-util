@@ -187,6 +187,18 @@ public serverInfo getCurrentServerInfo(String threadName)
 			capabilities.setCapability("nativeInstrumentsLib", true);
 			capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
 			
+			try {
+				capabilities.setCapability("appPackage", EnvirommentManager.getInstance().getProperty("appPackage"));
+			} catch (Exception e) {
+			
+			}
+			
+			try {
+				capabilities.setCapability("appActivity", EnvirommentManager.getInstance().getProperty("appActivity"));
+			} catch (Exception e) {
+				
+			}
+			
 			if (getPlatform() == platform.ANDROID) {
 				try {
 					deviceType = EnvirommentManager.getInstance().getProperty("deviceType");
