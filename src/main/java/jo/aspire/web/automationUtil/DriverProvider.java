@@ -3,6 +3,7 @@ package jo.aspire.web.automationUtil;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.log4j.Level;
@@ -29,7 +30,9 @@ import jo.aspire.generic.EnvirommentManager;
 public class DriverProvider extends DelegatingWebDriverProvider {
 	private RemoteWebDriver driver;
 	private static String browser;
-
+	public static String jobName = null;
+	private Date date = new Date();
+	
 	@Override
 	public void initialize() {
 
@@ -52,7 +55,11 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 			if (PlatformInformation.deviceOrientation != null && !PlatformInformation.deviceOrientation.isEmpty()) {
 				capabilities.setCapability("deviceOrientation", PlatformInformation.deviceOrientation);
 			}
-
+			
+			capabilities.setCapability("name", System.getProperty("user.name")
+					+ " - " + jobName + "(And) - " + date);
+			
+			
 			try {
 				this.driver = new RemoteWebDriver(
 						new URL("http://" + EnvirommentManager.getInstance().getProperty("username") + ":"
