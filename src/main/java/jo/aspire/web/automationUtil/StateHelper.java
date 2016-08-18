@@ -3,21 +3,21 @@ package jo.aspire.web.automationUtil;
 import java.util.HashMap;
 
 public class StateHelper {
-       private static HashMap<String, Object> CrossStepState = new HashMap<String, Object>();
+       private static ThreadLocal<HashMap<String, Object>> CrossStepState = new ThreadLocal<HashMap<String, Object>>();
        private static HashMap<String, Object> CrossStoryState = new HashMap<String, Object>();
 
        // Save key with Object Value
        public static void setStepState(String key, Object value) {
-              CrossStepState.put(key, value);
+              CrossStepState.get().put(key, value);
 
        }
        
        public static Object getStepState(String key) {
-              return CrossStepState.get(key);
+              return CrossStepState.get().get(key);
        }
 
        public static void clearStepState() {
-           CrossStepState.clear();
+           CrossStepState.get().clear();
 
        }
        
@@ -25,7 +25,7 @@ public class StateHelper {
        public static boolean checkStepStateContainsKey (String keyState)
        {
     	  
-    	   return CrossStepState.containsKey(keyState);
+    	   return CrossStepState.get().containsKey(keyState);
        }
        
       
