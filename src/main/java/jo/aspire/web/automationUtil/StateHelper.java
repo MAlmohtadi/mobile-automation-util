@@ -3,7 +3,11 @@ package jo.aspire.web.automationUtil;
 import java.util.HashMap;
 
 public class StateHelper {
-       private static ThreadLocal<HashMap<String, Object>> CrossStepState = new ThreadLocal<HashMap<String, Object>>();
+       private static ThreadLocal<HashMap<String, Object>> CrossStepState = new ThreadLocal<HashMap<String, Object>>(){
+           @Override public HashMap<String, Object> initialValue() {
+               return new HashMap<String, Object>();
+           }
+       };
        private static HashMap<String, Object> CrossStoryState = new HashMap<String, Object>();
 
        // Save key with Object Value
