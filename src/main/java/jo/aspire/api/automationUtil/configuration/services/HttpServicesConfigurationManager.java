@@ -3,14 +3,20 @@ package jo.aspire.api.automationUtil.configuration.services;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import org.apache.commons.io.Charsets;
 
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceConfiguration;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceRequestConfigParam;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServicesConfigurationCollection;
 
+import com.google.common.io.Resources;
 import com.google.gson.Gson;
 
 class HttpServicesConfigurationManager {
@@ -112,12 +118,15 @@ class HttpServicesConfigurationManager {
 	}
 	private HttpServicesConfigurationCollection loadServicesConfigJsonFile(String servicesConfigFilePath) {
 		HttpServicesConfigurationCollection servicesConfig = null;
+		
+		URL url = Thread.currentThread().getContextClassLoader().getResource(servicesConfigFilePath);
 		Gson gson = new Gson();
 		try {
-			BufferedReader configs = new BufferedReader(new FileReader(servicesConfigFilePath));
-			servicesConfig = gson.fromJson(configs, HttpServicesConfigurationCollection.class);
+			String fileContent = Resources.toString(url, Charsets.UTF_8);			
+			servicesConfig = gson.fromJson(fileContent, HttpServicesConfigurationCollection.class);
 			
-		} catch (FileNotFoundException e) {
+		}  catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return servicesConfig;
