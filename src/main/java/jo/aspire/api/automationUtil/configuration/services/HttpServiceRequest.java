@@ -3,6 +3,7 @@ package jo.aspire.api.automationUtil.configuration.services;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
@@ -10,8 +11,9 @@ import java.util.Map.Entry;
 import jo.aspire.api.automationUtil.HttpRequestHandler;
 import jo.aspire.api.automationUtil.MethodEnum.Method;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceConfiguration;
-import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceRequestBodyConfigParam;
+import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceRequestConfigParam;
 
+import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.cookie.Cookie;
 
@@ -20,13 +22,23 @@ public class HttpServiceRequest {
 	HttpServiceConfiguration _httpServiceConfiguration;
 	private HttpRequestHandler _httpRequestHandler;
 	private String _requestBody;
-
 	public HttpServiceRequest(HttpRequestHandler httpRequestHandler, HttpServiceConfiguration httpServiceConfiguration)
 	{
 		setHttpRequestHandler(httpRequestHandler);
 		setHttpServiceConfiguration(httpServiceConfiguration);
 		initHttpRequest();
 	}	
+	public HttpServiceResponse execute()
+	{
+		CloseableHttpResponse httpResponse = null;
+		try {
+			httpResponse = getHttpRequestHandler().executeSessionRequest( getHttpServiceConfiguration().getMethodName());
+		} catch (URISyntaxException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new HttpServiceResponse(httpResponse, getHttpServiceConfiguration(), getHttpServiceConfiguration() .getName());
+	}
 	public HttpServiceRequest resolveServiceRequestBody(Hashtable<String, String> PlaceholderKeyValueHashtable) {
 		if (PlaceholderKeyValueHashtable != null) {
 			for (Entry<String, String> placeholder : PlaceholderKeyValueHashtable
@@ -43,14 +55,39 @@ public class HttpServiceRequest {
 		setHttpRequestHandlerRequestBody();
 		return this;
 	}
-	public HttpServiceRequest resolveServiceRequestUrl(String placeholderName, String placeholderValue) {
+	public HttpServiceRequest resolveServiceRequestHeader(String headerName, String placeholderName, String placeholderValue) {
+		for(Header header : _httpRequestHandler.getRequestHeaders(headerName))
+		{
+			if( header.getValue() != null){
+			_httpRequestHandler.setRequestHeader(headerName, header.getValue().replace(placeholderName, placeholderValue));
+			}
+		}
+		return this;
+	}
+	public HttpServiceRequest resolveServiceRequestUrl(String placeholderName, String placeholderValue, boolean encodeUrl) {
 		String url = getHttpServiceConfiguration().getUrl();
 		if (url != null && url != "") {
+			placeholderValue = getEncodedValue(placeholderValue, encodeUrl);
 			url = url.replace(placeholderName, placeholderValue);
 			getHttpServiceConfiguration().setUrl(url);
 			setRequestUrl();
 		}
 		return this;
+	}
+	public String getEncodedValue(String placeholderValue, boolean encodeUrl) {
+		if(encodeUrl)
+		{
+			try {
+				placeholderValue = URLEncoder.encode(placeholderValue, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return placeholderValue;
+	}
+	public HttpServiceRequest resolveServiceRequestUrl(String placeholderName, String placeholderValue) {
+		 return resolveServiceRequestUrl(placeholderName, placeholderValue, false);
 	}
 	public HttpServiceRequest addCookie(String name, String value, String domain, String path) {
 		getHttpRequestHandler().setSessionCookie(name, value, domain, path); 
@@ -66,28 +103,19 @@ public class HttpServiceRequest {
 		getHttpRequestHandler().setRequestHeader("Content-Type", getHttpServiceConfiguration().getConentType());
 	    setRequestUrl();
 		initServiceRequestBody(getHttpServiceConfiguration() .getRequestBodyParams());
+		initServiceRequestHeaders(getHttpServiceConfiguration() .getRequestHeaders());
 		return this;
 	}
-	public void setRequestUrl() {
+	void setRequestUrl() {
 		try {
-			getHttpRequestHandler().setRequestUrl( getHttpServiceConfiguration().getHost() + getHttpServiceConfiguration().getUrl());
+			String url = getHttpServiceConfiguration().getHost() + getHttpServiceConfiguration().getUrl();
+			getHttpRequestHandler().setRequestUrl(url);
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	public HttpServiceResponse execute()
-	{
-		CloseableHttpResponse httpResponse = null;
-		try {
-			httpResponse = getHttpRequestHandler().executeSessionRequest( getHttpServiceConfiguration().getMethodName());
-		} catch (URISyntaxException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return new HttpServiceResponse(httpResponse, getHttpServiceConfiguration(), getHttpServiceConfiguration() .getName());
-	}
-	protected void initServiceRequestBody(List<HttpServiceRequestBodyConfigParam> httpServiceRequestBodyConfigParam)
+	protected void initServiceRequestBody(List<HttpServiceRequestConfigParam> httpServiceRequestBodyConfigParam)
 	{
 		if(getHttpServiceConfiguration().getConentType().toLowerCase().contains("application/x-www-form-urlencoded".toLowerCase()))
 		{
@@ -96,6 +124,17 @@ public class HttpServiceRequest {
 		else //application/Json
 		{
 			initServiceRequestBodyJson(httpServiceRequestBodyConfigParam);
+		}
+	}
+	protected void initServiceRequestHeaders(List<HttpServiceRequestConfigParam> httpServiceRequestHeaders)
+	{			
+		if(httpServiceRequestHeaders != null){
+			for(HttpServiceRequestConfigParam header : httpServiceRequestHeaders)
+			{
+				if(header != null){
+					_httpRequestHandler.setRequestHeader(header.name, header.value);
+				}
+			}
 		}
 	}
 	public void executeWithoutResponse() {
@@ -164,12 +203,12 @@ public class HttpServiceRequest {
 		}
 		return Method.POST;
 	}
-    private void initServiceRequestBodyFrom(List<HttpServiceRequestBodyConfigParam> httpServiceRequestBodyConfigParam)
+    private void initServiceRequestBodyFrom(List<HttpServiceRequestConfigParam> httpServiceRequestBodyConfigParam)
     {
 			setServiceRequestBody("method=" + getHttpServiceConfiguration().getMethodName());			
 			if(httpServiceRequestBodyConfigParam != null){
 				String requestBody = getServiceRequestBody();
-				for(HttpServiceRequestBodyConfigParam param : httpServiceRequestBodyConfigParam)
+				for(HttpServiceRequestConfigParam param : httpServiceRequestBodyConfigParam)
 				{
 					if(param != null){
 						requestBody += "&" + param.name + "=" + param.value;
@@ -179,10 +218,10 @@ public class HttpServiceRequest {
 			}
 			setHttpRequestHandlerRequestBody();
     }    
-    private void initServiceRequestBodyJson(List<HttpServiceRequestBodyConfigParam> httpServiceRequestBodyConfigParam)
+    private void initServiceRequestBodyJson(List<HttpServiceRequestConfigParam> httpServiceRequestBodyConfigParam)
     {
 			if(httpServiceRequestBodyConfigParam != null){
-				for(HttpServiceRequestBodyConfigParam param : httpServiceRequestBodyConfigParam)
+				for(HttpServiceRequestConfigParam param : httpServiceRequestBodyConfigParam)
 				{
 					if(param != null){
 						setServiceRequestBody(param.value);

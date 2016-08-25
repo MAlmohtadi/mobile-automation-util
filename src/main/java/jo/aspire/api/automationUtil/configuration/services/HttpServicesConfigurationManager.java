@@ -3,9 +3,12 @@ package jo.aspire.api.automationUtil.configuration.services;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceConfiguration;
+import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceRequestConfigParam;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServicesConfigurationCollection;
 
 import com.google.gson.Gson;
@@ -58,6 +61,39 @@ class HttpServicesConfigurationManager {
 			matchingServiceConfig.setHttpMethod(httpServicesConfigurationCollection.getDefaultHttpMethod());
 		if(matchingServiceConfig.getConentType() == null ||matchingServiceConfig.getConentType().trim() == "")
 			matchingServiceConfig.setConentType(httpServicesConfigurationCollection.getDefaultContentType());
+		if(httpServicesConfigurationCollection.getDefaultRequestHeaders() != null)
+		{
+			List<HttpServiceRequestConfigParam> defaultRequestHeaders = httpServicesConfigurationCollection.getDefaultRequestHeaders();
+			List<HttpServiceRequestConfigParam> matchingServiceConfigRequestHeaders = matchingServiceConfig.getRequestHeaders();
+			if(matchingServiceConfigRequestHeaders == null)
+			{
+				matchingServiceConfigRequestHeaders = new ArrayList<HttpServiceRequestConfigParam>();
+				matchingServiceConfig.setRequestHeaders(matchingServiceConfigRequestHeaders); 
+			}			
+			for(HttpServiceRequestConfigParam defaultRequestHeader : defaultRequestHeaders)
+			{
+				boolean isExists = isRequestHeaderExists(
+						matchingServiceConfigRequestHeaders,
+						defaultRequestHeader);
+				if(!isExists)
+				{
+					matchingServiceConfigRequestHeaders.add(defaultRequestHeader);
+				}
+			}
+		}
+	}
+	private boolean isRequestHeaderExists(
+			List<HttpServiceRequestConfigParam> matchingServiceConfigRequestHeaders,
+			HttpServiceRequestConfigParam defaultRequestHeader) {
+		boolean isExists = false;
+		for(HttpServiceRequestConfigParam h : matchingServiceConfigRequestHeaders){
+		    if(h.name != null && h.name.toLowerCase().trim().equals(defaultRequestHeader.name.toLowerCase().trim()))
+		    {
+		    	isExists = true;
+		    	break;
+		    }
+		}
+		return isExists;
 	}	
 	protected void setHttpServicesConfigurationCollection(HttpServicesConfigurationCollection httpServicesConfigurationCollection) {
 		 _httpServicesConfigurationCollection = httpServicesConfigurationCollection;

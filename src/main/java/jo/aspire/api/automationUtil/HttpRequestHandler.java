@@ -123,6 +123,10 @@ public class HttpRequestHandler {
 		requestBuilder.setHeader(header);
 	}
 	
+	public Header[] getRequestHeaders(String name) {
+		return requestBuilder.getHeaders(name);
+	}
+	
 	public void setProxy(String proxyAddress, int proxyPort)
 	{
 		if (proxyAddress == null)

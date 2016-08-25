@@ -8,7 +8,7 @@ public class HttpServicesBuilder {
 
 	private HttpServicesConfigurationManager _httpServicesConfigurationManager;
 	private HttpRequestHandler _httpRequestHandler;
-	private StateHelper _stateHelper;
+	private StateHelper _stateHelper;	
 	public HttpServicesBuilder(String servicesConfiguratinFilePath) throws Exception{
 		try {
 			 setHttpRequestHandler();
@@ -19,7 +19,6 @@ public class HttpServicesBuilder {
 			e.printStackTrace();
 		}
 	}
-
 	public HttpServiceRequest build(String serviceName) {
 		HttpServiceRequest serviceRequest = null;
 		try {

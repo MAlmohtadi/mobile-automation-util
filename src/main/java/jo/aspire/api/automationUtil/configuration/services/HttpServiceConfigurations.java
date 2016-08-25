@@ -11,7 +11,8 @@ class HttpServiceConfigurations {
 		private String contentType;
 		private String url;
 		private String method;
-		private List<HttpServiceRequestBodyConfigParam> requestBodyParams;
+		private List<HttpServiceRequestConfigParam> requestBodyParams;
+		private List<HttpServiceRequestConfigParam> requestHeaders;
 		private String valueToCompare;
 
 		public String getName() {
@@ -63,10 +64,17 @@ class HttpServiceConfigurations {
 			this.method = methodName;
 		}
 
-		public List<HttpServiceRequestBodyConfigParam> getRequestBodyParams() {
+		public List<HttpServiceRequestConfigParam> getRequestBodyParams() {
 			return requestBodyParams;
 		}
 
+		public List<HttpServiceRequestConfigParam> getRequestHeaders() {
+			return requestHeaders;
+		}
+		
+		void setRequestHeaders(List<HttpServiceRequestConfigParam> headers) {
+			 requestHeaders = headers;
+		}
 		public String getValueToCompare() {
 			return valueToCompare;
 		}
@@ -76,7 +84,7 @@ class HttpServiceConfigurations {
 		}
 	}
 
-	public class HttpServiceRequestBodyConfigParam {
+	public class HttpServiceRequestConfigParam {
 
 		public String name;
 		public String value;
@@ -88,6 +96,8 @@ class HttpServiceConfigurations {
 		private String defaultHttpMethod;
 		private String defaultContentType;
 		public List<HttpServiceConfiguration> services;
+		private List<HttpServiceRequestConfigParam> defaultRequestHeaders;
+		
 		public String getDefaultHost() {
 			if(defaultHost == null || defaultHost.trim() == "")
 			{
@@ -135,6 +145,12 @@ class HttpServiceConfigurations {
 		}
 		public void setDefaultContentType(String defaultContentType) {
 			this.defaultContentType = defaultContentType;
+		}
+		public List<HttpServiceRequestConfigParam> getDefaultRequestHeaders() {
+			return defaultRequestHeaders;
+		}
+		public void setDefaultRequestHeaders(List<HttpServiceRequestConfigParam> defaultRequestHeaders) {
+			this.defaultRequestHeaders = defaultRequestHeaders;
 		}
 	}
 }
