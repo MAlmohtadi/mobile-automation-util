@@ -3,7 +3,7 @@ package jo.aspire.web.automationUtil;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
+import java.sql.Driver;
 import java.util.HashMap;
 
 import org.apache.log4j.Level;
@@ -30,13 +30,12 @@ import jo.aspire.generic.EnvirommentManager;
 public class DriverProvider extends DelegatingWebDriverProvider {
 	private RemoteWebDriver driver;
 	private static String browser;
-	public static String jobName = null;
-	private Date date = new Date();
-	
+	public static HashMap<Long, WebDriver> allThreads= new HashMap<Long, WebDriver>();
 	@Override
 	public void initialize() {
 
 		boolean runOnSource = Boolean.parseBoolean(EnvirommentManager.getInstance().getProperty("useSouceLabs"));
+		
 		if (runOnSource) {
 			DesiredCapabilities capabilities = new DesiredCapabilities();
 			if (PlatformInformation.browserName != null && !PlatformInformation.browserName.isEmpty()) {
@@ -55,17 +54,14 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 			if (PlatformInformation.deviceOrientation != null && !PlatformInformation.deviceOrientation.isEmpty()) {
 				capabilities.setCapability("deviceOrientation", PlatformInformation.deviceOrientation);
 			}
-			
-			capabilities.setCapability("name", System.getProperty("user.name")
-					+ " - " + jobName + "(And) - " + date);
-			
-			
+
 			try {
 				this.driver = new RemoteWebDriver(
 						new URL("http://" + EnvirommentManager.getInstance().getProperty("username") + ":"
 								+ EnvirommentManager.getInstance().getProperty("accessKey")
 								+ "@ondemand.saucelabs.com:80/wd/hub"),
 						capabilities);
+				allThreads.put(Thread.currentThread().getId(), this.driver );
 			}
 
 			catch (Exception e) {
@@ -75,11 +71,16 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 			delegate.set((WebDriver) driver);
 		} else {
 			browser = PlatformInformation.browserName;
-
-			delegate.set(createDriver());
+			WebDriver webDriver = createDriver();
+			allThreads.put(Thread.currentThread().getId(), webDriver);
+			delegate.set(webDriver);
 
 		}
-
+		
+		//hash map for thread per driver
+	
+		
+		
 	}
 
 	private WebDriver createDriver() {
@@ -156,6 +157,7 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("start-maximized");
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
+	
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", System.getProperty("user.dir") + File.separator + "Temp");
 		options.setExperimentalOption("prefs", chromePrefs);
