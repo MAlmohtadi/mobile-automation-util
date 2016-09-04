@@ -200,6 +200,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			
 			if(autoAcceptAlerts.equals("true")){
 					capabilities.setCapability("notificationsAuthorized", true);
+					capabilities.setCapability("useLocationServices", true);
 					capabilities.setCapability("locationServicesAuthorized", true);
 				//capabilities.setCapability("autoAcceptAlerts", true);
 			}else{
