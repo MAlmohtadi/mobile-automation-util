@@ -199,10 +199,11 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			
 			if(autoAcceptAlerts.equals("true")){
-				capabilities.setCapability("waitForAppScript", "$.delay(3000);$.acceptAlert()");
-				capabilities.setCapability("autoAcceptAlerts", true);
+					capabilities.setCapability("notificationsAuthorized", true);
+					capabilities.setCapability("locationServicesAuthorized", true);
+				//capabilities.setCapability("autoAcceptAlerts", true);
 			}else{
-				capabilities.setCapability("waitForAppScript", "$.delay(4500);$.acceptAlert()");
+				capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
 			}
 			
 		
@@ -278,8 +279,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
             
 						
-			//  capabilities.setCapability("notificationsAuthorized", true);
-			//	capabilities.setCapability("locationServicesAuthorized", false);
+			
 
 			
 			// Set job name on Sauce Labs
