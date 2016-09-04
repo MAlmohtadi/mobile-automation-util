@@ -28,6 +28,8 @@ public class DriverProvider {
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
 	private Date date = new Date();
 	public static String ResetApp = "null";
+	public static String autoAcceptAlerts = "null";
+	
 	public static String deviceType ;
 	
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
@@ -189,7 +191,20 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
-			capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
+			
+			
+			try {
+				ResetApp = EnvirommentManager.getInstance().getProperty("autoAcceptAlerts");
+			} catch (Exception e) {
+			}
+			
+			if(autoAcceptAlerts.equals("true")){
+				capabilities.setCapability("autoAcceptAlerts", true);
+			}else{
+				capabilities.setCapability("waitForAppScript", "$.delay(6000);$.acceptAlert()");
+			}
+			
+		
 			
 			try {
 				capabilities.setCapability("appPackage", EnvirommentManager.getInstance().getProperty("appPackage"));
@@ -262,7 +277,6 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
             
 						
-			//	capabilities.setCapability("autoAcceptAlerts", true);
 			//  capabilities.setCapability("notificationsAuthorized", true);
 			//	capabilities.setCapability("locationServicesAuthorized", false);
 
