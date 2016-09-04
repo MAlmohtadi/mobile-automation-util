@@ -199,9 +199,10 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			
 			if(autoAcceptAlerts.equals("true")){
+				capabilities.setCapability("waitForAppScript", "$.delay(3000);$.acceptAlert()");
 				capabilities.setCapability("autoAcceptAlerts", true);
 			}else{
-				capabilities.setCapability("waitForAppScript", "$.delay(6000);$.acceptAlert()");
+				capabilities.setCapability("waitForAppScript", "$.delay(4500);$.acceptAlert()");
 			}
 			
 		
