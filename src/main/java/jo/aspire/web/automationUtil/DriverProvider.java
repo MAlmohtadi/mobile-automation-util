@@ -167,6 +167,7 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		}
 		//options.addArguments("user-data-dir="+System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
 		cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		options.addArguments("disable-popup-blocking");
 		cap.setCapability(ChromeOptions.CAPABILITY, options);
 		options.addArguments("test-type");
 		options.addArguments("--disable-extensions");
