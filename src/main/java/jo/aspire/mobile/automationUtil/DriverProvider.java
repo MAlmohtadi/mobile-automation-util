@@ -181,14 +181,15 @@ public class DriverProvider {
 			}
 
 //			capabilities.setCapability("launchTimeout", 120000);
-//			capabilities.setCapability("autoAcceptAlerts", true);
+			capabilities.setCapability("autoAcceptAlerts", true);
+			capabilities.setCapability("waitForAppScript", true);
 //			capabilities.setCapability("ignoreUnimportantViews", true);
 //			capabilities.setCapability("deviceReadyTimeout", 60000);
 //			capabilities.setCapability("notificationsAuthorized", true);
 //			capabilities.setCapability("useLocationServices", true);
 //			capabilities.setCapability("locationServicesAuthorized", true);
 
-			capabilities.setCapability("waitForAppScript", "target.elements().length > 0; $.delay(5000); $.acceptAlert(); true");
+//			capabilities.setCapability("waitForAppScript", "target.elements().length > 0; $.delay(5000); $.acceptAlert(); true");
 
 			try {
 				capabilities.setCapability("appPackage", EnvirommentManager.getInstance().getProperty("appPackage"));
