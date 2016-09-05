@@ -1,26 +1,20 @@
 package jo.aspire.mobile.automationUtil;
 
 import static java.util.Arrays.asList;
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.concurrent.TimeUnit;
 
-import jo.aspire.generic.EnvirommentManager;
-
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
+import jo.aspire.generic.EnvirommentManager;
 
 public class DriverProvider {
 	@SuppressWarnings("rawtypes")
@@ -330,9 +324,11 @@ public serverInfo getCurrentServerInfo(String threadName)
 				} else {
 
 					driver = IOSDriver(serverAddress, capabilities);
-					driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
+					//driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
 					try {
+						Thread.sleep(3000);
 						driver.switchTo().alert().accept();
+						System.out.println("Accept Alert");
 					} catch (Exception e) {}
 
 				}
