@@ -193,7 +193,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 			
 			
-			capabilities.setCapability("launchTimeout", 6000);
+			capabilities.setCapability("launchTimeout", 120000);
 			capabilities.setCapability("autoAcceptAlerts", true);
 			
 			if(autoAcceptAlerts.equals("true")){
