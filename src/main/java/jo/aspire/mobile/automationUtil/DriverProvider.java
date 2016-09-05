@@ -182,7 +182,7 @@ public class DriverProvider {
 
 //			capabilities.setCapability("launchTimeout", 120000);
 			capabilities.setCapability("autoAcceptAlerts", true);
-			capabilities.setCapability("waitForAppScript", true);
+			capabilities.setCapability("waitForAppScript", "true");
 //			capabilities.setCapability("ignoreUnimportantViews", true);
 //			capabilities.setCapability("deviceReadyTimeout", 60000);
 //			capabilities.setCapability("notificationsAuthorized", true);
