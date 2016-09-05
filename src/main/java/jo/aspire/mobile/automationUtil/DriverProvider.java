@@ -192,11 +192,19 @@ public serverInfo getCurrentServerInfo(String threadName)
 			} catch (Exception e) {
 			}
 			
+			
+			capabilities.setCapability("launchTimeout", 6000);
+			capabilities.setCapability("autoAcceptAlerts", true);
+			
 			if(autoAcceptAlerts.equals("true")){
+				
+				
+				capabilities.setCapability("ignoreUnimportantViews", true);
+				capabilities.setCapability("deviceReadyTimeout", 60);
 					capabilities.setCapability("notificationsAuthorized", true);
 					capabilities.setCapability("useLocationServices", true);
 					capabilities.setCapability("locationServicesAuthorized", true);
-				//capabilities.setCapability("autoAcceptAlerts", true);
+			
 			}else{
 				capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
 			}
@@ -325,12 +333,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 
 					driver = IOSDriver(serverAddress, capabilities);
 					//driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
-					try {
-						Thread.sleep(3000);
-						driver.switchTo().alert().accept();
-						System.out.println("Accept Alert");
-					} catch (Exception e) {}
-
+				
 				}
 
 		}

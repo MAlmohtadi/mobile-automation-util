@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.NetworkConnectionSetting;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import jo.aspire.generic.EnvirommentManager;
@@ -354,16 +355,16 @@ public abstract class Helper {
 	/**
 	 * Return an element that contains name or text *
 	 */
-//	public MobileElement scroll_to(String value) {
-//		return (MobileElement) driverProvider.getCurrentDriver().scrollTo(value);
-//	}
-//
-//	/**
-//	 * Return an element that exactly matches name or text *
-//	 */
-//	public MobileElement scroll_to_exact(String value) {
-//		return (MobileElement) driverProvider.getCurrentDriver().scrollToExact(value);
-//	}
+	public MobileElement scroll_to(String value) {
+		return (MobileElement) driverProvider.getCurrentDriver().scrollTo(value);
+	}
+
+	/**
+	 * Return an element that exactly matches name or text *
+	 */
+	public MobileElement scroll_to_exact(String value) {
+		return (MobileElement) driverProvider.getCurrentDriver().scrollToExact(value);
+	}
 
 	/**
 	 * Return a list of elements by locator *
@@ -548,12 +549,12 @@ public abstract class Helper {
 
 	}
 
-//	public void AndroidWiFiEnabled(boolean Status) {
-//
-//		NetworkConnectionSetting networkConnection = new NetworkConnectionSetting(false, true, false);
-//		networkConnection.setWifi(Status); // Change WIFI Status
-//		((AndroidDriver) currentDriver()).setNetworkConnection(networkConnection);
-//	}
+	public void AndroidWiFiEnabled(boolean Status) {
+
+		NetworkConnectionSetting networkConnection = new NetworkConnectionSetting(false, true, false);
+		networkConnection.setWifi(Status); // Change WIFI Status
+		((AndroidDriver) currentDriver()).setNetworkConnection(networkConnection);
+	}
 
 	public void iOSWiFiswitch() {
 
