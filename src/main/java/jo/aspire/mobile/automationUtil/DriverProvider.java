@@ -23,14 +23,15 @@ public class DriverProvider {
 	private Date date = new Date();
 	public static String ResetApp = "null";
 	public static String autoAcceptAlerts = "null";
-	
-	public static String deviceType ;
-	
+
+	public static String deviceType;
+
 	public static Hashtable<String, String> sessions = new Hashtable<String, String>();
 	public static Hashtable<String, String> sauceConnectTunnelsId = new Hashtable<String, String>();
 	public static ArrayList<String> sauceTunnelsIdList = new ArrayList<>();
 	public static ArrayList<String> appiumPortsList = new ArrayList<>();
 	public static ArrayList<String> udid = new ArrayList<>();
+
 	public enum platform {
 		ANDROID, IOS
 	}
@@ -43,61 +44,56 @@ public class DriverProvider {
 	public static String jobName = null;
 
 	public static platform getPlatform() {
-		boolean android = TargetPlatform.platformName.toUpperCase().equals(
-				"ANDROID");
+		boolean android = TargetPlatform.platformName.toUpperCase().equals("ANDROID");
 		return android ? platform.ANDROID : platform.IOS;
 	}
 
-	public static void initializePortsAndUUIDs(){
+	public static void initializePortsAndUUIDs() {
 		initializePorts();
 		initializeUdids();
 	}
+
 	public static void initializePorts() {
 		Integer initialPort = 4733;
-		int threads=0;
-		try{
-		threads= Integer.parseInt(EnvirommentManager.getInstance()
-				.getProperty("threads"));
-		}catch(Exception ex){
-			threads =1;
+		int threads = 0;
+		try {
+			threads = Integer.parseInt(EnvirommentManager.getInstance().getProperty("threads"));
+		} catch (Exception ex) {
+			threads = 1;
 		}
-		for (int i =0; i< threads; i++){
+		for (int i = 0; i < threads; i++) {
 			appiumPortsList.add(initialPort.toString());
-			initialPort +=10;
+			initialPort += 10;
 		}
 	}
 
-	public static  void initializeUdids() {
-	
-			String udids = EnvirommentManager.getInstance().getProperty("udid");
-			if (udids.contains(",")) {
-				udid.addAll(asList(udids.split(",")));
-			} else {
-				udid.add(udids);
-			}
+	public static void initializeUdids() {
+
+		String udids = EnvirommentManager.getInstance().getProperty("udid");
+		if (udids.contains(",")) {
+			udid.addAll(asList(udids.split(",")));
+		} else {
+			udid.add(udids);
+		}
 
 	}
-	
-	
+
 	public static void initializeSauceConnectTunnelsId() {
-		int threads=0;
-		try{
-		threads= Integer.parseInt(EnvirommentManager.getInstance()
-				.getProperty("threads"));
-		}catch(Exception ex){
-			threads =1;
+		int threads = 0;
+		try {
+			threads = Integer.parseInt(EnvirommentManager.getInstance().getProperty("threads"));
+		} catch (Exception ex) {
+			threads = 1;
 		}
-		for (int i =0; i< threads; i++){
+		for (int i = 0; i < threads; i++) {
 			sauceTunnelsIdList.add(("my-tun" + (1 + i)).toString());
 		}
 	}
-	
-	
+
 	@SuppressWarnings("rawtypes")
 	public AppiumDriver getCurrentDriver() {
 		String threadName = Thread.currentThread().getName();
-		if (!drivers.containsKey(threadName)
-				|| (drivers.get(threadName) == null)) {
+		if (!drivers.containsKey(threadName) || (drivers.get(threadName) == null)) {
 			try {
 				SetupDriver(threadName);
 			} catch (IOException e) {
@@ -106,8 +102,7 @@ public class DriverProvider {
 		}
 
 		try {
-			String sessionId = drivers.get(threadName).getSessionId()
-					.toString();
+			String sessionId = drivers.get(threadName).getSessionId().toString();
 			if (sessionId.isEmpty()) {
 
 				SetupDriver(threadName);
@@ -119,47 +114,43 @@ public class DriverProvider {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			String sessionId = drivers.get(threadName).getSessionId()
-					.toString();
+			String sessionId = drivers.get(threadName).getSessionId().toString();
 			sessions.put(threadName, sessionId);
 		}
 		return drivers.get(threadName);
 	}
 
-public serverInfo getCurrentServerInfo(String threadName)
-{
-	serverInfo currentServer = new serverInfo();
-	if (servers.get(threadName) != null) {
-		currentServer = servers.get(threadName);
-	} else {
-		serverInfo server = new serverInfo();
-		
-		if (!EnvirommentManager.getInstance().getProperty("UseSauceLabs")
-				.contains("true")) {
-			if(getPlatform() == platform.ANDROID){
-				synchronized (udid) {
-					server.deviceUUID = udid.get(0);
-					udid.remove(0);
+	public serverInfo getCurrentServerInfo(String threadName) {
+		serverInfo currentServer = new serverInfo();
+		if (servers.get(threadName) != null) {
+			currentServer = servers.get(threadName);
+		} else {
+			serverInfo server = new serverInfo();
+
+			if (!EnvirommentManager.getInstance().getProperty("UseSauceLabs").contains("true")) {
+				if (getPlatform() == platform.ANDROID) {
+					synchronized (udid) {
+						server.deviceUUID = udid.get(0);
+						udid.remove(0);
+					}
+				}
+				synchronized (appiumPortsList) {
+					server.serverPort = Integer.parseInt(appiumPortsList.get(0).trim());
+					appiumPortsList.remove(0);
 				}
 			}
-			synchronized (appiumPortsList) {
-				server.serverPort = Integer.parseInt(appiumPortsList.get(0)
-						.trim());
-				appiumPortsList.remove(0);
-			}
+			servers.put(threadName, server);
+			currentServer = server;
+			// servers.ad
 		}
-		servers.put(threadName, server);
-		currentServer = server;
-		// servers.ad
+		return currentServer;
 	}
-	return currentServer;
-}
+
 	@SuppressWarnings({ "rawtypes", "unused" })
 	public void SetupDriver(String threadName) throws IOException {
-		serverInfo currentServer =getCurrentServerInfo(threadName);
+		serverInfo currentServer = getCurrentServerInfo(threadName);
 		AppiumDriver driver = null;
 
-	
 		DesiredCapabilities capabilities;
 		if (getPlatform() == platform.ANDROID) {
 			capabilities = DesiredCapabilities.android();
@@ -169,137 +160,110 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 		}
 		if (!TargetPlatform.runOnAmazon) {
-			capabilities.setCapability("platformVersion",
-					TargetPlatform.platformVersion);
-			capabilities.setCapability("appiumVersion", EnvirommentManager
-					.getInstance().getProperty("appiumVersion"));
-			capabilities.setCapability("platformName",
-					TargetPlatform.platformName);
+			capabilities.setCapability("platformVersion", TargetPlatform.platformVersion);
+			capabilities.setCapability("appiumVersion", EnvirommentManager.getInstance().getProperty("appiumVersion"));
+			capabilities.setCapability("platformName", TargetPlatform.platformName);
 			capabilities.setCapability("deviceName", TargetPlatform.deviceName);
 			capabilities.setCapability("deviceOrientation", "portrait");
 			capabilities.setCapability("browserName", "");
 			try {
-				capabilities.setCapability("commandTimeout", EnvirommentManager.getInstance().getProperty("commandTimeout"));
+				capabilities.setCapability("commandTimeout",
+						EnvirommentManager.getInstance().getProperty("commandTimeout"));
 			} catch (Exception e1) {
 				capabilities.setCapability("commandTimeout", "600");
 			}
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
-			
-			
+
 			try {
 				ResetApp = EnvirommentManager.getInstance().getProperty("autoAcceptAlerts");
 			} catch (Exception e) {
 			}
-			
-			
-			capabilities.setCapability("launchTimeout", 120000);
-			capabilities.setCapability("autoAcceptAlerts", true);
-			
-			if(autoAcceptAlerts.equals("true")){
-				
-				
-				capabilities.setCapability("ignoreUnimportantViews", true);
-				capabilities.setCapability("deviceReadyTimeout", 6000);
-					capabilities.setCapability("notificationsAuthorized", true);
-					capabilities.setCapability("useLocationServices", true);
-					capabilities.setCapability("locationServicesAuthorized", true);
-			
-			}else{
-				capabilities.setCapability("waitForAppScript", "$.delay(5000);$.acceptAlert()");
-			}
-			
-		
-			
+
+//			capabilities.setCapability("launchTimeout", 120000);
+//			capabilities.setCapability("autoAcceptAlerts", true);
+//			capabilities.setCapability("ignoreUnimportantViews", true);
+//			capabilities.setCapability("deviceReadyTimeout", 60000);
+//			capabilities.setCapability("notificationsAuthorized", true);
+//			capabilities.setCapability("useLocationServices", true);
+//			capabilities.setCapability("locationServicesAuthorized", true);
+
+			capabilities.setCapability("waitForAppScript", "target.elements().length > 0; $.delay(5000); $.acceptAlert(); true");
+
 			try {
 				capabilities.setCapability("appPackage", EnvirommentManager.getInstance().getProperty("appPackage"));
 			} catch (Exception e) {
-			
+
 			}
-			
+
 			try {
 				capabilities.setCapability("appActivity", EnvirommentManager.getInstance().getProperty("appActivity"));
 			} catch (Exception e) {
-				
+
 			}
-			
+
 			if (getPlatform() == platform.ANDROID) {
 				try {
 					deviceType = EnvirommentManager.getInstance().getProperty("deviceType");
 				} catch (Exception e) {
 					deviceType = "phone";
 				}
-				
-				capabilities.setCapability("deviceType",deviceType);
+
+				capabilities.setCapability("deviceType", deviceType);
 			}
-			
+
 			boolean analytics;
-			try{
-				analytics = Boolean.parseBoolean(EnvirommentManager.getInstance()
-						.getProperty("analytics"));
-				}catch(Exception ex){
-					analytics = false;
-				}
-			
-			if(analytics && SauceLabeSessionHandler.getRunOnSauce()){
+			try {
+				analytics = Boolean.parseBoolean(EnvirommentManager.getInstance().getProperty("analytics"));
+			} catch (Exception ex) {
+				analytics = false;
+			}
+
+			if (analytics && SauceLabeSessionHandler.getRunOnSauce()) {
 				String tunnelID = null;
-				
-				if(sauceConnectTunnelsId.get(Thread.currentThread().getName()) != null)
-				{
+
+				if (sauceConnectTunnelsId.get(Thread.currentThread().getName()) != null) {
 					tunnelID = sauceConnectTunnelsId.get(Thread.currentThread().getName());
-				}
-				else{
-					
-					if(sauceTunnelsIdList.isEmpty()){
+				} else {
+
+					if (sauceTunnelsIdList.isEmpty()) {
 						initializeSauceConnectTunnelsId();
-						
+
 					}
-					
-					sauceConnectTunnelsId.put(Thread.currentThread().getName(),sauceTunnelsIdList.get(0));
+
+					sauceConnectTunnelsId.put(Thread.currentThread().getName(), sauceTunnelsIdList.get(0));
 					tunnelID = sauceTunnelsIdList.get(0);
 					sauceTunnelsIdList.remove(0);
 				}
-				
+
 				capabilities.setCapability("tunnelIdentifier", tunnelID);
 				System.out.println("tunnelIdentifier: " + tunnelID);
 			}
-			
-			
-			
-			
-			
+
 			try {
 				ResetApp = EnvirommentManager.getInstance().getProperty("ResetApp");
 			} catch (Exception e) {
 			}
-			
-			if (ResetApp.equals("true")){
-				capabilities.setCapability("fullReset",true);
-				capabilities.setCapability("noReset", false);
-			}else if (ResetApp.equals("false")){
-				capabilities.setCapability("fullReset",false);
-				capabilities.setCapability("noReset", true);	
-			}
-            
-						
-			
 
-			
+			if (ResetApp.equals("true")) {
+				capabilities.setCapability("fullReset", true);
+				capabilities.setCapability("noReset", false);
+			} else if (ResetApp.equals("false")) {
+				capabilities.setCapability("fullReset", false);
+				capabilities.setCapability("noReset", true);
+			}
+
 			// Set job name on Sauce Labs
-			capabilities.setCapability("name", System.getProperty("user.name")
-					+ " - " + jobName + "(And) - " + date);
+			capabilities.setCapability("name", System.getProperty("user.name") + " - " + jobName + "(And) - " + date);
 		}
 		String userDir = System.getProperty("user.dir");
 		URL serverAddress;
 		String localApp = TargetPlatform.appFileName;
-		if (!TargetPlatform.runOnAmazon
-				&& SauceLabeSessionHandler.getRunOnSauce()) {
+		if (!TargetPlatform.runOnAmazon && SauceLabeSessionHandler.getRunOnSauce()) {
 			String user = SauceLabeSessionHandler.getAuth().getUsername();
 			String key = SauceLabeSessionHandler.getAuth().getAccessKey();
-			capabilities.setCapability("app",
-					"sauce-storage:" + localApp.trim());
-			serverAddress = new URL("http://" + user + ":" + key
-					+ "@ondemand.saucelabs.com:80/wd/hub");
+			capabilities.setCapability("app", "sauce-storage:" + localApp.trim());
+			serverAddress = new URL("http://" + user + ":" + key + "@ondemand.saucelabs.com:80/wd/hub");
 			if (getPlatform() == platform.ANDROID) {
 				driver = new AndroidDriver(serverAddress, capabilities);
 			} else {
@@ -307,52 +271,47 @@ public serverInfo getCurrentServerInfo(String threadName)
 			}
 
 		} else {
-			String appPath = Paths.get(TargetPlatform.fileDirectory, localApp)
-					.toAbsolutePath().toString();
+			String appPath = Paths.get(TargetPlatform.fileDirectory, localApp).toAbsolutePath().toString();
 			if (!TargetPlatform.runOnAmazon) {
 				capabilities.setCapability("app", appPath);
 			}
 
-			// System.out.println(currentServer.serverPort + ":"+ currentServer.deviceUUID);
-			
-			if(!TargetPlatform.runOnAmazon){
-			serverAddress = new URL("http://127.0.0.1:"
-					+ currentServer.serverPort + "/wd/hub");
-			}else{
+			// System.out.println(currentServer.serverPort + ":"+
+			// currentServer.deviceUUID);
+
+			if (!TargetPlatform.runOnAmazon) {
+				serverAddress = new URL("http://127.0.0.1:" + currentServer.serverPort + "/wd/hub");
+			} else {
 				serverAddress = new URL("http://127.0.0.1:4723" + "/wd/hub");
 			}
 
-				if (getPlatform() == platform.ANDROID) {
-					if (!TargetPlatform.runOnAmazon
-							&& !SauceLabeSessionHandler.getRunOnSauce()) {
-						capabilities.setCapability("udid",
-								currentServer.deviceUUID);
-					}
-					driver = AndroidDriver(serverAddress, capabilities);
-				} else {
-
-					driver = IOSDriver(serverAddress, capabilities);
-					//driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
-				
+			if (getPlatform() == platform.ANDROID) {
+				if (!TargetPlatform.runOnAmazon && !SauceLabeSessionHandler.getRunOnSauce()) {
+					capabilities.setCapability("udid", currentServer.deviceUUID);
 				}
+				driver = AndroidDriver(serverAddress, capabilities);
+			} else {
+
+				driver = IOSDriver(serverAddress, capabilities);
+				// driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
+
+			}
 
 		}
 
 		drivers.put(threadName, driver);
-		System.out.println("Driver thread name:-----" + threadName
-				+ "---- and session id---" + driver.getSessionId().toString() + ", UUID:"+currentServer.deviceUUID );
+		System.out.println("Driver thread name:-----" + threadName + "---- and session id---"
+				+ driver.getSessionId().toString() + ", UUID:" + currentServer.deviceUUID);
 		// Helpers.init(driver, serverAddress);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public  AppiumDriver AndroidDriver(URL serverAddress,
-			DesiredCapabilities capabilities) {
+	public AppiumDriver AndroidDriver(URL serverAddress, DesiredCapabilities capabilities) {
 		return new AndroidDriver(serverAddress, capabilities);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public  AppiumDriver IOSDriver(URL serverAddress,
-			DesiredCapabilities capabilities) {
+	public AppiumDriver IOSDriver(URL serverAddress, DesiredCapabilities capabilities) {
 		return new IOSDriver(serverAddress, capabilities);
 	}
 
@@ -369,33 +328,31 @@ public serverInfo getCurrentServerInfo(String threadName)
 	@SuppressWarnings("rawtypes")
 	public void closeCurrentDriver() throws IOException {
 		// get the thread name
-		try{
-		 String ThreadName = Thread.currentThread().getName();
+		try {
+			String ThreadName = Thread.currentThread().getName();
 			// get the driver name
 			AppiumDriver driver = drivers.get(ThreadName);
 			if (driver != null) {
 				// driver.resetApp();
-				
 
-				if (EnvirommentManager.getInstance().getProperty("closeDriver")
-						.contains("true")) {
-					try{
-					driver.quit();
-					System.out.println("closing: "+driver.getRemoteAddress().getPort() + ":"
-							+ driver.getCapabilities().getCapability("udid"));
-					
-					}catch(Exception ex){
+				if (EnvirommentManager.getInstance().getProperty("closeDriver").contains("true")) {
+					try {
+						driver.quit();
+						System.out.println("closing: " + driver.getRemoteAddress().getPort() + ":"
+								+ driver.getCapabilities().getCapability("udid"));
+
+					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 					drivers.put(ThreadName, driver);
-				}else{
+				} else {
 					driver.resetApp();
-					System.out.println("reset: "+driver.getRemoteAddress().getPort() + ":"
+					System.out.println("reset: " + driver.getRemoteAddress().getPort() + ":"
 							+ driver.getCapabilities().getCapability("udid"));
 
 				}
 			}
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 
