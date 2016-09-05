@@ -200,7 +200,7 @@ public serverInfo getCurrentServerInfo(String threadName)
 				
 				
 				capabilities.setCapability("ignoreUnimportantViews", true);
-				capabilities.setCapability("deviceReadyTimeout", 60);
+				capabilities.setCapability("deviceReadyTimeout", 6000);
 					capabilities.setCapability("notificationsAuthorized", true);
 					capabilities.setCapability("useLocationServices", true);
 					capabilities.setCapability("locationServicesAuthorized", true);
