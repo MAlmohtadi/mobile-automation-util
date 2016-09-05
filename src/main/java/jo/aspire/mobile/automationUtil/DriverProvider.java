@@ -330,7 +330,10 @@ public serverInfo getCurrentServerInfo(String threadName)
 				} else {
 
 					driver = IOSDriver(serverAddress, capabilities);
-				//	driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
+					driver.manage().timeouts().implicitlyWait(180,TimeUnit.SECONDS);
+					try {
+						driver.switchTo().alert().accept();
+					} catch (Exception e) {}
 
 				}
 
