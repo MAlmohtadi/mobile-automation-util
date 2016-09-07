@@ -186,7 +186,7 @@ public class DriverProvider {
 //			capabilities.setCapability("ignoreUnimportantViews", true);
 //			capabilities.setCapability("deviceReadyTimeout", 60000);
 			capabilities.setCapability("notificationsAuthorized", true);
-			capabilities.setCapability("useLocationServices", true);
+//			capabilities.setCapability("useLocationServices", true);
 			capabilities.setCapability("locationServicesAuthorized", true);
 
 			try {
