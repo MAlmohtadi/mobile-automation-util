@@ -182,14 +182,12 @@ public class DriverProvider {
 
 //			capabilities.setCapability("launchTimeout", 120000);
 			capabilities.setCapability("autoAcceptAlerts", true);
-			capabilities.setCapability("waitForAppScript", "true");
+			capabilities.setCapability("waitForAppScript","$.delay(10000); $.acceptAlert(); true;");
 //			capabilities.setCapability("ignoreUnimportantViews", true);
 //			capabilities.setCapability("deviceReadyTimeout", 60000);
-//			capabilities.setCapability("notificationsAuthorized", true);
-//			capabilities.setCapability("useLocationServices", true);
-//			capabilities.setCapability("locationServicesAuthorized", true);
-
-//			capabilities.setCapability("waitForAppScript", "$.delay(5000); $.acceptAlert()");
+			capabilities.setCapability("notificationsAuthorized", true);
+			capabilities.setCapability("useLocationServices", true);
+			capabilities.setCapability("locationServicesAuthorized", true);
 
 			try {
 				capabilities.setCapability("appPackage", EnvirommentManager.getInstance().getProperty("appPackage"));
