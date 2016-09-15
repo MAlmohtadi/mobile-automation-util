@@ -6,8 +6,8 @@ import jo.aspire.web.automationUtil.StateHelper;
 
 public class HttpServicesBuilder {
 
-	private HttpServicesConfigurationManager _httpServicesConfigurationManager;
-	private HttpRequestHandler _httpRequestHandler;
+	private ThreadLocal<HttpServicesConfigurationManager> _httpServicesConfigurationManager;
+	private ThreadLocal<HttpRequestHandler> _httpRequestHandler;
 	private StateHelper _stateHelper;	
 	public HttpServicesBuilder(String servicesConfiguratinFilePath) throws Exception{
 		try {
@@ -35,23 +35,21 @@ public class HttpServicesBuilder {
 		return _stateHelper;
 	}
 	protected HttpRequestHandler getHttpRequestHandler() {
-		return _httpRequestHandler;
+		return _httpRequestHandler.get();
 	}
 	protected void setHttpRequestHandler() {
-		if (_httpRequestHandler == null) {
-			_httpRequestHandler = HttpRequestHandler.getInstance();
-		}
+			_httpRequestHandler.set(HttpRequestHandler.getInstance());
 	}
 	protected HttpServicesConfigurationManager getHttpServicesConfigurationManager() {
-		return _httpServicesConfigurationManager;
+		return _httpServicesConfigurationManager.get();
 	}
 	protected void setHttpServicesConfigurationManager(String servicesConfiguratinFilePath) throws Exception {		
-		if (_httpServicesConfigurationManager == null) {
+		if (_httpServicesConfigurationManager.get() == null) {
 			if (servicesConfiguratinFilePath == null || servicesConfiguratinFilePath.trim() == "") {
 				throw new Exception("Invalid configuration file (null reference), http services configuration object has not been initiated.");
 			}
 			try {
-				_httpServicesConfigurationManager = new HttpServicesConfigurationManager(servicesConfiguratinFilePath);
+				_httpServicesConfigurationManager.set(new HttpServicesConfigurationManager(servicesConfiguratinFilePath));
 			} catch (Exception e) {
 				throw new Exception(
 						"Error while loading configuration file:["
