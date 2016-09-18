@@ -6,12 +6,16 @@ import jo.aspire.web.automationUtil.StateHelper;
 
 public class HttpServicesBuilder {
 
-	private ThreadLocal<HttpServicesConfigurationManager> _httpServicesConfigurationManager;
-	private ThreadLocal<HttpRequestHandler> _httpRequestHandler;
+	private ThreadLocal<HttpServicesConfigurationManager> _httpServicesConfigurationManager = null;
+	private ThreadLocal<HttpRequestHandler> _httpRequestHandler = new ThreadLocal<HttpRequestHandler>() {
+		@Override public HttpRequestHandler initialValue() {
+			return HttpRequestHandler.getInstance();
+		}
+	};
 	private StateHelper _stateHelper;	
 	public HttpServicesBuilder(String servicesConfiguratinFilePath) throws Exception{
 		try {
-			 setHttpRequestHandler();
+			// setHttpRequestHandler();
 			 setHttpServicesConfigurationManager(servicesConfiguratinFilePath);
 			
 		} catch (Exception e) {
@@ -37,24 +41,26 @@ public class HttpServicesBuilder {
 	protected HttpRequestHandler getHttpRequestHandler() {
 		return _httpRequestHandler.get();
 	}
-	protected void setHttpRequestHandler() {
-			_httpRequestHandler.set(HttpRequestHandler.getInstance());
-	}
 	protected HttpServicesConfigurationManager getHttpServicesConfigurationManager() {
 		return _httpServicesConfigurationManager.get();
 	}
-	protected void setHttpServicesConfigurationManager(String servicesConfiguratinFilePath) throws Exception {		
-		if (_httpServicesConfigurationManager.get() == null) {
+	protected void setHttpServicesConfigurationManager(final String servicesConfiguratinFilePath) throws Exception {
+
+		if (_httpServicesConfigurationManager == null || _httpServicesConfigurationManager.get() == null) {
 			if (servicesConfiguratinFilePath == null || servicesConfiguratinFilePath.trim() == "") {
 				throw new Exception("Invalid configuration file (null reference), http services configuration object has not been initiated.");
 			}
 			try {
-				_httpServicesConfigurationManager.set(new HttpServicesConfigurationManager(servicesConfiguratinFilePath));
+				_httpServicesConfigurationManager = new ThreadLocal<HttpServicesConfigurationManager>() {
+					@Override public HttpServicesConfigurationManager initialValue() {
+						return new HttpServicesConfigurationManager(servicesConfiguratinFilePath);
+					}
+				};
 			} catch (Exception e) {
 				throw new Exception(
 						"Error while loading configuration file:["
 								+ servicesConfiguratinFilePath
-								+ "] configuration file content is valid json format, Exception: ["
+								+ "] configuration file content is not valid json format, Exception: ["
 								+ e + "]");
 			}
 		}
