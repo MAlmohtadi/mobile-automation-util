@@ -159,6 +159,7 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 	
 		chromePrefs.put("profile.default_content_settings.popups", 0);
+		chromePrefs.put("profile.default_content_setting_values.notifications", 2);
 		chromePrefs.put("download.default_directory", System.getProperty("user.dir") + File.separator + "Temp");
 		options.setExperimentalOption("prefs", chromePrefs);
 		DesiredCapabilities cap = DesiredCapabilities.chrome();
