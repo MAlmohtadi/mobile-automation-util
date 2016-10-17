@@ -13,6 +13,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -30,12 +31,19 @@ import jo.aspire.generic.EnvirommentManager;
 public class DriverProvider extends DelegatingWebDriverProvider {
 	private RemoteWebDriver driver;
 	private static String browser;
-	public static HashMap<Long, WebDriver> allThreads= new HashMap<Long, WebDriver>();
+	public static HashMap<Long, WebDriver> allThreads = new HashMap<Long, WebDriver>();
+
 	@Override
 	public void initialize() {
 
 		boolean runOnSource = Boolean.parseBoolean(EnvirommentManager.getInstance().getProperty("useSouceLabs"));
-		
+
+		boolean runOnStack = false;
+		try {
+			runOnStack = Boolean.parseBoolean(EnvirommentManager.getInstance().getProperty("useBrowserStack"));
+		} catch (Exception ex) {
+		}
+
 		if (runOnSource) {
 			DesiredCapabilities capabilities = new DesiredCapabilities();
 			if (PlatformInformation.browserName != null && !PlatformInformation.browserName.isEmpty()) {
@@ -61,7 +69,7 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 								+ EnvirommentManager.getInstance().getProperty("accessKey")
 								+ "@ondemand.saucelabs.com:80/wd/hub"),
 						capabilities);
-				allThreads.put(Thread.currentThread().getId(), this.driver );
+				allThreads.put(Thread.currentThread().getId(), this.driver);
 			}
 
 			catch (Exception e) {
@@ -69,18 +77,40 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 				e.printStackTrace();
 			}
 			delegate.set((WebDriver) driver);
+		} else if (runOnStack) {
+			String stackUsername = EnvirommentManager.getInstance().getProperty("StackUsername");
+			String stackKey = EnvirommentManager.getInstance().getProperty("StackKey");
+			String stackUrl = "https://" + stackUsername + ":" + stackKey + "@hub-cloud.browserstack.com/wd/hub";
+			DesiredCapabilities caps = new DesiredCapabilities();
+			if (PlatformInformation.browserName != null && !PlatformInformation.browserName.isEmpty()) {
+				caps.setCapability("browser", PlatformInformation.browserName);
+			}
+			if (PlatformInformation.browserVersion != null && !PlatformInformation.browserVersion.isEmpty()) {
+				caps.setCapability("browser_version", PlatformInformation.browserVersion);
+			}
+			caps.setCapability("os", PlatformInformation.platformName);
+			caps.setCapability("os_version", PlatformInformation.platformVersion);
+			if (PlatformInformation.screenResolution != null && !PlatformInformation.screenResolution.isEmpty()) {
+				caps.setCapability("resolution", PlatformInformation.screenResolution);
+			}
+			if (PlatformInformation.projectName != null && !PlatformInformation.projectName.isEmpty()) {
+				caps.setCapability("project", PlatformInformation.projectName);
+			}
+			caps.setCapability("browserstack.debug", "true");
+			try {
+				this.driver = new RemoteWebDriver(new URL(stackUrl), caps);
+				allThreads.put(Thread.currentThread().getId(), this.driver);
+			} catch (Exception ex) {
+			}
 		} else {
 			browser = PlatformInformation.browserName;
 			WebDriver webDriver = createDriver();
 			allThreads.put(Thread.currentThread().getId(), webDriver);
 			delegate.set(webDriver);
-
 		}
-		
-		//hash map for thread per driver
-	
-		
-		
+
+		// hash map for thread per driver
+
 	}
 
 	private WebDriver createDriver() {
@@ -89,8 +119,8 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		} else {
 			if (browser.equals("Phantom")) {
 				return createPhantomDrive();
-		//	} else if (browser.equals("htmlUnit")) {
-		//		return createHtmlUnitDriver();
+				// } else if (browser.equals("htmlUnit")) {
+				// return createHtmlUnitDriver();
 			} else if (browser.equals("chrome")) {
 				return createChromeDriver();
 			} else if (browser.equals("ie32")) {
@@ -101,13 +131,18 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 				return createSafariDriver();
 			} else if (browser.equals("remote")) {
 				return createRemoteDriver();
+			} else if(browser.equals("edge")) {
+				return createEdgeDriver();
 			} else {
 				return createFirefoxDriver();
 			}
 
 		}
 	}
-
+protected WebDriver createEdgeDriver(){
+	EdgeDriver driver = new EdgeDriver();
+	return driver;
+}
 	protected WebDriver createAndroidBrowser() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability(MobileCapabilityType.BROWSER_NAME, browser);
@@ -157,7 +192,7 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("start-maximized");
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
-	
+
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("profile.default_content_setting_values.notifications", 2);
 		chromePrefs.put("download.default_directory", System.getProperty("user.dir") + File.separator + "Temp");
@@ -166,7 +201,8 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		if (PlatformInformation.isProxy) {
 			addProxyCapabilities(cap, PlatformInformation.proxyHost, PlatformInformation.proxyPort);
 		}
-		//options.addArguments("user-data-dir="+System.getProperty("user.dir") + File.separator + "SeleniumChromeDriveProfile");
+		// options.addArguments("user-data-dir="+System.getProperty("user.dir")
+		// + File.separator + "SeleniumChromeDriveProfile");
 		cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		options.addArguments("disable-popup-blocking");
 		cap.setCapability(ChromeOptions.CAPABILITY, options);
@@ -177,6 +213,7 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 	}
 
 	protected PhantomJSDriver createPhantomDrive() {
+		
 		DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
 		if (OSValidator.isMac()) {
 			capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
@@ -204,7 +241,7 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 
 	protected FirefoxDriver createFirefoxDriver() {
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
-	//FirefoxProfile firefoxProfile = profile.getProfile("default");
+		// FirefoxProfile firefoxProfile = profile.getProfile("default");
 		String path = System.getProperty("user.dir") + File.separator + "Temp";
 		firefoxProfile.setPreference("browser.download.folderList", 2);
 		firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);
