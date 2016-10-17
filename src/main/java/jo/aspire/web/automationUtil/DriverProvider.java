@@ -20,6 +20,7 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
@@ -61,6 +62,8 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 								+ EnvirommentManager.getInstance().getProperty("accessKey")
 								+ "@ondemand.saucelabs.com:80/wd/hub"),
 						capabilities);
+				this.driver.setFileDetector(new LocalFileDetector());
+
 				allThreads.put(Thread.currentThread().getId(), this.driver );
 			}
 
