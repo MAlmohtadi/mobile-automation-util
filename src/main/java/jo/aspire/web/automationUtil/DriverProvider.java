@@ -147,9 +147,10 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		}
 	}
 protected WebDriver createEdgeDriver(){
-	EdgeDriver driver = new EdgeDriver();
 	System.setProperty("webdriver.edge.driver",
 			System.getProperty("user.dir") + "/webdrivers/edge/MicrosoftWebDriver.exe");
+	EdgeDriver driver = new EdgeDriver();
+
 	return driver;
 }
 	protected WebDriver createAndroidBrowser() {
