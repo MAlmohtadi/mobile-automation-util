@@ -3,7 +3,6 @@ package jo.aspire.web.automationUtil;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Driver;
 import java.util.HashMap;
 
 import org.apache.log4j.Level;
@@ -25,6 +24,8 @@ import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
+import com.google.gson.JsonObject;
+
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import jo.aspire.generic.EnvirommentManager;
@@ -33,7 +34,12 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 	private RemoteWebDriver driver;
 	private static String browser;
 	public static HashMap<Long, WebDriver> allThreads = new HashMap<Long, WebDriver>();
-
+	private static JsonObject driverInfo;
+	
+	public static void setDriverToRun(JsonObject di){
+		driverInfo = di;
+	}
+	
 	@Override
 	public void initialize() {
 
