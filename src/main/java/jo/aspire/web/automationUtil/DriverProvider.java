@@ -163,7 +163,7 @@ protected WebDriver createEdgeDriver(){
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability(MobileCapabilityType.BROWSER_NAME, browser);
 		caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, PlatformInformation.browserVersion);
-		caps.setCapability(MobileCapabilityType.PLATFORM_NAME, PlatformInformation.browserName);
+		caps.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
 		caps.setCapability(MobileCapabilityType.DEVICE_NAME, PlatformInformation.deviceName);
 		URL serverAddress = null;
 		try {
