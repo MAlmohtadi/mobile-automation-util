@@ -65,6 +65,11 @@ public class HttpRequestHandler {
 	private HttpRequestHandler() {
 		// Prevent direct instantiation.
 	}
+
+	public static HttpRequestHandler getNewInstance() {
+		instance = null;
+		return getInstance();
+	}
 	public static HttpRequestHandler getInstance() {
 		if (instance == null) {
 			httpclientBuilder = HttpClientBuilder.create();
