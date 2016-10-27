@@ -154,7 +154,11 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		}
 	}
 private WebDriver createHtmlUnitDriver() {
-		return new HtmlUnitDriver();
+	HtmlUnitDriver driver = new HtmlUnitDriver();
+	driver.setJavascriptEnabled(true);
+	
+	
+		return driver;
 	}
 
 protected WebDriver createEdgeDriver(){
