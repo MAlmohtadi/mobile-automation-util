@@ -15,6 +15,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -132,8 +133,8 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 		} else {
 			if (browser.equals("Phantom")) {
 				return createPhantomDrive();
-				// } else if (browser.equals("htmlUnit")) {
-				// return createHtmlUnitDriver();
+				 } else if (browser.equals("htmlUnit")) {
+				 return createHtmlUnitDriver();
 			} else if (browser.equals("chrome")) {
 				return createChromeDriver();
 			} else if (browser.equals("ie32")) {
@@ -152,6 +153,10 @@ public class DriverProvider extends DelegatingWebDriverProvider {
 
 		}
 	}
+private WebDriver createHtmlUnitDriver() {
+		return new HtmlUnitDriver();
+	}
+
 protected WebDriver createEdgeDriver(){
 	System.setProperty("webdriver.edge.driver",
 			System.getProperty("user.dir") + "/webdrivers/edge/MicrosoftWebDriver.exe");
