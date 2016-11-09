@@ -167,10 +167,10 @@ public class DriverProvider {
 			capabilities.setCapability("deviceOrientation", "portrait");
 			capabilities.setCapability("browserName", "");
 			try {
-				capabilities.setCapability("commandTimeout",
+				capabilities.setCapability("newCommandTimeout",
 						EnvirommentManager.getInstance().getProperty("commandTimeout"));
 			} catch (Exception e1) {
-				capabilities.setCapability("commandTimeout", "600");
+				capabilities.setCapability("newCommandTimeout", "600");
 			}
 			capabilities.setCapability("maxDuration", "10800");
 			capabilities.setCapability("nativeInstrumentsLib", true);
