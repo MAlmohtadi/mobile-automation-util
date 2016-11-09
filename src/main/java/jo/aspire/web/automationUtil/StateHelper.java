@@ -31,9 +31,7 @@ public class StateHelper {
     	  
     	   return CrossStepState.get().containsKey(keyState);
        }
-       
-      
-       
+               
        // Save key with Object Value
        public static void setStoryState(String key,
                      Object LocationObject) {

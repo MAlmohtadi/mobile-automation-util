@@ -30,7 +30,6 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.Connection;
-import jo.aspire.generic.EnvirommentManager;
 
 public abstract class Helper {
 
@@ -46,20 +45,20 @@ public abstract class Helper {
 	public Helper(DriverProvider driverPorvider) {
 		this.driverProvider = driverPorvider;
 		// driver =mainTest.driver;
+		
 		try {
-			timeoutInSeconds = Integer.parseInt(EnvirommentManager.getInstance().getProperty("timeoutInSeconds"));
+			timeoutInSeconds = Integer.parseInt(DriverProvider.getDriverInfo().get("timeoutInSeconds").getAsString());
 		} catch (Exception e) {
 			timeoutInSeconds = 60;
 		}
-
-		if (SauceLabeSessionHandler.getRunOnSauce()) {
-			try {
-				timeoutInSeconds = Integer
-						.parseInt(EnvirommentManager.getInstance().getProperty("timeoutInSecondsSouceLabs"));
-			} catch (Exception e) {
-				timeoutInSeconds = 120;
-			}
-		}
+		;
+//		if (SauceLabeSessionHandler.getRunOnSauce()) {
+//			try {
+//				timeoutInSeconds = Integer.parseInt(EnvirommentManager.getInstance().getProperty("timeoutInSecondsSouceLabs"));
+//			} catch (Exception e) {
+//				timeoutInSeconds = 120;
+//			}
+//		}
 		// driverWait = new WebDriverWait(driver, timeoutInSeconds);
 
 	}
