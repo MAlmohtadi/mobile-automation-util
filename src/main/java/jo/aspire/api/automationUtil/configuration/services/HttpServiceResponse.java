@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import jo.aspire.api.automationUtil.HttpRequestHandler;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceConfiguration;
 import jo.aspire.generic.Parsers;
 import jo.aspire.web.automationUtil.StateHelper;
@@ -19,49 +20,83 @@ import com.google.gson.JsonElement;
 
 public class HttpServiceResponse {
 
-	private CloseableHttpResponse _httpResponse;
-	private String _httpResponseResultAsString;
-	private String _serviceName;
-	private HttpServiceConfiguration _httpServiceConfiguration;
-	private JsonElement _jsonResult;
-	private Document _xmlResult;
-	public HttpServiceResponse(CloseableHttpResponse httpResponse, HttpServiceConfiguration httpServiceConfiguration, String serviceName) {
-		_httpServiceConfiguration = httpServiceConfiguration;
-		_serviceName = serviceName;
-		_httpResponse = httpResponse;	    
-	    handleAndSetHttpResponseResult();
+	private ThreadLocal<CloseableHttpResponse> _httpResponse;
+	private ThreadLocal<String> _httpResponseResultAsString;
+	private ThreadLocal<String> _serviceName;
+	private ThreadLocal<HttpServiceConfiguration> _httpServiceConfiguration;
+	private ThreadLocal<JsonElement> _jsonResult;
+	private ThreadLocal<Document> _xmlResult;
+	public HttpServiceResponse(final CloseableHttpResponse httpResponse, final HttpServiceConfiguration httpServiceConfiguration, final String serviceName) {
+		setHttpServiceConfiguration(httpServiceConfiguration);
+		setServiceName(serviceName);
+		setHttpResponse(httpResponse);
+		handleAndSetHttpResponseResult();
 	}
 	public HttpServiceResponse getResponseResult() {
 		return this;
 	}
 	public HttpServiceResponse setResultAsStringToStoryStore(String sotreKey) {
-		StateHelper.setStoryState(_serviceName + sotreKey, getResultAsString());
+		StateHelper.setStoryState(getServiceName() + sotreKey, getResultAsString());
 		return this;
 	}
 	public String getResultAsStringFromStoryStore(String sotreKey) {
-		return StateHelper.getStoryState(_serviceName + sotreKey).toString();
+		return StateHelper.getStoryState(getServiceName() + sotreKey).toString();
 	}
 	public HttpServiceResponse setResultAsStringToStepStore(String sotreKey) {
-		StateHelper.setStepState(_serviceName + sotreKey, getResultAsString());
+		StateHelper.setStepState(getServiceName() + sotreKey, getResultAsString());
 		return this;
 	}
 	public String getResultAsStringFromStepStore(String sotreKey) {
-		return StateHelper.getStepState(_serviceName + sotreKey).toString();
+		return StateHelper.getStepState(getServiceName() + sotreKey).toString();
 	}
 	public String getResultAsString() {
-		return _httpResponseResultAsString;
+		return _httpResponseResultAsString.get();
 	}
-	protected HttpServiceResponse setResultAsString(String httpResponseResultAsString)
+	protected HttpServiceResponse setResultAsString(final String httpResponseResultAsString)
 	{
-		_httpResponseResultAsString = httpResponseResultAsString;
+		_httpResponseResultAsString = new ThreadLocal<String>() {
+		@Override public String initialValue() {
+			return httpResponseResultAsString;
+		}
+	};
 		return this;
 	}	
 	public String getValueToCompare() {
-		return  _httpServiceConfiguration.getValueToCompare();
-	}	
+		return  getHttpServiceConfiguration().getValueToCompare();
+	}
+	private void setHttpResponse(final CloseableHttpResponse httpResponse) {
+		_httpResponse = new ThreadLocal<CloseableHttpResponse>() {
+			@Override public CloseableHttpResponse initialValue() {
+				return httpResponse;
+			}
+		};
+	}
+	private CloseableHttpResponse getHttpResponse() {
+		return _httpResponse.get();
+	}
+	private void setServiceName(final String serviceName) {
+		_serviceName = new ThreadLocal<String>() {
+			@Override public String initialValue() {
+				return serviceName;
+			}
+		};
+	}
+	private String getServiceName() {
+		return _serviceName.get();
+	}
+	private void setHttpServiceConfiguration(final HttpServiceConfiguration httpServiceConfiguration) {
+		_httpServiceConfiguration = new ThreadLocal<HttpServiceConfiguration>() {
+			@Override public HttpServiceConfiguration initialValue() {
+				return httpServiceConfiguration;
+			}
+		};
+	}
+	private HttpServiceConfiguration getHttpServiceConfiguration() {
+		return _httpServiceConfiguration.get();
+	}
 	private void handleAndSetHttpResponseResult()
 	{
-		String responseContentType = _httpResponse.getEntity().getContentType().getValue();
+		String responseContentType = getHttpResponse().getEntity().getContentType().getValue();
 		if(responseContentType.contains("application/json"))
 		{
 			setResultAsJson(getAsJson());
@@ -77,7 +112,7 @@ public class HttpServiceResponse {
 		Parsers parser = new Parsers();		
         JsonElement json = null;
 		try {
-			json = parser.asJson(_httpResponse);
+			json = parser.asJson(getHttpResponse());
 		} catch (ParseException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -88,7 +123,7 @@ public class HttpServiceResponse {
 		Parsers parser = new Parsers();
 		Document document = null;
 		try {
-			document = parser.asXML(_httpResponse);
+			document = parser.asXML(getHttpResponse());
 		} catch (ParseException | IOException | ParserConfigurationException
 				| SAXException e) {
 			// TODO Auto-generated catch block
@@ -103,15 +138,23 @@ public class HttpServiceResponse {
 		return lsSerializer.writeToString(document);
 	}
 	public JsonElement getResultAsJson() {
-		return _jsonResult;
+		return _jsonResult.get();
 	}
-	private void setResultAsJson(JsonElement _jsonResult) {
-		this._jsonResult = _jsonResult;
+	private void setResultAsJson(final JsonElement jsonResult) {
+		this._jsonResult = new ThreadLocal<JsonElement>() {
+			@Override public JsonElement initialValue() {
+				return jsonResult;
+			}
+		};;
 	}
 	public Document getResultAsXml() {
-		return _xmlResult;
+		return _xmlResult.get();
 	}
-	private void setResultAsXml(Document _xmlResult) {
-		this._xmlResult = _xmlResult;
+	private void setResultAsXml(final Document xmlResult) {
+		this._xmlResult =  new ThreadLocal<Document>() {
+			@Override public Document initialValue() {
+				return xmlResult;
+			}
+		};
 	}
 }

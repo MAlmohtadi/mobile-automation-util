@@ -20,9 +20,9 @@ import org.apache.http.cookie.Cookie;
 
 public class HttpServiceRequest {
 
-	HttpServiceConfiguration _httpServiceConfiguration;
-	private HttpRequestHandler _httpRequestHandler;
-	private String _requestBody;
+	ThreadLocal<HttpServiceConfiguration> _httpServiceConfiguration;
+	private ThreadLocal<HttpRequestHandler> _httpRequestHandler;
+	private ThreadLocal<String> _requestBody;
 	public HttpServiceRequest(HttpRequestHandler httpRequestHandler, HttpServiceConfiguration httpServiceConfiguration)
 	{
 		setHttpRequestHandler(httpRequestHandler);
@@ -31,15 +31,32 @@ public class HttpServiceRequest {
 	}	
 	public HttpServiceResponse execute()
 	{
-		CloseableHttpResponse httpResponse = null;
-		try {
-			httpResponse = getHttpRequestHandler().executeSessionRequest( getHttpServiceConfiguration().getMethodName());
-		} catch (URISyntaxException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return new HttpServiceResponse(httpResponse, getHttpServiceConfiguration(), getHttpServiceConfiguration() .getName());
+		final ThreadLocal<CloseableHttpResponse> httpResponse = new ThreadLocal<CloseableHttpResponse>() {
+				@Override
+				public CloseableHttpResponse initialValue() {
+					try {
+						return getHttpRequestHandler().executeSessionRequest(getHttpServiceConfiguration().getMethodName());
+					} catch (URISyntaxException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return null;
+				}
+			};
+
+		return getHttpServiceResponse(httpResponse);
 	}
+
+	private HttpServiceResponse getHttpServiceResponse(final ThreadLocal<CloseableHttpResponse> httpResponse) {
+		ThreadLocal<HttpServiceResponse> httpServiceResponse = new ThreadLocal<HttpServiceResponse>() {
+			@Override
+			public HttpServiceResponse initialValue() {
+				return new HttpServiceResponse(httpResponse.get(), getHttpServiceConfiguration(), getHttpServiceConfiguration() .getName());
+			}
+		};
+		return httpServiceResponse.get();
+	}
+
 	public HttpServiceRequest resolveServiceRequestBody(Hashtable<String, String> PlaceholderKeyValueHashtable) {
 		if (PlaceholderKeyValueHashtable != null) {
 			for (Entry<String, String> placeholder : PlaceholderKeyValueHashtable
@@ -57,10 +74,10 @@ public class HttpServiceRequest {
 		return this;
 	}
 	public HttpServiceRequest resolveServiceRequestHeader(String headerName, String placeholderName, String placeholderValue) {
-		for(Header header : _httpRequestHandler.getRequestHeaders(headerName))
+		for(Header header : getHttpRequestHandler().getRequestHeaders(headerName))
 		{
 			if( header.getValue() != null){
-			_httpRequestHandler.setRequestHeader(headerName, header.getValue().replace(placeholderName, placeholderValue));
+				getHttpRequestHandler().setRequestHeader(headerName, header.getValue().replace(placeholderName, placeholderValue));
 			}
 		}
 		return this;
@@ -137,7 +154,7 @@ public class HttpServiceRequest {
 			for(HttpServiceRequestConfigParam header : httpServiceRequestHeaders)
 			{
 				if(header != null){
-					_httpRequestHandler.setRequestHeader(header.name, header.value);
+					getHttpRequestHandler().setRequestHeader(header.name, header.value);
 				}
 			}
 		}
@@ -156,20 +173,30 @@ public class HttpServiceRequest {
 		return this;
 	}
 
-	protected void setHttpServiceConfiguration(HttpServiceConfiguration serviceConfig) {
-		this._httpServiceConfiguration = serviceConfig;
+	protected void setHttpServiceConfiguration(final HttpServiceConfiguration serviceConfig) {
+		this._httpServiceConfiguration = new ThreadLocal<HttpServiceConfiguration>() {
+			@Override
+			public HttpServiceConfiguration initialValue() {
+				return serviceConfig;
+			}
+		};
 	}
 
 	protected HttpServiceConfiguration getHttpServiceConfiguration() {
-		return this._httpServiceConfiguration;
+		return this._httpServiceConfiguration.get();
 	}
 
 	protected HttpRequestHandler getHttpRequestHandler() {
-		return _httpRequestHandler;
+		return _httpRequestHandler.get();
 	}
 
-	protected void setHttpRequestHandler(HttpRequestHandler _httpRequestHandler) {
-		this._httpRequestHandler = _httpRequestHandler;
+	protected void setHttpRequestHandler(final HttpRequestHandler httpRequestHandler) {
+		this._httpRequestHandler = new ThreadLocal<HttpRequestHandler>() {
+			@Override
+			public HttpRequestHandler initialValue() {
+				return httpRequestHandler;
+			}
+		};
 	}
 
 	protected void setHttpRequestHandlerRequestBody() {
@@ -183,12 +210,17 @@ public class HttpServiceRequest {
 		}
 	}
 
-	protected void setServiceRequestBody(String requestBody) {
-		_requestBody = requestBody;
+	protected void setServiceRequestBody(final String requestBody) {
+		_requestBody = new ThreadLocal<String>() {
+			@Override
+			public String initialValue() {
+				return requestBody;
+			}
+		};
 	}
 
 	protected String getServiceRequestBody() {
-		return _requestBody;
+		return _requestBody.get();
 	}
 
 	protected Method getRequestHttpMethod() {

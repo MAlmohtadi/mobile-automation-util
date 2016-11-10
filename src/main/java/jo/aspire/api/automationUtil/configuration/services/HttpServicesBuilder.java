@@ -24,16 +24,21 @@ public class HttpServicesBuilder {
 		}
 	}
 	public HttpServiceRequest build(String serviceName) {
-		HttpServiceRequest serviceRequest = null;
+		ThreadLocal<HttpServiceRequest> serviceRequest = null;
 		try {
-			HttpServiceConfiguration httpServiceConfiguration = getHttpServicesConfigurationManager().getHttpServiceConfiguration(serviceName);
-			serviceRequest = new HttpServiceRequest(getHttpRequestHandler(), httpServiceConfiguration);
+			final HttpServiceConfiguration httpServiceConfiguration = getHttpServicesConfigurationManager().getHttpServiceConfiguration(serviceName);
+
+			serviceRequest = new ThreadLocal<HttpServiceRequest>() {
+				@Override public HttpServiceRequest initialValue() {
+					return new HttpServiceRequest(getHttpRequestHandler(), httpServiceConfiguration);
+				}
+			};
 			//throw exception in case service object is null
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return serviceRequest;
+		return serviceRequest.get();
 	}
 	public StateHelper getStore() {
 		return _stateHelper;
