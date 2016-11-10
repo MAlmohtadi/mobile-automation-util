@@ -13,7 +13,6 @@ import jo.aspire.api.automationUtil.MethodEnum.Method;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceConfiguration;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceRequestConfigParam;
 
-import jo.aspire.web.automationUtil.StateHelper;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.cookie.Cookie;
@@ -113,10 +112,6 @@ public class HttpServiceRequest {
 	}
 	public HttpServiceRequest addCookie(Cookie cookie) {
 		getHttpRequestHandler().setSessionCookie(cookie);
-		return this;
-	}
-	public HttpServiceRequest setRequestBodyToStepStore(String storeKey) {
-		StateHelper.setStepState(storeKey,getServiceRequestBody());
 		return this;
 	}
 	protected HttpServiceRequest initHttpRequest()

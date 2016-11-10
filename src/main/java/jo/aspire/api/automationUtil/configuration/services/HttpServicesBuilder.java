@@ -9,7 +9,7 @@ public class HttpServicesBuilder {
 	private ThreadLocal<HttpServicesConfigurationManager> _httpServicesConfigurationManager = null;
 	private ThreadLocal<HttpRequestHandler> _httpRequestHandler = new ThreadLocal<HttpRequestHandler>() {
 		@Override public HttpRequestHandler initialValue() {
-			return HttpRequestHandler.getNewInstance();
+			return HttpRequestHandler.getInstance();
 		}
 	};
 	private StateHelper _stateHelper;	
