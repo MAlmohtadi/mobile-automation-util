@@ -274,7 +274,10 @@
 			<url>http://maven2.javacpp.googlecode.com/git/</url>
 		</repository>
 
-
+	<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 		<repository>
 			<id>com.sikulix</id>
 			<name>com.sikulix</name>
