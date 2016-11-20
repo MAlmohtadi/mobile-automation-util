@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import com.aspire.automationReport.IDriverProvider;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -20,7 +21,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 
-public class DriverProvider {
+public class DriverProvider implements IDriverProvider {
 	@SuppressWarnings("rawtypes")
 	private Hashtable<String, AppiumDriver> drivers = new Hashtable<String, AppiumDriver>();
 	private Hashtable<String, serverInfo> servers = new Hashtable<String, serverInfo>();
@@ -326,5 +327,12 @@ public class DriverProvider {
 			ex.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public boolean isDriverInitialized() {
+		String threadName = Thread.currentThread().getName();
+		return drivers.get(threadName) != null;
+		
 	}
 }

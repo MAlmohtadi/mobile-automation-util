@@ -65,7 +65,11 @@
 			<artifactId>jersey-client</artifactId>
 			<version>1.19</version>
 		</dependency>
-
+	<dependency>
+	    <groupId>com.github.AspireInfotech</groupId>
+	    <artifactId>ASReport</artifactId>
+	    <version>v1.0.30</version>
+	</dependency>
 		<dependency>
 			<groupId>org.jbehave.web</groupId>
 			<artifactId>jbehave-web-selenium</artifactId>
