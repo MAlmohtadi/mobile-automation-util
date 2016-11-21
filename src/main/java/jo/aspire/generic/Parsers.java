@@ -21,10 +21,14 @@ import com.google.gson.JsonParser;
 public class Parsers {
 
 	public JsonElement asJson(CloseableHttpResponse response) throws ParseException, IOException{
-		String output = EntityUtils.toString(response.getEntity());
+		String output = asString(response);
 		return this.asJson(output);
 	}
-	
+
+	public String asString(CloseableHttpResponse response) throws IOException {
+		return EntityUtils.toString(response.getEntity());
+	}
+
 	public JsonElement asJson(String json) throws ParseException, IOException{
 	    JsonParser parser = new JsonParser();
         JsonElement jsonObject = parser.parse(json);
@@ -32,7 +36,7 @@ public class Parsers {
 	}
 	
 	public Document asXML(CloseableHttpResponse response) throws ParseException, IOException, ParserConfigurationException, SAXException{
-		String output = EntityUtils.toString(response.getEntity());
+		String output = asString(response);
 		return this.asXML(output);
 	}
 	

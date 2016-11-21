@@ -157,7 +157,7 @@ public class HttpRequestHandler {
 
 	public void setRequestCookie(Cookie cookie) {
 		requestCookieStore = new BasicCookieStore();
-		requestCookieStore.addCookie(cookie);;
+		requestCookieStore.addCookie(cookie);
 	}
 	
 	public void setRequestCookies(Cookie[] cookies) {

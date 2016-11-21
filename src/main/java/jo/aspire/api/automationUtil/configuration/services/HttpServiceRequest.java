@@ -20,9 +20,9 @@ import org.apache.http.cookie.Cookie;
 
 public class HttpServiceRequest {
 
-	ThreadLocal<HttpServiceConfiguration> _httpServiceConfiguration;
-	private ThreadLocal<HttpRequestHandler> _httpRequestHandler;
-	private ThreadLocal<String> _requestBody;
+	private ThreadLocal<HttpServiceConfiguration> _httpServiceConfiguration = new ThreadLocal();
+	private ThreadLocal<HttpRequestHandler> _httpRequestHandler = new ThreadLocal();
+	private ThreadLocal<String> _requestBody = new ThreadLocal();;
 	public HttpServiceRequest(HttpRequestHandler httpRequestHandler, HttpServiceConfiguration httpServiceConfiguration)
 	{
 		setHttpRequestHandler(httpRequestHandler);
