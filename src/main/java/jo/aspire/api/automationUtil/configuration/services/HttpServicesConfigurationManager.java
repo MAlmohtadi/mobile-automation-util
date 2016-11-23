@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.commons.io.Charsets;
 
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceConfiguration;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceRequestConfigParam;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServicesConfigurationCollection;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 
