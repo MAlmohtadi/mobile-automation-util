@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class XmlHelper {
+public class XMLHelper {
 	
 	public static String getValueFromXml(String xmlAsString, String xPath)
 	{

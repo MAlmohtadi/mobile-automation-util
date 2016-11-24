@@ -94,7 +94,7 @@ public class DBhelper {
 			String[] row = new String[columnCount];	
 			while (rs.next()) {	
 				for (int i = 0; i < columnCount; i++){
-				//Result.put(Columns.get(i), rs.getString(Columns.get(i)).trim());
+				//ResponseResult.put(Columns.get(i), rs.getString(Columns.get(i)).trim());
 
 			        row[i] =  rs.getObject(i+1).toString();
 			        }

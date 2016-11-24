@@ -2,7 +2,7 @@ package jo.aspire.api.automationUtil.configuration.services;
 
 import java.util.List;
 
-class HttpServiceConfigurations {
+public class HttpServiceConfigurations {
 
 	public class HttpServiceConfiguration {
 		private String name;
@@ -14,6 +14,8 @@ class HttpServiceConfigurations {
 		private List<HttpServiceRequestConfigParam> requestBodyParams;
 		private List<HttpServiceRequestConfigParam> requestHeaders;
 		private String valueToCompare;
+		private String jsonFilePath;
+		private List<JSONCheckRule> jsonCheckRules;
 
 		public String getName() {
 			return name;
@@ -64,6 +66,15 @@ class HttpServiceConfigurations {
 			this.method = methodName;
 		}
 
+		public String getJSONFilePath()
+		{
+			return jsonFilePath;
+		}
+		public List<JSONCheckRule> getJSONCheckRules()
+		{
+			return jsonCheckRules;
+		}
+
 		public List<HttpServiceRequestConfigParam> getRequestBodyParams() {
 			return requestBodyParams;
 		}
@@ -88,6 +99,11 @@ class HttpServiceConfigurations {
 
 		public String name;
 		public String value;
+	}
+
+	public class JSONCheckRule {
+		public String node;
+		public String check;
 	}
 	
 	public class HttpServicesConfigurationCollection  {
