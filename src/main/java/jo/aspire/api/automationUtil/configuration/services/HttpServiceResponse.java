@@ -15,13 +15,18 @@ public class HttpServiceResponse {
     private ThreadLocal<String> _serviceName = new ThreadLocal();
     private ThreadLocal<HttpServiceConfiguration> _httpServiceConfiguration = new ThreadLocal();
     private ThreadLocal<ResponseResult> _responseResult = new ThreadLocal();
+    private ThreadLocal<HttpServiceRequest> _httpServiceRequest = new ThreadLocal();
 
-    public HttpServiceResponse(final CloseableHttpResponse httpResponse, final HttpServiceConfiguration httpServiceConfiguration, final String serviceName) {
+    public HttpServiceResponse(HttpServiceRequest httpServiceRequest, final CloseableHttpResponse httpResponse, final HttpServiceConfiguration httpServiceConfiguration, final String serviceName) {
+        setHttpServiceRequest(httpServiceRequest);
         setHttpServiceConfiguration(httpServiceConfiguration);
         setServiceName(serviceName);
         setHttpResponse(httpResponse);
         setResultAsString(parseResultAsString());
         setResponseResult();
+
+        System.out.println("\n[Service Result]:" + getResultAsString()
+                + "\n**End executing service, [Service Name]: " + serviceName);
     }
 
     public HttpServiceResponse getHttpServiceResponse() {
@@ -29,21 +34,21 @@ public class HttpServiceResponse {
     }
 
     public HttpServiceResponse setResultAsStringToStoryStore(String sotreKey) {
-        StateHelper.setStoryState(getServiceName() + sotreKey, getResultAsString());
+        StateHelper.setStoryState(sotreKey, getResultAsString());
         return this;
     }
 
     public String getResultAsStringFromStoryStore(String sotreKey) {
-        return StateHelper.getStoryState(getServiceName() + sotreKey).toString();
+        return StateHelper.getStoryState(sotreKey).toString();
     }
 
     public HttpServiceResponse setResultAsStringToStepStore(String sotreKey) {
-        StateHelper.setStepState(getServiceName() + sotreKey, getResultAsString());
+        StateHelper.setStepState(sotreKey, getResultAsString());
         return this;
     }
 
     public String getResultAsStringFromStepStore(String sotreKey) {
-        return StateHelper.getStepState(getServiceName() + sotreKey).toString();
+        return StateHelper.getStepState(sotreKey).toString();
     }
 
     public String getResultAsString() {
@@ -51,12 +56,7 @@ public class HttpServiceResponse {
     }
 
     protected HttpServiceResponse setResultAsString(final String httpResponseResultAsString) {
-        _httpResponseResultAsString = new ThreadLocal<String>() {
-            @Override
-            public String initialValue() {
-                return httpResponseResultAsString;
-            }
-        };
+        _httpResponseResultAsString.set(httpResponseResultAsString);
         return this;
     }
 
@@ -65,38 +65,31 @@ public class HttpServiceResponse {
     }
 
     private void setHttpResponse(final CloseableHttpResponse httpResponse) {
-        _httpResponse = new ThreadLocal<CloseableHttpResponse>() {
-            @Override
-            public CloseableHttpResponse initialValue() {
-                return httpResponse;
-            }
-        };
+        _httpResponse.set(httpResponse);
     }
 
     private CloseableHttpResponse getHttpResponse() {
         return _httpResponse.get();
     }
 
-    private void setServiceName(final String serviceName) {
-        _serviceName = new ThreadLocal<String>() {
-            @Override
-            public String initialValue() {
-                return serviceName;
-            }
-        };
+    private void setServiceName(String serviceName) {
+        _serviceName.set(serviceName);
     }
 
     private String getServiceName() {
         return _serviceName.get();
     }
 
-    private void setHttpServiceConfiguration(final HttpServiceConfiguration httpServiceConfiguration) {
-        _httpServiceConfiguration = new ThreadLocal<HttpServiceConfiguration>() {
-            @Override
-            public HttpServiceConfiguration initialValue() {
-                return httpServiceConfiguration;
-            }
-        };
+    private void setHttpServiceRequest(HttpServiceRequest httpServiceRequest) {
+        _httpServiceRequest.set(httpServiceRequest);
+    }
+
+    private HttpServiceRequest getHttpServiceRequest() {
+        return _httpServiceRequest.get();
+    }
+
+    private void setHttpServiceConfiguration(HttpServiceConfiguration httpServiceConfiguration) {
+        _httpServiceConfiguration.set( httpServiceConfiguration);
     }
 
     private HttpServiceConfiguration getHttpServiceConfiguration() {
@@ -120,7 +113,9 @@ public class HttpServiceResponse {
     }
 
     private void setResponseResult() {
-        this._responseResult.set(new ResponseResult(getServiceName(),
+        this._responseResult.set(new ResponseResult(
+                getHttpServiceRequest(),
+                getServiceName(),
                 getResultAsString(),
                 getValueToCompare(),
                 getHttpServiceConfiguration().getJSONFilePath(),

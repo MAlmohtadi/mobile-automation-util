@@ -1,18 +1,13 @@
 package jo.aspire.api.automationUtil.configuration.services;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceConfiguration;
-import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServiceRequestConfigParam;
+import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.NameValuePair;
 import jo.aspire.api.automationUtil.configuration.services.HttpServiceConfigurations.HttpServicesConfigurationCollection;
 
 import com.google.common.base.Charsets;
@@ -31,7 +26,7 @@ class HttpServicesConfigurationManager {
 		HttpServiceConfiguration matchingServiceConfig = null;
 		HttpServicesConfigurationCollection httpServicesConfiguration = this.getHttpServicesConfigurationCollection();
 		
-		for (HttpServiceConfiguration serviceConfig : httpServicesConfiguration.services) {
+		for (HttpServiceConfiguration serviceConfig : httpServicesConfiguration.getServices()) {
 			if (serviceName.equalsIgnoreCase(serviceConfig.getName())) {
 				matchingServiceConfig = serviceConfig;
 				break;
@@ -39,7 +34,7 @@ class HttpServicesConfigurationManager {
 		}
 		if(matchingServiceConfig == null)//No configuration has been found for this service
 		{
-			throw new Exception("No configuration found for Service Name: [" + serviceName+ "]");
+			throw new Exception("No configuration found for [Service Name]: [" + serviceName+ "]");
 		}
 		//load default configuration
 		setDefaultConfiguration(matchingServiceConfig, httpServicesConfiguration);
@@ -69,14 +64,14 @@ class HttpServicesConfigurationManager {
 			matchingServiceConfig.setConentType(httpServicesConfigurationCollection.getDefaultContentType());
 		if(httpServicesConfigurationCollection.getDefaultRequestHeaders() != null)
 		{
-			List<HttpServiceRequestConfigParam> defaultRequestHeaders = httpServicesConfigurationCollection.getDefaultRequestHeaders();
-			List<HttpServiceRequestConfigParam> matchingServiceConfigRequestHeaders = matchingServiceConfig.getRequestHeaders();
+			List<NameValuePair> defaultRequestHeaders = httpServicesConfigurationCollection.getDefaultRequestHeaders();
+			List<NameValuePair> matchingServiceConfigRequestHeaders = matchingServiceConfig.getRequestHeaders();
 			if(matchingServiceConfigRequestHeaders == null)
 			{
-				matchingServiceConfigRequestHeaders = new ArrayList<HttpServiceRequestConfigParam>();
+				matchingServiceConfigRequestHeaders = new ArrayList<NameValuePair>();
 				matchingServiceConfig.setRequestHeaders(matchingServiceConfigRequestHeaders); 
 			}			
-			for(HttpServiceRequestConfigParam defaultRequestHeader : defaultRequestHeaders)
+			for(NameValuePair defaultRequestHeader : defaultRequestHeaders)
 			{
 				boolean isExists = isRequestHeaderExists(
 						matchingServiceConfigRequestHeaders,
@@ -89,10 +84,10 @@ class HttpServicesConfigurationManager {
 		}
 	}
 	private boolean isRequestHeaderExists(
-			List<HttpServiceRequestConfigParam> matchingServiceConfigRequestHeaders,
-			HttpServiceRequestConfigParam defaultRequestHeader) {
+			List<NameValuePair> matchingServiceConfigRequestHeaders,
+			NameValuePair defaultRequestHeader) {
 		boolean isExists = false;
-		for(HttpServiceRequestConfigParam h : matchingServiceConfigRequestHeaders){
+		for(NameValuePair h : matchingServiceConfigRequestHeaders){
 		    if(h.name != null && h.name.toLowerCase().trim().equals(defaultRequestHeader.name.toLowerCase().trim()))
 		    {
 		    	isExists = true;

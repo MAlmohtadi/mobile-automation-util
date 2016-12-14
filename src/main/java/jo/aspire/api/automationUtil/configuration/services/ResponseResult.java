@@ -24,9 +24,11 @@ public class ResponseResult {
     private ThreadLocal<Header[]> _headers = new ThreadLocal();
     private ThreadLocal<Integer> _statusCode = new ThreadLocal();
     private ThreadLocal<String> _serviceName = new ThreadLocal();
+    private ThreadLocal<HttpServiceRequest> _httpServiceRequest = new ThreadLocal();
 
-    public ResponseResult(
-            String servicename,
+    ResponseResult(
+            HttpServiceRequest httpServiceRequest,
+            String serviceName,
             String httpResponseResultAsString,
             String valueToCompare,
             String jsonFilePath,
@@ -34,13 +36,14 @@ public class ResponseResult {
             Header[] headers,
             int statusCode
     ) {
+        this._httpServiceRequest.set(httpServiceRequest);
         this._httpResponseResultAsString.set(httpResponseResultAsString);
         this._valueToCompare.set(valueToCompare);
         this._jsonFilePath.set(jsonFilePath);
         this._jsonCheckRules.set(jsonCheckRules);
         this._statusCode.set(statusCode);
         this._headers.set(headers);
-        this._serviceName.set(servicename);
+        this._serviceName.set(serviceName);
     }
 
     public String getResultAsString() {
@@ -88,15 +91,20 @@ public class ResponseResult {
         return this._headers.get();
     }
 
-    public String getJSONFilePath() {
+    public String getJsonFilePath() {
         return this._jsonFilePath.get();
     }
 
     public String getResultAsStringFromStoryStore(String sotreKey) {
-        return StateHelper.getStoryState(_serviceName + sotreKey).toString();
+        return StateHelper.getStoryState(sotreKey).toString();
     }
 
     public String getResultAsStringFromStepStore(String sotreKey) {
-        return StateHelper.getStepState(_serviceName + sotreKey).toString();
+        return StateHelper.getStepState(sotreKey).toString();
+    }
+
+    public String getServiceRequestBody()
+    {
+        return _httpServiceRequest.get().getServiceRequestBody();
     }
 }

@@ -6,42 +6,41 @@ import jo.aspire.web.automationUtil.StateHelper;
 
 public class HttpServicesBuilder {
 
-	private ThreadLocal<HttpServicesConfigurationManager> _httpServicesConfigurationManager = null;
-	private ThreadLocal<HttpRequestHandler> _httpRequestHandler = new ThreadLocal<HttpRequestHandler>() {
-		@Override public HttpRequestHandler initialValue() {
-			return HttpRequestHandler.getInstance();
-		}
-	};
-	private StateHelper _stateHelper;	
-	public HttpServicesBuilder(String servicesConfiguratinFilePath) throws Exception{
+	private ThreadLocal<HttpServicesConfigurationManager> _httpServicesConfigurationManager = new ThreadLocal<>();
+	private ThreadLocal<HttpRequestHandler> _httpRequestHandler = new ThreadLocal<>();
+
+	public HttpServicesBuilder(String servicesConfiguratinFilePath){
 		try {
-			// setHttpRequestHandler();
+			 setHttpRequestHandler();
 			 setHttpServicesConfigurationManager(servicesConfiguratinFilePath);
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.err.println("\nError while creating service builder, [Services Configuration File Path]: "
+			+ servicesConfiguratinFilePath
+			+ "\n[Exception]: " + e);
 			e.printStackTrace();
 		}
 	}
-	public HttpServiceRequest build(String serviceName) {
-		ThreadLocal<HttpServiceRequest> serviceRequest = null;
-		try {
-			final HttpServiceConfiguration httpServiceConfiguration = getHttpServicesConfigurationManager().getHttpServiceConfiguration(serviceName);
 
-			serviceRequest = new ThreadLocal<HttpServiceRequest>() {
-				@Override public HttpServiceRequest initialValue() {
-					return new HttpServiceRequest(getHttpRequestHandler(), httpServiceConfiguration);
-				}
-			};
+	public HttpServiceRequest build(String serviceName) {
+		ThreadLocal<HttpServiceRequest> serviceRequest = new ThreadLocal<>();
+		try {
+			HttpServiceConfiguration httpServiceConfiguration = getHttpServicesConfigurationManager().getHttpServiceConfiguration(serviceName);
+			serviceRequest.set(new HttpServiceRequest(getHttpRequestHandler(), httpServiceConfiguration));
 			//throw exception in case service object is null
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.err.println("Error while building Service, [Service Name]: " +
+					serviceName + "\n"
+					+ "[Exception]: "+ e
+					+"\n");
 			e.printStackTrace();
 		}
 		return serviceRequest.get();
 	}
-	public StateHelper getStore() {
-		return _stateHelper;
+
+	protected void setHttpRequestHandler()
+	{
+		_httpRequestHandler.set(HttpRequestHandler.getInstance());
 	}
 	protected HttpRequestHandler getHttpRequestHandler() {
 		return _httpRequestHandler.get();
@@ -51,19 +50,15 @@ public class HttpServicesBuilder {
 	}
 	protected void setHttpServicesConfigurationManager(final String servicesConfiguratinFilePath) throws Exception {
 
-		if (_httpServicesConfigurationManager == null || _httpServicesConfigurationManager.get() == null) {
+		if (_httpServicesConfigurationManager.get() == null) {
 			if (servicesConfiguratinFilePath == null || servicesConfiguratinFilePath.trim() == "") {
 				throw new Exception("Invalid configuration file (null reference), http services configuration object has not been initiated.");
 			}
 			try {
-				_httpServicesConfigurationManager = new ThreadLocal<HttpServicesConfigurationManager>() {
-					@Override public HttpServicesConfigurationManager initialValue() {
-						return new HttpServicesConfigurationManager(servicesConfiguratinFilePath);
-					}
-				};
+					_httpServicesConfigurationManager.set(new HttpServicesConfigurationManager(servicesConfiguratinFilePath));
 			} catch (Exception e) {
 				throw new Exception(
-						"Error while loading configuration file:["
+						"Error while loading services configuration file:["
 								+ servicesConfiguratinFilePath
 								+ "] configuration file content is not valid json format, Exception: ["
 								+ e + "]");

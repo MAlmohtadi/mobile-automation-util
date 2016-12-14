@@ -4,169 +4,177 @@ import java.util.List;
 
 public class HttpServiceConfigurations {
 
-	public class HttpServiceConfiguration {
-		private String name;
-		private String host;
-		private String httpMethod;
-		private String contentType;
-		private String url;
-		private String method;
-		private List<HttpServiceRequestConfigParam> requestBodyParams;
-		private List<HttpServiceRequestConfigParam> requestHeaders;
-		private String valueToCompare;
-		private String jsonFilePath;
-		private List<JSONCheckRule> jsonCheckRules;
+    class HttpServiceConfiguration {
+        private String name;
+        private String host;
+        private String httpMethod;
+        private String contentType;
+        private String url;
+        private String method;
+        private List<NameValuePair> requestBodyParams;
+        private List<NameValuePair> requestHeaders;
+        private List<NameValuePair> requestBodyTemplates;
+        private String valueToCompare;
+        private String jsonFilePath;
+        private List<JSONCheckRule> jsonCheckRules;
 
-		public String getName() {
-			return name;
-		}
+        String getName() {
+            return name;
+        }
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        String getHost() {
+            return host;
+        }
 
-		public String getHost() {
-			return host;
-		}
+        void setHost(String host) {
+            this.host = host;
+        }
 
-		public void setHost(String host) {
-			this.host = host;
-		}
+        String getHttpMethod() {
+            return httpMethod;
+        }
 
-		public String getHttpMethod() {
-			return httpMethod;
-		}
+        void setHttpMethod(String httpMethod) {
+            this.httpMethod = httpMethod;
+        }
 
-		public void setHttpMethod(String httpMethod) {
-			this.httpMethod = httpMethod;
-		}
+        String getConentType() {
+            return contentType;
+        }
 
-		public String getConentType() {
-			return contentType;
-		}
+        void setConentType(String contentType) {
+            this.contentType = contentType;
+        }
 
-		public void setConentType(String contentType) {
-			this.contentType = contentType;
-		}
+        String getUrl() {
+            return url;
+        }
 
-		public String getUrl() {
-			return url;
-		}
+        void setUrl(String url) {
+            this.url = url;
+        }
 
-		public void setUrl(String url) {
-			this.url = url;
-		}
+        String getMethodName() {
+            return method;
+        }
 
-		public String getMethodName() {
+        String getJSONFilePath() {
+            return jsonFilePath;
+        }
 
-			return method;
-		}
+        List<JSONCheckRule> getJSONCheckRules() {
+            return jsonCheckRules;
+        }
 
-		public void setMethodName(String methodName) {
-			this.method = methodName;
-		}
+        List<NameValuePair> getRequestBodyParams() {
+            return requestBodyParams;
+        }
 
-		public String getJSONFilePath()
-		{
-			return jsonFilePath;
-		}
-		public List<JSONCheckRule> getJSONCheckRules()
-		{
-			return jsonCheckRules;
-		}
+        List<NameValuePair> getRequestHeaders() {
+            return requestHeaders;
+        }
 
-		public List<HttpServiceRequestConfigParam> getRequestBodyParams() {
-			return requestBodyParams;
-		}
+        void setRequestHeaders(List<NameValuePair> headers) {
+            requestHeaders = headers;
+        }
 
-		public List<HttpServiceRequestConfigParam> getRequestHeaders() {
-			return requestHeaders;
-		}
-		
-		void setRequestHeaders(List<HttpServiceRequestConfigParam> headers) {
-			 requestHeaders = headers;
-		}
-		public String getValueToCompare() {
-			return valueToCompare;
-		}
+        String getRequestBodyTemplateValue(String templateName) {
+            if(null != requestBodyTemplates)
+            {
+                for (NameValuePair template  : requestBodyTemplates) {
+                    if(template.name.equalsIgnoreCase(templateName))
+                       return template.value;
+                }
+            }
+            return "";
+        }
 
-		public void setValueToCompare(String valueToCompare) {
-			this.valueToCompare = valueToCompare;
-		}
-	}
+        String getValueToCompare() {
+            return valueToCompare;
+        }
+    }
 
-	public class HttpServiceRequestConfigParam {
+    class NameValuePair {
 
-		public String name;
-		public String value;
-	}
+        public String name;
+        public String value;
+    }
 
-	public class JSONCheckRule {
-		public String node;
-		public String check;
-	}
-	
-	public class HttpServicesConfigurationCollection  {
-		
-		private String defaultHost;
-		private String defaultHttpMethod;
-		private String defaultContentType;
-		public List<HttpServiceConfiguration> services;
-		private List<HttpServiceRequestConfigParam> defaultRequestHeaders;
-		
-		public String getDefaultHost() {
-			if(defaultHost == null || defaultHost.trim() == "")
-			{
-				try {
-					throw new Exception("Host cannot be empty, there is no value has been set for this configuration.");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					e.getCause();
-				}
-			}
-			return defaultHost;
-		}
-		public void setDefaultHost(String defaultHost) {
-			this.defaultHost = defaultHost;
-		}
-		public String getDefaultHttpMethod() {
-			if(defaultHttpMethod == null || defaultHttpMethod.trim() == "")
-			{
-				try {
-					throw new Exception("Http method cannot be empty, there is no value has been set for this configuration.");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					e.getCause();
-				}
-			}
-			return defaultHttpMethod;
-		}
-		public void setDefaultHttpMethod(String defaultHttpMethod) {
-			this.defaultHttpMethod = defaultHttpMethod;
-		}
-		public String getDefaultContentType() {
-			if(defaultContentType == null || defaultContentType.trim() == "")
-			{
-				try {
-					throw new Exception("Content type cannot be empty, there is no value has been set for this configuration.");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					e.getCause();
-				}
-			}
-			return defaultContentType;
-		}
-		public void setDefaultContentType(String defaultContentType) {
-			this.defaultContentType = defaultContentType;
-		}
-		public List<HttpServiceRequestConfigParam> getDefaultRequestHeaders() {
-			return defaultRequestHeaders;
-		}
-		public void setDefaultRequestHeaders(List<HttpServiceRequestConfigParam> defaultRequestHeaders) {
-			this.defaultRequestHeaders = defaultRequestHeaders;
-		}
-	}
+    public class JSONCheckRule {
+        public String node;
+        public String check;
+    }
+
+    class HttpServicesConfigurationCollection {
+
+        private String defaultHost;
+        private String defaultHttpMethod;
+        private String defaultContentType;
+        private List<HttpServiceConfiguration> services;
+        private List<NameValuePair> defaultRequestHeaders;
+
+        String getDefaultHost() {
+            if (defaultHost == null || defaultHost.trim() == "") {
+                try {
+                    throw new Exception("Host cannot be empty, there is no value has been set for this configuration.");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    e.getCause();
+                }
+            }
+            return defaultHost;
+        }
+
+        void setDefaultHost(String defaultHost) {
+            this.defaultHost = defaultHost;
+        }
+
+        String getDefaultHttpMethod() {
+            if (defaultHttpMethod == null || defaultHttpMethod.trim() == "") {
+                try {
+                    throw new Exception("Http method cannot be empty, there is no value has been set for this configuration.");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    e.getCause();
+                }
+            }
+            return defaultHttpMethod;
+        }
+
+        void setDefaultHttpMethod(String defaultHttpMethod) {
+            this.defaultHttpMethod = defaultHttpMethod;
+        }
+
+        String getDefaultContentType() {
+            if (defaultContentType == null || defaultContentType.trim() == "") {
+                try {
+                    throw new Exception("Content type cannot be empty, there is no value has been set for this configuration.");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    e.getCause();
+                }
+            }
+            return defaultContentType;
+        }
+
+        void setDefaultContentType(String defaultContentType) {
+            this.defaultContentType = defaultContentType;
+        }
+
+        List<HttpServiceConfiguration> getServices()
+        {
+            return services;
+        };
+
+        List<NameValuePair> getDefaultRequestHeaders() {
+            return defaultRequestHeaders;
+        }
+
+        void setDefaultRequestHeaders(List<NameValuePair> defaultRequestHeaders) {
+            this.defaultRequestHeaders = defaultRequestHeaders;
+        }
+    }
 }
