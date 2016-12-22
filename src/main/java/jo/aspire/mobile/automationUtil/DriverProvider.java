@@ -37,7 +37,8 @@ public class DriverProvider implements IDriverProvider {
 	public static ArrayList<String> appiumPortsList = new ArrayList<>();
 	public static ArrayList<String> udid = new ArrayList<>();
 
-//	public static ThreadLocal<JsonObject> driverInfo = new ThreadLocal<JsonObject>();
+	// public static ThreadLocal<JsonObject> driverInfo = new
+	// ThreadLocal<JsonObject>();
 	public static JsonObject driverInfo = new JsonObject();
 
 	public static void setDriverToRun(JsonObject di) {
@@ -60,7 +61,7 @@ public class DriverProvider implements IDriverProvider {
 		boolean isAndroid = platformName.toUpperCase().equals("ANDROID");
 		return isAndroid ? platform.ANDROID : platform.IOS;
 	}
-	
+
 	public static JsonObject getDriverInfo() {
 		return driverInfo;
 	}
@@ -175,7 +176,7 @@ public class DriverProvider implements IDriverProvider {
 		} else {
 			capabilities = DesiredCapabilities.iphone();
 		}
-		
+
 		// set capabilities
 		JsonObject capabilitiesObj = getDriverInfo().get("capabilities").getAsJsonObject();
 		Set<Map.Entry<String, JsonElement>> capabilitiesSet = capabilitiesObj.entrySet();
@@ -183,16 +184,23 @@ public class DriverProvider implements IDriverProvider {
 		for (Map.Entry<String, JsonElement> entry : capabilitiesSet) {
 			capabilities.setCapability(entry.getKey(), entry.getValue());
 		}
-		
+
 		boolean analytics = Boolean.parseBoolean(getDriverInfo().get("isAnalytics").getAsString());
-		
-		//if analytics and run on saucelab
-		boolean runOnSauceLab = getDriverInfo().get("remote").getAsJsonObject().get("type").getAsString().toLowerCase().contains("sauce");		
-		Boolean runOnAmazon = getDriverInfo().get("remote").getAsJsonObject().get("type").getAsString().toLowerCase().contains("amazon");
-		
+
+		// if analytics and run on saucelab
+		boolean runOnSauceLab = false;
+		boolean runOnAmazon = false;
+
+		if (Boolean.parseBoolean(getDriverInfo().get("isRemote").getAsString())) {
+			runOnSauceLab = getDriverInfo().get("remote").getAsJsonObject().get("type").getAsString().toLowerCase()
+					.contains("sauce");
+			runOnAmazon = getDriverInfo().get("remote").getAsJsonObject().get("type").getAsString().toLowerCase()
+					.contains("amazon");
+		}
+
 		if (!runOnAmazon) {
 			ResetApp = getDriverInfo().get("autoAcceptAlerts").getAsString();
-			//if analytics and run on saucelab
+			// if analytics and run on saucelab
 			if (analytics && runOnSauceLab) {
 				String tunnelID = null;
 
@@ -226,13 +234,13 @@ public class DriverProvider implements IDriverProvider {
 		}
 		String userDir = System.getProperty("user.dir");
 		URL serverAddress;
-		String localApp = getDriverInfo().get("appFileName").getAsString();		
+		String localApp = getDriverInfo().get("appFileName").getAsString();
 		String remoteUrl = getDriverInfo().get("remote").getAsJsonObject().get("remoteUrl").getAsString();
 
 		if (!runOnAmazon && runOnSauceLab) {
-			
-//			capabilities.setCapability("app", "sauce-storage:" + localApp.trim());
-			
+
+			// capabilities.setCapability("app", "sauce-storage:" +
+			// localApp.trim());
 
 			serverAddress = new URL(remoteUrl);
 			if (getPlatform() == platform.ANDROID) {
@@ -242,7 +250,8 @@ public class DriverProvider implements IDriverProvider {
 			}
 
 		} else {
-			String appPath = Paths.get(getDriverInfo().get("fileDirectory").getAsString(), localApp).toAbsolutePath().toString();
+			String appPath = Paths.get(getDriverInfo().get("fileDirectory").getAsString(), localApp).toAbsolutePath()
+					.toString();
 			if (!runOnAmazon) {
 				capabilities.setCapability("app", appPath);
 			}
@@ -333,6 +342,6 @@ public class DriverProvider implements IDriverProvider {
 	public boolean isDriverInitialized() {
 		String threadName = Thread.currentThread().getName();
 		return drivers.get(threadName) != null;
-		
+
 	}
 }
