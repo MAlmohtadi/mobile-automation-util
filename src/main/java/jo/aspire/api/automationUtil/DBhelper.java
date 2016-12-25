@@ -22,12 +22,7 @@ public class DBhelper {
 	private String dbUserName;
 	private String dbPassword;
 
-	//Cannnot be used, username and password should be passed as well!
-//	public DBhelper(String connStringConfigPropertyName, String driverConfigPorpertyName, String userName , String Password) {
-//		url = EnvirommentManager.getInstance().getProperty(connStringConfigPropertyName);
-//		driver = EnvirommentManager.getInstance().getProperty(driverConfigPorpertyName);
-//	}
-	public DBhelper(String connString,String driver , String userName , String password) {
+	public DBhelper(String connString, String driver, String userName,  String password) {
 		url = connString;
 		this.driver = driver;
 		dbUserName = userName;
