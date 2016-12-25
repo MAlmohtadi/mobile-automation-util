@@ -16,9 +16,9 @@ public class DBhelperTest {
 		TestPasswd = "public2see";
 		
 		
-		DBhelper conn = new DBhelper(TestQery, TestConnString, TestDriver, TestUsername, TestPasswd);
+		DBhelper conn = new DBhelper(TestConnString, TestDriver, TestUsername, TestPasswd);
 		//boolean connected = conn.CheckDataInDB(Key);
-		List<String[]> DBvalue = conn.GetDBData(TestQery);
+		List<String[]> DBvalue = conn.getData(TestQery);
 		List<String[]> DataBaseValueWithoutSpace = DBvalue;
 		System.out.println(DataBaseValueWithoutSpace);
 		

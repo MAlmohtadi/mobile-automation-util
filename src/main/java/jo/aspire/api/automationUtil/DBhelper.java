@@ -1,18 +1,15 @@
 package jo.aspire.api.automationUtil;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.poi.ss.formula.functions.Columns;
-
 import jo.aspire.generic.EnvirommentManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+@ThreadSafe
 public class DBhelper {
 
 	/**
@@ -20,156 +17,246 @@ public class DBhelper {
 	   * @param ORACLE url = jdbc:oracle:thin:@hostname:port Number:databaseName	  
 	   */
 	
-	private String driver, url, SQLQuery , DBUserName , DBPassWord;	
-	
-	
-	  
-	public DBhelper(String ConfigFileConnectionString,String ConfigFileDriver) {
-		url = EnvirommentManager.getInstance().getProperty(ConfigFileConnectionString);
-		driver = EnvirommentManager.getInstance().getProperty(ConfigFileDriver);
-	}
-	public DBhelper(String contentType,String ConfigFileConnectionString,String ConfigFileDriver) {
-		url = EnvirommentManager.getInstance().getProperty(ConfigFileConnectionString);
-		driver = EnvirommentManager.getInstance().getProperty(ConfigFileDriver);
-		SQLQuery = EnvirommentManager.getInstance().getProperty(contentType);
-	}
-	public DBhelper(String query,String connString,String drvr , String UserName , String Password) {
+	private String driver;
+	private String url;
+	private String dbUserName;
+	private String dbPassword;
+
+	//Cannnot be used, username and password should be passed as well!
+//	public DBhelper(String connStringConfigPropertyName, String driverConfigPorpertyName, String userName , String Password) {
+//		url = EnvirommentManager.getInstance().getProperty(connStringConfigPropertyName);
+//		driver = EnvirommentManager.getInstance().getProperty(driverConfigPorpertyName);
+//	}
+	public DBhelper(String connString,String driver , String userName , String password) {
 		url = connString;
-		driver = drvr;
-		SQLQuery = query;
-		DBUserName = UserName; 
-		DBPassWord = Password;
+		this.driver = driver;
+		dbUserName = userName;
+		dbPassword = password;
 	}
-	
-	 /**
-	   * This is the main method which makes use to Verify if the Data Base connected .
-	   * @param ConfigFileConnectionString
-	   * @param ConfigFileDriver
-	   * @param DataBase UserName
-	   * @param DataBase Password
-	   * @param Query
-	   * @return boolean.
-	   */
-	private boolean VerifyDBConnect(String Query) {
-		boolean returnedValue = false;
-		try {
-
-			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url , DBUserName , DBPassWord);
-			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery(Query);
-
-			if (rs.next()) {
-				returnedValue = true;
-			} else {
-				returnedValue = false;
-			}
-			conn.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return returnedValue;
-	} 
-
 	/**
-	   * This method which makes use to store sql query result in two dimensional array (table) .
-	   * @param ConfigFileConnectionString
-	   * @param ConfigFileDriver
-	   * @param DataBase UserName
-	   * @param DataBase Password
-	   * @param Query
+	   * This method which makes use to get sql query result in two dimensional array (table) .
+	   * @param query
 	   * @return list.
 	   */
-	public List<String[]> GetDBData(String Query ) {
+	public List<String[]> getData(String query ) {
 		
 		List<String[]> table = new ArrayList<>();
-		 
+
+		Connection dbConnection = null;
 		try {
-			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url ,DBUserName , DBPassWord);
-			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery(Query);
+			dbConnection = getDBConnection();
+			Statement statement = dbConnection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
 			int columnCount = rs.getMetaData().getColumnCount();
 			String[] row = new String[columnCount];	
 			while (rs.next()) {	
 				for (int i = 0; i < columnCount; i++){
-				//ResponseResult.put(Columns.get(i), rs.getString(Columns.get(i)).trim());
-
-			        row[i] =  rs.getObject(i+1).toString();
+			        row[i] =  rs.getString(i+1);
 			        }
 					table.add( row );
 			    }
-			    
-			
-			conn.close();
-		
-			return table;
 		} catch (Exception e) {
+			System.err.println("Error while executing query:[" + query + "] exception:" + e);
 			e.printStackTrace();
-			return null;
+			try {
+				dbConnection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				System.err.println("Error while closing database connection!\n");
+			}
+		} finally {
+			if (dbConnection != null) {
+				try {
+					dbConnection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+		return table;
 	}
-	
-	
 	/**
-	   * This method which makes use to store sql query result in list (one column).
-	   * @param ConfigFileConnectionString
-	   * @param ConfigFileDriver
-	   * @param DataBase UserName
-	   * @param DataBase Password
-	   * @param Query
-	   * @return list.
+	   * This method which makes use to get sql query result in list (one column).
+
+	   * @param query
+	   * @return list String.
 	   */
-	public List<String> GetListData(String Query) {
-		List<String>  Result = new ArrayList<String>();
+	public List<String> getListData(String query) {
+		List<String>  result = new ArrayList<String>();
+		Connection dbConnection = null;
 		try {
-			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url , DBUserName , DBPassWord);
-			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery(Query);
+			dbConnection = getDBConnection();
+			Statement statement = dbConnection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
 			int columnCount = rs.getMetaData().getColumnCount();
 			while (rs.next()) {	
 				for (int i = 0; i <columnCount; i++)
-				Result.add( rs.getString(i + 1) ); 				
+				result.add( rs.getString(i + 1) );
 			}
-			conn.close();
-		
-			return Result;
 		} catch (Exception e) {
+			System.err.println("Error while executing query:[" + query + "] exception:" + e);
 			e.printStackTrace();
-			return null;
-		}
-	}
-	/**
-	   * This method which makes use to store sql query result in String(one Value) .
-	   * @param ConfigFileConnectionString
-	   * @param ConfigFileDriver
-	   * @param DataBase UserName
-	   * @param DataBase Password
-	   * @param Query
-	   * @return list.
-	   */
-	public String GetDBValue(String Query) {
-		try {
-			String Json = "";
-			Class.forName(driver).newInstance();
-			Connection conn = DriverManager.getConnection(url , DBUserName , DBPassWord);
-			
-			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery(Query);
-
-			while (rs.next()) {
-				for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-					Json =rs.getString(i).trim();
+			try {
+				dbConnection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				System.err.println("Error while closing database connection!\n");
+			}
+		} finally {
+			if (dbConnection != null) {
+				try {
+					dbConnection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
 			}
-			conn.close();
-
-			return Json;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
 		}
+		return result;
+	}
+
+	/**
+	 * This method used to get query result in json array.
+	 * @param query
+	 * @return
+	 */
+	public JSONArray getListDataAsJson(String query) {
+		Connection dbConnection = null;
+		JSONArray recordObjectArray = new JSONArray();
+		try {
+			dbConnection = getDBConnection();
+			Statement stmt = dbConnection.createStatement();
+			System.out.print(query);
+			ResultSet result = stmt.executeQuery(query);
+
+			while(result.next())
+			{
+				JSONObject recordObject = new JSONObject();
+				ResultSetMetaData rsmd = result.getMetaData();
+				int columnCount = rsmd.getColumnCount();
+				for (int i = 1; i < columnCount + 1; i++) {
+					String colName = rsmd.getColumnName(i);
+					String colValue = result.getString(i);
+					recordObject.put(colName, colValue);
+				}
+				// add the first record to array
+				recordObjectArray.put(recordObject);
+			}
+
+		} catch (Exception e) {
+			System.err.println("Error while executing query:[" + query + "] exception:" + e);
+			e.printStackTrace();
+			try {
+				dbConnection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				System.err.println("Error while closing database connection!\n");
+			}
+		} finally {
+			if (dbConnection != null) {
+				try {
+					dbConnection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return recordObjectArray;
+	}
+	/**
+	   * This method which makes use to get sql query result in Object(one Value).
+
+	   * @param query
+	   * @return Object.
+	   */
+	public Object getValue(String query) {
+		Object result = null;
+		Connection dbConnection = null;
+		try {
+
+			dbConnection = getDBConnection();
+			Statement stmt;
+			stmt = dbConnection.createStatement();
+			ResultSet rows = stmt.executeQuery(query);
+			rows.next();
+
+			result = rows.getObject(1);
+		} catch (SQLException e) {
+			System.err.println("Error while executing scalar query:[" + query + "] exception:" + e);
+			e.printStackTrace();
+			try {
+				dbConnection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				System.err.println("Error while closing database connection!\n");
+			}
+		} finally {
+			if (dbConnection != null) {
+				try {
+					dbConnection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.err.println("Error while closing database connection!\n");
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This method used to execute non-queries such as: delete, insert, update.
+	 * @param query
+	 * @return
+	 */
+	public int executeNonQuery(String query) {
+		Connection dbConnection = null;
+		int result = 0;
+		try {
+
+			dbConnection = getDBConnection();
+			Statement stmt = dbConnection.createStatement();
+			System.out.print(query);
+			result = stmt.executeUpdate(query);
+
+			System.out.println(result + " Rows Updated.");
+
+		} catch (Exception e) {
+			System.err.println("Error while executing non query:[" + query + "] exception:" + e );
+			e.printStackTrace();
+			try {
+				dbConnection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				System.err.println("Error while closing database connection!\n");
+			}
+		} finally {
+			if (dbConnection != null) {
+				try {
+					dbConnection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}
+
+
+	private Connection getDBConnection() {
+
+		Connection dbConnection = null;
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			dbConnection = DriverManager.getConnection(url, dbUserName, dbPassword);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.err.println("Error while closing database connection!\n" + e);
+		}
+		return dbConnection;
 	}
 }
