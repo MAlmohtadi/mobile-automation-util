@@ -25,7 +25,7 @@ public class HttpServiceResponse {
         setResultAsString(parseResultAsString());
         setResponseResult();
 
-        System.out.println("\n[Service Result]:" + getResultAsString()
+        System.out.println("[Service Result]:" + getResultAsString()
                 + "\n**End executing service, [Service Name]: " + serviceName);
     }
 

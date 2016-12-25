@@ -31,6 +31,11 @@ public class HttpServiceRequest {
 		initHttpRequest();
 	}
 
+	public void setProxy(String proxyAddress, int proxyPort)
+	{
+		getHttpRequestHandler().setProxy(proxyAddress, proxyPort);
+	}
+
 	public HttpServiceResponse execute() {
 		ThreadLocal<CloseableHttpResponse> httpResponse = new ThreadLocal<>();
 		try {
