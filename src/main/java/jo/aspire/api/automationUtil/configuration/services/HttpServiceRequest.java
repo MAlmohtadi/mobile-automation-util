@@ -31,9 +31,10 @@ public class HttpServiceRequest {
 		initHttpRequest();
 	}
 
-	public void setProxy(String proxyAddress, int proxyPort)
+	public HttpServiceRequest setProxy(String proxyAddress, int proxyPort)
 	{
 		getHttpRequestHandler().setProxy(proxyAddress, proxyPort);
+		return this;
 	}
 
 	public HttpServiceResponse execute() {
